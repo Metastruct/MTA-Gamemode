@@ -11,8 +11,8 @@ team.SetUp(6669, "Wanted", Color(244, 135, 2), false)
 team.SetUp(6668, "Bounty Hunters", Color(255, 0, 0), false)
 
 if SERVER then
-	resource.AddWorkshop(372740052) -- synthetik health bars
-	resource.AddWorkshop(2237778746) -- synthetik hud
+	resource.AddWorkshop("372740052") -- synthetik health bars
+	resource.AddWorkshop("2237778746") -- synthetik hud
 
 	local GOD_CVAR = GetConVar("sbox_godmode")
 	if GOD_CVAR then GOD_CVAR:SetBool(false) end
