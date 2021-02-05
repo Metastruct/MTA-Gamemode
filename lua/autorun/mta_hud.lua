@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
 	resource.AddFile("materials/vgui/mta_hud/apicon.vmt")
@@ -600,9 +602,9 @@ hook.Add("HUDPaint", "SyntHud", function()
 			)
 		end
 
-		draw.SimpleText(WeaponName, "Font Name",
+		draw.SimpleText(WeaponName:upper(), "Font Name",
 			HealthBarPercentageStartW + (8 * ScrRatio),
-			HealthBarPercentageStartH - (33 * ScrRatio),
+			HealthBarPercentageStartH - (39 * ScrRatio),
 			Color(255, 255, 255, WeaponNameAlphaFlick),
 			0,
 			0
@@ -912,10 +914,8 @@ hook.Add("HUDPaint", "SyntHud", function()
 		surface.DrawRect(HpGainStart, HealthBarPercentageStartH, HpGainLength, HpBarHeight)
 
 		-- Ap Gain Bar
-
 		surface.SetDrawColor(250, 250, 250, ApGainAlpha)
 		surface.DrawRect(ApGainStart + 2, HealthBarPercentageStartH, ApGainLength, HpBarHeight)
-		--(player.ApGainDifference/100*HpBarLength)
 
 		-- Texts
 		surface.SetTexture(HpIcon)
@@ -925,6 +925,13 @@ hook.Add("HUDPaint", "SyntHud", function()
 			HealthBarPercentageStartH + (23 * ScrRatio),
 			18 * ScrRatio,
 			18 * ScrRatio
+		)
+
+		draw.SimpleText(
+			player:Health(),
+			"Font Bars",
+			HealthBarPercentageStartW + 30,
+			HealthBarPercentageStartH + (20 * ScrRatio)
 		)
 
 		if player.HpGainDifference > 0 then
@@ -965,6 +972,13 @@ hook.Add("HUDPaint", "SyntHud", function()
 				HealthBarPercentageStartH + (23 * ScrRatio),
 				18 * ScrRatio,
 				18 * ScrRatio
+			)
+
+			draw.SimpleText(
+				player:Armor(),
+				"Font Bars",
+				math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * ScrRatio), 100000) + 30,
+				HealthBarPercentageStartH + (20 * ScrRatio)
 			)
 
 			if player.ApGainDifference > 0 then
