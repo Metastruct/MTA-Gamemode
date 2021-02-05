@@ -12,6 +12,8 @@ if SERVER then
 	return
 end
 
+local HudPos = CreateClientConVar("mta_hud_pos", "0", true, false)
+
 local Transitions = {}
 Transitions.LostTotHealth = {}
 Transitions.LostHealth = {}
@@ -37,7 +39,7 @@ local CNextTimer = 0
 local AmNextTimer = 0
 local NNextTimer = 0
 
-local HpFlashAlpha = 0
+-- local HpFlashAlpha = 0
 local AmmoLocation = 0
 
 local WeaponNameAlpha = 0
@@ -55,12 +57,12 @@ local ClipAlpha = 255
 local ClipAlphaDir = 0
 local ClipAlphaVel = 0
 
-local AmmoShakeH = 0
-local AmmoShakeW = 0
-local AmmoShakeTime = 0
+-- local AmmoShakeH = 0
+-- local AmmoShakeW = 0
+-- local AmmoShakeTime = 0
 
 local AmmoAnimTime = 0
-local AmmoAnimTime2 = 0
+-- local AmmoAnimTime2 = 0
 local AmmoAnimStep = 0
 
 local AmmoFlash = 0
@@ -73,6 +75,18 @@ local HpIcon = surface.GetTextureID("vgui/mta_hud/hpicon")
 local ApIcon = surface.GetTextureID("vgui/mta_hud/apicon")
 local SecAmmoIcon = surface.GetTextureID("vgui/mta_hud/secammo")
 local AmmoCountBG = surface.GetTextureID("vgui/mta_hud/ammobg")
+
+local PosXLeft = ScrW() - (ScrRatio * 450)
+local PosXRight = 0
+local PosYLeft = ScrH() - (ScrRatio * 250)
+local PosYRight = ScrH() - (ScrRatio * 180)
+
+local LastAngs = EyeAngles()
+local AngDeltaP = 0
+local AngDeltaY = 0
+local LastTranslateP = 0
+local LastTranslateY = 0
+local MatVec = Vector()
 
 local function LoadFonts()
 	surface.CreateFont("Font Ammo", {
@@ -259,10 +273,28 @@ hook.Add("HUDPaint", "mta_hud", function()
 	local Weapon = player:GetActiveWeapon()
 	-- Elements position
 
+	local vel = player:GetAbsVelocity()
+
+	--draw.SimpleText(vel, "Default", 0, 0)
+
+	local curAngs = EyeAngles()
+
+	AngDeltaP = math.AngleDifference(LastAngs.p, curAngs.p)
+	AngDeltaY = math.AngleDifference(LastAngs.y, curAngs.y)
+
+	LastAngs = curAngs
+
+	LastTranslateP = Lerp(0.1, LastTranslateP, AngDeltaP)
+	LastTranslateY = Lerp(0.1, LastTranslateY, AngDeltaY)
+
+	if vel.z ~= 0 then
+		LastTranslateP = LastTranslateP + (math.Clamp(vel.z, -100, 100) * 0.005)
+	end
+
 	local Separated = 1
 
-	local CustomPositionX = 0
-	local CustomPositionY = 0
+	-- local CustomPositionX = 0
+	-- local CustomPositionY = 0
 	local CustomWidth = 0
 
 	local FixedAp = 0
@@ -271,8 +303,12 @@ hook.Add("HUDPaint", "mta_hud", function()
 	local HpBarLength = 180 * ScrRatio + CustomWidth
 	local HpBarHeight = 18 * ScrRatio
 
-	local HealthBarPercentageStartW = (ScrW() / 2) - HpBarLength - (Separated * 2) + CustomPositionX
-	local HealthBarPercentageStartH = ScrH() - (66 * ScrRatio) + CustomPositionY
+	-- local HealthBarPercentageStartW = ScrW() - HpBarLength - (Separated * 2) + CustomPositionX
+	-- local HealthBarPercentageStartH = ScrH() - (66 * ScrRatio) + CustomPositionY
+
+	local HealthBarPercentageStartW = 50
+	local HealthBarPercentageStartH = 110 * ScrRatio
+
 	CustomScale = 1
 	ScrRatio = ScrH() / 1080 * CustomScale
 
@@ -348,6 +384,17 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 	-- END of maximum value
 
+	local mat = Matrix()
+
+	mat:SetField(2, 1, HudPos:GetBool() and 0.15 or -0.15)
+
+	MatVec.x = (HudPos:GetBool() and PosXLeft or PosXRight) + (LastTranslateY * 2)
+	MatVec.y = (HudPos:GetBool() and PosYLeft or PosYRight) + (LastTranslateP * 3)
+
+	mat:SetTranslation(MatVec)
+
+	cam.PushModelMatrix(mat)
+
 	-- Background elements
 	if player:Alive() then
 		-- Ammo background
@@ -374,8 +421,8 @@ hook.Add("HUDPaint", "mta_hud", function()
 		local Ammo = player:GetAmmoCount(Weapon:GetPrimaryAmmoType())
 		local SecAmmo = player:GetAmmoCount(Weapon:GetSecondaryAmmoType())
 		local AmmoType = LocalPlayer():GetActiveWeapon():GetPrimaryAmmoType()
-		local SecAmmoType = LocalPlayer():GetActiveWeapon():GetSecondaryAmmoType()
-		local GrenadeCount = LocalPlayer():GetAmmoCount("grenade")
+		-- local SecAmmoType = LocalPlayer():GetActiveWeapon():GetSecondaryAmmoType()
+		-- local GrenadeCount = LocalPlayer():GetAmmoCount("grenade")
 		local WeaponName = Weapon:GetPrintName()
 
 		-- Weapons that doesn't have magazine
@@ -392,18 +439,18 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 		-- Location calculation
 
-		local AmmoCountLocationW = HealthBarPercentageStartW + (HpBarLength * 2) - (232 * ScrRatio) + (Separated * 4)
-		local AmmoCountLocationH = HealthBarPercentageStartH - (59 * ScrRatio)
+		-- local AmmoCountLocationW = HealthBarPercentageStartW + (HpBarLength * 2) - (232 * ScrRatio) + (Separated * 4)
+		-- local AmmoCountLocationH = HealthBarPercentageStartH - (59 * ScrRatio)
 
-		local AmmoIconW = 256 * ScrRatio
-		local AmmoIconH = 64 * ScrRatio
+		-- local AmmoIconW = 256 * ScrRatio
+		-- local AmmoIconH = 64 * ScrRatio
 
 		-- Texture scissor coordinates
 
-		AmmoRectStartX = AmmoCountLocationW - (5 * ScrRatio)
-		AmmoRectStartY = AmmoCountLocationH + (14 * ScrRatio)
-		AmmoRectStopX = AmmoCountLocationW + (232 * ScrRatio)
-		AmmoRectStopY = AmmoCountLocationH + (53 * ScrRatio)
+		-- AmmoRectStartX = AmmoCountLocationW - (5 * ScrRatio)
+		-- AmmoRectStartY = AmmoCountLocationH + (14 * ScrRatio)
+		-- AmmoRectStopX = AmmoCountLocationW + (232 * ScrRatio)
+		-- AmmoRectStopY = AmmoCountLocationH + (53 * ScrRatio)
 
 		-- If custom ammo type, display SMG icon
 
@@ -415,10 +462,8 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 		local AltAr2 = 0
 
-		if AmmoType == 1 then
-			if AltAr2 == true then
-				AmmoType = 20
-			end
+		if AmmoType == 1 and AltAr2 == true then
+			AmmoType = 20
 		end
 
 		AmmoFlash = AmmoType
@@ -559,8 +604,8 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 		-- Ammo shaking coordinates
 
-		AmmoShakeW = math.Rand(-150 * ScrRatio, 150 * ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
-		AmmoShakeH = math.Rand(-150 * ScrRatio, 150 * ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
+		-- AmmoShakeW = math.Rand(-150 * ScrRatio, 150 * ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
+		-- AmmoShakeH = math.Rand(-150 * ScrRatio, 150 * ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
 
 		-- Ammo Counter + weapon name
 		WeaponNameAlpha = math.Clamp(WeaponNameAlpha - RealFrameTime() * 250, 0, 250)
@@ -690,8 +735,8 @@ hook.Add("HUDPaint", "mta_hud", function()
 			surface.DrawTexturedRect(
 				HealthBarPercentageStartW - (36 * ScrRatio) + ClipLocation + BgClipShakeW,
 				ClipLocationV + BgClipShakeH,
-				(70 * ScrRatio),
-				(54 * ScrRatio)
+				70 * ScrRatio,
+				54 * ScrRatio
 			)
 
 			-- Drawing text
@@ -742,8 +787,8 @@ hook.Add("HUDPaint", "mta_hud", function()
 				surface.DrawTexturedRect(
 					HealthBarPercentageStartW + (HpBarLength * 2) + (8 * ScrRatio),
 					HealthBarPercentageStartH - (45 * ScrRatio) + (i * (16 * ScrRatio)),
-					(21 * ScrRatio),
-					(7 * ScrRatio)
+					21 * ScrRatio,
+					7 * ScrRatio
 				)
 			end
 		end
@@ -793,14 +838,14 @@ hook.Add("HUDPaint", "mta_hud", function()
 		BgLength = HpBarLength * HpRatio * 2
 	end
 
-	local LostBarStart = HealthBarPercentageStartW + (player.TotHealth) / MaxTot * HpBarLength * 2
+	local LostBarStart = HealthBarPercentageStartW + player.TotHealth / MaxTot * HpBarLength * 2
 	local LostBarLength = (player.LostTotHealth - player.TotHealth) / MaxTot * HpBarLength * 2
 	local LastTotDamageLength = (player.LastTotDamage - player.TotHealth) / MaxTot * HpBarLength * 2
 	local LastTotDamageAnim = math.sin(player.TotDamageAnim) * 10
 
 	local HpGainStart =
 		(HealthBarPercentageStartW + HpLength - (player.HpGainDifference / MaxHp) * HpRatio * 2) -
-		((player.HpGainDifference) / MaxHp * HpBarLength * HpRatio * 2)
+		(player.HpGainDifference / MaxHp * HpBarLength * HpRatio * 2)
 	local HpGainLength = (player.HpGainDifference / MaxHp * HpBarLength * HpRatio * 2)
 
 	local LostHpStart = HealthBarPercentageStartW + player:Health() / MaxHp * HpBarLength * HpRatio * 2
@@ -818,18 +863,18 @@ hook.Add("HUDPaint", "mta_hud", function()
 	local LastApDamageAnim = math.sin(player.ApDamageAnim) * 10
 
 	if Separated == 0 then
-		ApStart = HealthBarPercentageStartW + (HpLength)
+		ApStart = HealthBarPercentageStartW + HpLength
 		ApGainStart =
 			(HealthBarPercentageStartW + player.TotHealth / MaxTot * HpBarLength * 2 -
 			(player.ApGainDifference / MaxAp * ApRatio * 2)) -
-			((player.ApGainDifference) / MaxAp * HpBarLength * ApRatio * 2)
+			(player.ApGainDifference / MaxAp * HpBarLength * ApRatio * 2)
 	else
 		if FixedAp == false then
-			ApStart = (HealthBarPercentageStartW + (player.LostHealth) / MaxHp * HpBarLength * HpRatio * 2) + (4 * ScrRatio)
+			ApStart = (HealthBarPercentageStartW + player.LostHealth / MaxHp * HpBarLength * HpRatio * 2) + (4 * ScrRatio)
 			ApGainStart =
 				(HealthBarPercentageStartW + (player.LostHealth + player:Armor() + 2) / MaxHp * HpBarLength * HpRatio * 2 -
 				(player.ApGainDifference / MaxAp * ApRatio * 2)) -
-				((player.ApGainDifference) / MaxAp * HpBarLength * ApRatio * 2)
+				(player.ApGainDifference / MaxAp * HpBarLength * ApRatio * 2)
 			LostApStart = ApStart + player:Armor() / MaxAp * HpBarLength * ApRatio * 2
 		else
 			ApStart = (HealthBarPercentageStartW + HpBarLength * HpRatio * 2) + (4 * ScrRatio)
@@ -1009,6 +1054,7 @@ hook.Add("HUDPaint", "mta_hud", function()
 		end
 	end
 	-- END of Health/Armor drawing
+	cam.PopModelMatrix()
 end)
 
 local elements_to_hide = {
