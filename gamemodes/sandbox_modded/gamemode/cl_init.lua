@@ -1,5 +1,7 @@
+print("GAMEMODE CL INCLUDES")
 include("sh_init.lua")
 include("sh_hud.lua")
+print("GAMEMODE CL INCLUDED")
 
 function GM:OnSpawnMenuOpen()
 	return false
