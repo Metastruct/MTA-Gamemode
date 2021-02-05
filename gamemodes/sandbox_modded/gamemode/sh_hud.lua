@@ -2,9 +2,13 @@ AddCSLuaFile()
 
 if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
+	resource.AddFile("materials/vgui/mta_hud/hpicon.vtf")
 	resource.AddFile("materials/vgui/mta_hud/apicon.vmt")
+	resource.AddFile("materials/vgui/mta_hud/apicon.vtf")
 	resource.AddFile("materials/vgui/mta_hud/secammo.vmt")
+	resource.AddFile("materials/vgui/mta_hud/secammo.vtf")
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
+	resource.AddFile("materials/vgui/mta_hud/ammobg.vtf")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
 	return
