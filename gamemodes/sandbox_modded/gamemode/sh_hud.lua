@@ -356,7 +356,7 @@ hook.Add("HUDPaint", "mta_hud", function()
 			HpBarLength * 2 + (Separated * 4),
 			39 * ScrRatio
 
-		surface.SetDrawColor(30, 30, 30, 225)
+		surface.SetDrawColor(0, 0, 0, 150)
 		surface.DrawRect(x, y, w, h)
 
 		surface.SetDrawColor(244, 135, 2)
