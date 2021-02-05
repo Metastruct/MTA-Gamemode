@@ -252,7 +252,7 @@ local function CalculateGainTransition(value, name, default)
 	return Transition.HpGainDifference, Transition.GainAlpha
 end
 
-hook.Add("HUDPaint", "MTA_HUD", function()
+function GM:HUDPaint()
 	local player = LocalPlayer()
 	local Weapon = player:GetActiveWeapon()
 	-- Elements position
@@ -1007,7 +1007,7 @@ hook.Add("HUDPaint", "MTA_HUD", function()
 		end
 	end
 	-- END of Health/Armor drawing
-end)
+end
 
 local elements_to_hide = {
 	["CHudHealth"] = true,
@@ -1015,9 +1015,10 @@ local elements_to_hide = {
 	["CHudAmmo"] = true,
 	["CHudSecondaryAmmo"] = true
 }
+
 -- Hide default hud
-hook.Add("HUDShouldDraw", "HideDefaultHUD1", function(element)
+function GM:HUDShouldDraw(element)
 	if elements_to_hide[element] then
 		return false
 	end
-end)
+end

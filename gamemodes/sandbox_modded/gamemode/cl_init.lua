@@ -1,4 +1,5 @@
 include("sh_init.lua")
+include("sh_hud.lua")
 
 function GM:OnSpawnMenuOpen()
 	return false
