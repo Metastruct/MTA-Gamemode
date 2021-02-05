@@ -38,6 +38,7 @@ if SERVER then
 
 		ply:Give("weapon_crowbar")
 		ply:Give("none")
+		ply:Give("gmod_camera")
 
 		ply:SelectWeapon("none")
 
