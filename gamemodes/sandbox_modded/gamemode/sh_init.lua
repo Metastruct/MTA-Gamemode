@@ -139,6 +139,10 @@ if SERVER then
 		spawn_ents()
 	end
 
+	function GM:PlayerCanHearPlayersVoice(listener, speaker)
+		return true, true
+	end
+
 	local jail_spots = {
 		Vector(1870, -974, 5416),
 		Vector(2124, -985, 5416),
