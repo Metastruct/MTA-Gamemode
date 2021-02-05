@@ -4,10 +4,8 @@ AddCSLuaFile("sh_init.lua")
 AddCSLuaFile("sh_hud.lua")
 AddCSLuaFile("cl_init.lua")
 
-print("GAMEMODE SV INCLUDES")
 include("sh_init.lua")
 include("sh_hud.lua")
-print("GAMEMODE SV INCLUDED")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.

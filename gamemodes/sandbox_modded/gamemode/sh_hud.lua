@@ -1,5 +1,3 @@
-AddCSLuaFile()
-
 if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vtf")
@@ -256,7 +254,7 @@ local function CalculateGainTransition(value, name, default)
 	return Transition.HpGainDifference, Transition.GainAlpha
 end
 
-function GM:HUDPaint()
+hook.Add("HUDPaint", "mta_hud", function()
 	local player = LocalPlayer()
 	local Weapon = player:GetActiveWeapon()
 	-- Elements position
@@ -1011,7 +1009,7 @@ function GM:HUDPaint()
 		end
 	end
 	-- END of Health/Armor drawing
-end
+end)
 
 local elements_to_hide = {
 	["CHudHealth"] = true,
@@ -1021,8 +1019,8 @@ local elements_to_hide = {
 }
 
 -- Hide default hud
-function GM:HUDShouldDraw(element)
+hook.Add("HUDShouldDraw", "mta_hud", function(element)
 	if elements_to_hide[element] then
 		return false
 	end
-end
+end)
