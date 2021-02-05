@@ -1,8 +1,11 @@
 IS_MTA_GMA = true
 
-include("sh_init.lua")
 AddCSLuaFile("sh_init.lua")
+AddCSLuaFile("sh_hud.init")
 AddCSLuaFile("cl_init.lua")
+
+include("sh_init.lua")
+include("sh_hud.lua")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.

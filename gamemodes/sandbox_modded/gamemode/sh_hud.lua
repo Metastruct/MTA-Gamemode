@@ -252,7 +252,7 @@ local function CalculateGainTransition(value, name, default)
 	return Transition.HpGainDifference, Transition.GainAlpha
 end
 
-hook.Add("HUDPaint", "SyntHud", function()
+hook.Add("HUDPaint", "MTA_HUD", function()
 	local player = LocalPlayer()
 	local Weapon = player:GetActiveWeapon()
 	-- Elements position
