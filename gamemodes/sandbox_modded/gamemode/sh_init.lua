@@ -47,7 +47,7 @@ if SERVER then
 	local mta_ents = {
 		{
 			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(840, -4237, 5512),
+			["pos"] = Vector(840, -4237, 5498),
 			["class"] = "mta_vault",
 		},
 		{
@@ -58,7 +58,7 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(3904, 7282, 5525),
+			["pos"] = Vector(3904, 7282, 5510),
 			["class"] = "mta_vault",
 		},
 		{
@@ -68,12 +68,12 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(6048, -362, 5520),
+			["pos"] = Vector(6048, -362, 555),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-6702, 2956, 5464),
+			["pos"] = Vector(-6702, 2956, 5449),
 			["class"] = "mta_vault",
 		},
 		{
@@ -83,32 +83,32 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-2242, 5527, 5522),
+			["pos"] = Vector(-2242, 5527, 5507),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-6368, 2949, 5464),
+			["pos"] = Vector(-6368, 2949, 5449),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(728, 7581, 5522),
+			["pos"] = Vector(728, 7581, 5507),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(2267, 1183, 5440),
+			["pos"] = Vector(2267, 1183, 5425),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, 90, 0),
-			["pos"] = Vector(-6345, 2462, 5464),
+			["pos"] = Vector(-6345, 2462, 5449),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, 90, 0),
-			["pos"] = Vector(-6678, 2445, 5464),
+			["pos"] = Vector(-6678, 2445, 5449),
 			["class"] = "mta_vault",
 		},
 		{
