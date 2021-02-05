@@ -1,7 +1,7 @@
 IS_MTA_GMA = true
 
 AddCSLuaFile("sh_init.lua")
-AddCSLuaFile("sh_hud.init")
+AddCSLuaFile("sh_hud.lua")
 AddCSLuaFile("cl_init.lua")
 
 include("sh_init.lua")
