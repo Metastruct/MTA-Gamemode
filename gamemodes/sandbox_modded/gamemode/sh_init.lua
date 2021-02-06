@@ -45,7 +45,7 @@ if SERVER then
 		return true
 	end
 
-	function GAMEMODE:EntityTakeDamage(target, dmg)
+	function GM:EntityTakeDamage(target, dmg)
 		if target:GetClass() == "lua_npc" then return true end
 	end
 
