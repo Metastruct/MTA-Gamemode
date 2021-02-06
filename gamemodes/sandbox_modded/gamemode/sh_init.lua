@@ -143,8 +143,21 @@ if SERVER then
 		spawn_ents()
 	end
 
+	local max_wanders = 40
 	function GM:InitPostEntity()
 		spawn_ents()
+
+		if not navmesh.IsLoaded() then return end
+		local nodes = navmesh.GetAllNavAreas()
+		timer.Create("mta_wanders", 1, 0, function()
+			local wanders = ents.FindByClass("lua_npc_wander")
+			if #wanders < max_wanders then
+				local node = nodes[math.random(#nodes)]
+				local wander = ents.Create("lua_npc_wander")
+				wander:SetPos(node:GetCenter())
+				wander:Spawn()
+			end
+		end)
 	end
 
 	function GM:PlayerCanHearPlayersVoice(listener, speaker)
