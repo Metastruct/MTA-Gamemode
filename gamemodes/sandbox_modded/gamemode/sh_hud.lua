@@ -1,4 +1,7 @@
 if SERVER then
+	resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vmt")
+	resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vtf")
+
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vtf")
 	resource.AddFile("materials/vgui/mta_hud/apicon.vmt")
@@ -11,6 +14,8 @@ if SERVER then
 	resource.AddFile("resource/fonts/orbitron black.ttf")
 	return
 end
+
+local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 
 local HudPos = CreateClientConVar("mta_hud_pos", "0", true, false)
 
@@ -76,10 +81,25 @@ local ApIcon = surface.GetTextureID("vgui/mta_hud/apicon")
 local SecAmmoIcon = surface.GetTextureID("vgui/mta_hud/secammo")
 local AmmoCountBG = surface.GetTextureID("vgui/mta_hud/ammobg")
 
-local PosXLeft = ScrW() - (ScrRatio * 450)
-local PosXRight = 0
-local PosYLeft = ScrH() - (ScrRatio * 250)
-local PosYRight = ScrH() - (ScrRatio * 180)
+local HudPosXLeft = 0
+local HudPosXRight = ScrW() - (ScrRatio * 450)
+local HudPosYLeft = ScrH() - (ScrRatio * 180)
+local HudPosYRight = ScrH() - (ScrRatio * 250)
+
+local MapPosXLeft = ScrRatio * 30
+local MapPosXRight = ScrW() - (ScrRatio * 280)
+local MapPosYLeft = ScrRatio * 30
+local MapPosYRight = ScrRatio * 50
+
+local MapW = 250 * ScrRatio
+local MapH = 250 * ScrRatio
+
+local PlayerTriangle = {
+	{ x = 0, y = 20 },
+	{ x = -10, y = 25 },
+	{ x = 0, y = 0 },
+	{ x = 10, y = 25 }
+}
 
 local LastAngs = EyeAngles()
 local AngDeltaP = 0
@@ -268,14 +288,12 @@ local function CalculateGainTransition(value, name, default)
 	return Transition.HpGainDifference, Transition.GainAlpha
 end
 
-hook.Add("HUDPaint", "mta_hud", function()
+local function DrawHUD()
 	local player = LocalPlayer()
 	local Weapon = player:GetActiveWeapon()
 	-- Elements position
 
 	local vel = player:GetAbsVelocity()
-
-	--draw.SimpleText(vel, "Default", 0, 0)
 
 	local curAngs = EyeAngles()
 
@@ -284,27 +302,20 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 	LastAngs = curAngs
 
-	LastTranslateP = Lerp(0.1, LastTranslateP, AngDeltaP)
-	LastTranslateY = Lerp(0.1, LastTranslateY, AngDeltaY)
+	LastTranslateP = Lerp(FrameTime() * 5, LastTranslateP, AngDeltaP)
+	LastTranslateY = Lerp(FrameTime() * 5, LastTranslateY, AngDeltaY)
 
 	if vel.z ~= 0 then
-		LastTranslateP = LastTranslateP + (math.Clamp(vel.z, -100, 100) * 0.005)
+		LastTranslateP = LastTranslateP + (math.Clamp(vel.z, -100, 100) * FrameTime() * 0.2)
 	end
 
 	local Separated = 1
 
-	-- local CustomPositionX = 0
-	-- local CustomPositionY = 0
-	local CustomWidth = 0
-
 	local FixedAp = 0
 	local BarsDigits = 1
 
-	local HpBarLength = 180 * ScrRatio + CustomWidth
+	local HpBarLength = 180 * ScrRatio
 	local HpBarHeight = 18 * ScrRatio
-
-	-- local HealthBarPercentageStartW = ScrW() - HpBarLength - (Separated * 2) + CustomPositionX
-	-- local HealthBarPercentageStartH = ScrH() - (66 * ScrRatio) + CustomPositionY
 
 	local HealthBarPercentageStartW = 50
 	local HealthBarPercentageStartH = 110 * ScrRatio
@@ -386,10 +397,10 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 	local mat = Matrix()
 
-	mat:SetField(2, 1, HudPos:GetBool() and 0.15 or -0.15)
+	mat:SetField(2, 1, HudPos:GetBool() and 0.1 or -0.1)
 
-	MatVec.x = (HudPos:GetBool() and PosXLeft or PosXRight) + (LastTranslateY * 2)
-	MatVec.y = (HudPos:GetBool() and PosYLeft or PosYRight) + (LastTranslateP * 3)
+	MatVec.x = (HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (LastTranslateY * 2)
+	MatVec.y = (HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (LastTranslateP * 3)
 
 	mat:SetTranslation(MatVec)
 
@@ -731,7 +742,7 @@ hook.Add("HUDPaint", "mta_hud", function()
 
 			-- Drawing BG
 			surface.SetTexture(AmmoCountBG)
-			surface.SetDrawColor(Color(ACR, ACG, ACB, 255))
+			surface.SetDrawColor(ACR, ACG, ACB, 255)
 			surface.DrawTexturedRect(
 				HealthBarPercentageStartW - (36 * ScrRatio) + ClipLocation + BgClipShakeW,
 				ClipLocationV + BgClipShakeH,
@@ -783,7 +794,7 @@ hook.Add("HUDPaint", "mta_hud", function()
 			-- Secondary
 			for i = 0, math.Clamp(SecAmmo - 1, -1, 2) do
 				surface.SetTexture(SecAmmoIcon)
-				surface.SetDrawColor(Color(255, 255, 255, 255))
+				surface.SetDrawColor(255, 255, 255, 255)
 				surface.DrawTexturedRect(
 					HealthBarPercentageStartW + (HpBarLength * 2) + (8 * ScrRatio),
 					HealthBarPercentageStartH - (45 * ScrRatio) + (i * (16 * ScrRatio)),
@@ -1055,6 +1066,82 @@ hook.Add("HUDPaint", "mta_hud", function()
 	end
 	-- END of Health/Armor drawing
 	cam.PopModelMatrix()
+end
+
+local function GetMapDrawPos(pos)
+	local pxD = 1024 / 2
+	local pyD = 1024 / 2
+
+	local rx = -pos.y * (-pxD / -16384) + pxD
+	local ry = pos.x * ((1024 - pyD) / -16384) + pyD
+
+	return rx, ry
+end
+
+local function TranslatePoly(poly, ox, oy)
+	local translated = {}
+
+	for k, v in pairs(poly) do
+		translated[k] = { x = ox + v.x, y = oy + v.y }
+	end
+
+	return translated
+end
+
+local function Rotate(ox, oy, px, py, angle)
+	local qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+	local qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+	return qx, qy
+end
+
+local function RotatePoly(poly, angle, ox, oy)
+	local rotated = {}
+
+	for k, v in pairs(poly) do
+		local rx, ry = Rotate(ox, oy, v.x, v.y, math.rad(angle))
+
+		rotated[k] = { x = rx, y = ry }
+	end
+
+	return rotated
+end
+
+local function DrawMap()
+	local mat = Matrix()
+
+	mat:SetField(2, 1, HudPos:GetBool() and -0.08 or 0.08)
+
+	MatVec.x = (HudPos:GetBool() and MapPosXRight or MapPosXLeft) + (LastTranslateY * 2)
+	MatVec.y = (HudPos:GetBool() and MapPosYRight or MapPosYLeft) + (LastTranslateP * 3)
+
+	mat:SetTranslation(MatVec)
+
+	cam.PushModelMatrix(mat)
+		local rx, ry = GetMapDrawPos(LocalPlayer():GetPos())
+
+		local startU = (rx - 75) / 1024
+		local startV = (ry - 75) / 1024
+		local endU = (rx + 75) / 1024
+		local endV = (ry + 75) / 1024
+
+		surface.SetMaterial(MapImage)
+		surface.SetDrawColor(255, 255, 255, 180)
+		surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
+
+		local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2)
+		tri = RotatePoly(tri, -LocalPlayer():EyeAngles().y, MapW / 2, MapH / 2 + 12.5)
+		draw.NoTexture()
+		surface.SetDrawColor(255, 255, 255, 180)
+		surface.DrawPoly(tri)
+
+		surface.SetDrawColor(244, 135, 2)
+		surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+	cam.PopModelMatrix()
+end
+
+hook.Add("HUDPaint", "mta_hud", function()
+	DrawHUD()
+	DrawMap()
 end)
 
 local elements_to_hide = {
