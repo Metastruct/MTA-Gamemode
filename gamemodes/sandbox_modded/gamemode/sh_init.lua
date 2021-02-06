@@ -45,6 +45,10 @@ if SERVER then
 		return true
 	end
 
+	function GAMEMODE:EntityTakeDamage(target, dmg)
+		if target:GetClass() == "lua_npc" then return true end
+	end
+
 	local mta_ents = {
 		{
 			["ang"] = Angle(0, 0, 0),

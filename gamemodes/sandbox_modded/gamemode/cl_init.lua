@@ -1,13 +1,13 @@
 include("sh_init.lua")
 include("sh_hud.lua")
 
-function GM:OnSpawnMenuOpen()
+--[[function GM:OnSpawnMenuOpen()
 	return false
 end
 
 function GM:OnSpawnMenuClose()
 	return false
-end
+end]]--
 
 language.Add("worldspawn", "Ground")
 language.Add("world", "World")
