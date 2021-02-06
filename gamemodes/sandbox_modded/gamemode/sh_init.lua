@@ -13,11 +13,14 @@ team.SetUp(6668, "Bounty Hunters", Color(255, 0, 0), false)
 if SERVER then
 	resource.AddWorkshop("372740052") -- synthetik health bars
 
-	local GOD_CVAR = GetConVar("sbox_godmode")
-	if GOD_CVAR then GOD_CVAR:SetBool(false) end
+	function GM:pac_Initialized()
+		game.ConsoleCommand("pac_modifier_size 0\n")
+		game.ConsoleCommand("pac_modifier_model 0\n")
+		game.ConsoleCommand("pac_sv_projectiles 0\n")
+	end
 
-	RunConsoleCommand("sbox_godmode", "0")
-	RunConsoleCommand("sv_allowcslua", "0")
+	game.ConsoleCommand("sbox_godmode 0\n")
+	game.ConsoleCommand("sv_allowcslua 0\n")
 
 	local hooks = {
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
