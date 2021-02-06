@@ -81,10 +81,10 @@ local ApIcon = surface.GetTextureID("vgui/mta_hud/apicon")
 local SecAmmoIcon = surface.GetTextureID("vgui/mta_hud/secammo")
 local AmmoCountBG = surface.GetTextureID("vgui/mta_hud/ammobg")
 
-local HudPosXLeft = 0
+local HudPosXLeft = ScrRatio * 10
 local HudPosXRight = ScrW() - (ScrRatio * 450)
-local HudPosYLeft = ScrH() - (ScrRatio * 180)
-local HudPosYRight = ScrH() - (ScrRatio * 250)
+local HudPosYLeft = ScrH() - (ScrRatio * 190)
+local HudPosYRight = ScrH() - (ScrRatio * 220)
 
 local MapPosXLeft = ScrRatio * 30
 local MapPosXRight = ScrW() - (ScrRatio * 280)
@@ -318,7 +318,7 @@ local function DrawHUD()
 	local HpBarHeight = 18 * ScrRatio
 
 	local HealthBarPercentageStartW = 50
-	local HealthBarPercentageStartH = 110 * ScrRatio
+	local HealthBarPercentageStartH = 125 * ScrRatio
 
 	CustomScale = 1
 	ScrRatio = ScrH() / 1080 * CustomScale
