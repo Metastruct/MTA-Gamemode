@@ -1107,6 +1107,8 @@ local function RotatePoly(poly, angle, ox, oy)
 end
 
 local function DrawMap()
+	local yaw = -EyeAngles().y
+
 	local mat = Matrix()
 
 	mat:SetField(2, 1, HudPos:GetBool() and -0.08 or 0.08)
@@ -1129,7 +1131,7 @@ local function DrawMap()
 		surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
 
 		local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2)
-		tri = RotatePoly(tri, -LocalPlayer():EyeAngles().y, MapW / 2, MapH / 2 + 12.5)
+		tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2 + 12.5)
 		draw.NoTexture()
 		surface.SetDrawColor(255, 255, 255, 180)
 		surface.DrawPoly(tri)
