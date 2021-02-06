@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "vgui/mta_hud/maps/rp_unioncity"
+	"$vertexalpha" 1
+}
