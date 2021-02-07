@@ -59,8 +59,8 @@ if SERVER then
 			["class"] = "mta_vault",
 		},
 		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(-2005, 749, 5416),
+			["ang"] = Angle(0, -90, 0),
+			["pos"] = Vector(446, 7486, 5510),
 			["class"] = "lua_npc",
 			["role"] = "dealer",
 		},
@@ -70,8 +70,8 @@ if SERVER then
 			["class"] = "mta_vault",
 		},
 		{
-			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-1638, 837, 5416),
+			["ang"] = Angle(0, -180, 0),
+			["pos"] = Vector(645, 7245, 5506),
 			["class"] = "mta_skills_computer",
 		},
 		{
@@ -86,7 +86,7 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(-1938, 503, 5457),
+			["pos"] = Vector(237, 7539, 5547),
 			["class"] = "mta_jukebox",
 		},
 		{
@@ -97,11 +97,6 @@ if SERVER then
 		{
 			["ang"] = Angle(0, -90, 0),
 			["pos"] = Vector(-6368, 2949, 5449),
-			["class"] = "mta_vault",
-		},
-		{
-			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(728, 7581, 5507),
 			["class"] = "mta_vault",
 		},
 		{
@@ -120,8 +115,8 @@ if SERVER then
 			["class"] = "mta_vault",
 		},
 		{
-			["ang"] = Angle(90, -90, 180),
-			["pos"] = Vector(-1632, 973, 5456),
+			["ang"] = Angle(89, -6, 94),
+			["pos"] = Vector(966, 7508, 5550),
 			["class"] = "mta_riot_shield_table",
 		},
 	}
