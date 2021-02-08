@@ -60,7 +60,7 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(446, 7486, 5510),
+			["pos"] = Vector(533, 7463, 5510),
 			["class"] = "lua_npc",
 			["role"] = "dealer",
 		},
