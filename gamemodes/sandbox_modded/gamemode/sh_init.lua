@@ -142,18 +142,23 @@ if SERVER then
 	function GM:InitPostEntity()
 		spawn_ents()
 
-		if not navmesh.IsLoaded() then return end
-		local nodes = navmesh.GetAllNavAreas()
+		local nodes = {}
 		local node_poses = {}
-		for _, node in pairs(nodes) do
-			table.insert(node_poses, node:GetCenter())
-		end
-
-		ms = ms or {}
-		ms.mapdata = ms.mapdata or {}
-		ms.mapdata.w_walktable = node_poses
-
 		timer.Create("mta_wanders", 1, 0, function()
+			if not navmesh.IsLoaded() then return end
+
+			if #nodes < 1 then
+				nodes = navmesh.GetAllNavAreas()
+				node_poses = {}
+				for _, node in pairs(nodes) do
+					table.insert(node_poses, node:GetCenter())
+				end
+			end
+
+			ms = ms or {}
+			ms.mapdata = ms.mapdata or {}
+			ms.mapdata.w_walktable = node_poses
+
 			local wanders = ents.FindByClass("lua_npc_wander")
 			if #wanders < max_wanders then
 				local node = nodes[math.random(#nodes)]
