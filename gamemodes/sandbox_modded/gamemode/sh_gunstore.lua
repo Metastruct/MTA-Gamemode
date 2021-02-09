@@ -162,10 +162,11 @@ if SERVER then
 	return
 end
 
-local MTA_COLOR = Color(244, 136, 0)
+local noBuyColor = Color(221, 0, 74)
+local white = Color(255, 255, 255)
 
 local gunStoreLocation = Vector(425, 7330, 5506)
-local highlightColor = Color(255, 150, 150)
+local highlightColor = Color(255, 255, 255)
 
 local hasSetup = false
 local isKeyDown = false
@@ -201,7 +202,7 @@ local function SetupClientData()
 		end
 	end
 end
-
+SetupClientData()
 --using post entity since then all "list.Get" should be setup, right?
 hook.Add("InitPostEntity", tag, function()
 	--setup a more optimized table for the hudpaint hook
@@ -225,10 +226,12 @@ hook.Add("HUDPaint", tag, function()
 
 			if MTA.Weapons[data.class] == true then
 				text = "You own this weapon"
+				highlightColor = noBuyColor
 			elseif MTA.GetPlayerStat("points") < cost then
 				text = "You can't afford this - " .. cost .. " points"
+				highlightColor = noBuyColor
 			else
-				highlightColor = MTA_COLOR
+				highlightColor = white
 				text = "Buy " .. name .. " - " .. cost .. " points"
 			end
 
