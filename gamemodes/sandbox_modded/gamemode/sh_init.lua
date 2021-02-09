@@ -138,6 +138,24 @@ if SERVER then
 		spawn_ents()
 	end
 
+	local slogans = {
+		"Almost like DarkRP",
+		"PayDay 3",
+		"Bootleg GTA",
+		"Grand Theft Rip-off",
+		"It's crime time",
+		"Low budget San Andreas",
+		"Construct with blackjacks and hookers",
+		"Admin, I didn't fail RP",
+		"Would like a stove?",
+		"RDM RDM RDM"
+	}
+	local function set_custom_hostname()
+		if not _G.hostname then return end
+		local slogan = slogans[math.random(#slogans)]
+		_G.hostname(("Meta Theft Auto - %s"):format(slogan))
+	end
+
 	local max_wanders = 40
 	function GM:InitPostEntity()
 		spawn_ents()
@@ -167,6 +185,8 @@ if SERVER then
 				wander:Spawn()
 			end
 		end)
+
+		timer.Create("DynHostname", 10, 0, set_custom_hostname)
 	end
 
 	function GM:PlayerCanHearPlayersVoice(listener, speaker)
