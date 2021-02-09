@@ -162,6 +162,8 @@ if SERVER then
 	return
 end
 
+local MTA_COLOR = Color(244, 136, 0)
+
 local gunStoreLocation = Vector(425, 7330, 5506)
 local highlightColor = Color(255, 150, 150)
 
@@ -226,6 +228,7 @@ hook.Add("HUDPaint", tag, function()
 			elseif MTA.GetPlayerStat("points") < cost then
 				text = "You can't afford this - " .. cost .. " points"
 			else
+				highlightColor = MTA_COLOR
 				text = "Buy " .. name .. " - " .. cost .. " points"
 			end
 
