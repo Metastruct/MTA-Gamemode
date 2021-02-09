@@ -19,7 +19,8 @@ MTAHud = {}
 
 MTAHud.Config = {
 	ScrRatio = ScrH() / 1080,
-	HudPos = CreateClientConVar("mta_hud_pos", "0", true, false)
+	HudPos = CreateClientConVar("mta_hud_pos", "0", true, false),
+	HudMovement = CreateClientConVar("mta_hud_movement", "1", true, false)
 }
 
 MTAHud.Vars = {
@@ -80,7 +81,7 @@ hook.Add("HUDShouldDraw", "mta_hud", function(element)
 	end
 end)
 
-local function DrawHud()
+local function Hud()
 	local Transitions = {}
 	Transitions.LostTotHealth = {}
 	Transitions.LostHealth = {}
@@ -419,8 +420,8 @@ local function DrawHud()
 
 			mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and 0.1 or -0.1)
 
-			MatVec.x = (MTAHud.Config.HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (MTAHud.Vars.LastTranslateY * 2)
-			MatVec.y = (MTAHud.Config.HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (MTAHud.Vars.LastTranslateP * 3)
+			MatVec.x = (MTAHud.Config.HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
+			MatVec.y = (MTAHud.Config.HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
 			mat:SetTranslation(MatVec)
 
@@ -1090,7 +1091,7 @@ local function DrawHud()
 	}
 end
 
-local function DrawMap()
+local function Map()
 	local function GetMapDrawPos(pos)
 		local pxD = 1024 / 2
 		local pyD = 1024 / 2
@@ -1157,8 +1158,8 @@ local function DrawMap()
 
 			mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and -0.08 or 0.08)
 
-			MatVec.x = (MTAHud.Config.HudPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Vars.LastTranslateY * 2)
-			MatVec.y = (MTAHud.Config.HudPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Vars.LastTranslateP * 3)
+			MatVec.x = (MTAHud.Config.HudPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
+			MatVec.y = (MTAHud.Config.HudPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
 			mat:SetTranslation(MatVec)
 
@@ -1187,5 +1188,5 @@ local function DrawMap()
 	}
 end
 
-MTAHud:AddComponent("hud", DrawHud)
-MTAHud:AddComponent("map", DrawMap)
+MTAHud:AddComponent("hud", Hud)
+MTAHud:AddComponent("map", Map)
