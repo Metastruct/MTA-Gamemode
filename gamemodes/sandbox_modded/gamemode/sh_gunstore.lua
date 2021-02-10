@@ -168,7 +168,6 @@ local white = Color(255, 255, 255)
 local gunStoreLocation = Vector(425, 7330, 5506)
 local highlightColor = Color(255, 255, 255)
 
-local hasSetup = false
 local isKeyDown = false
 
 local function CanBuy(weapon)
@@ -202,11 +201,9 @@ local function SetupClientData()
 		end
 	end
 end
-SetupClientData()
---using post entity since then all "list.Get" should be setup, right?
-hook.Add("InitPostEntity", tag, function()
+
+hook.Add("MTAInitialized", tag, function()
 	--setup a more optimized table for the hudpaint hook
-	if hasSetup then return end --Client can call this several times
 	if not MTA or not MTA_CONFIG then return end
 	SetupClientData()
 end)
