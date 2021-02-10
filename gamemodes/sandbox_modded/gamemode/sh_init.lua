@@ -153,7 +153,7 @@ if SERVER then
 	local function set_custom_hostname()
 		if not _G.hostname then return end
 		local slogan = slogans[math.random(#slogans)]
-		_G.hostname(("Meta Theft Auto - %s"):format(slogan))
+		_G.hostname(("Meta Theft Auto WIP - %s"):format(slogan))
 	end
 
 	local function get_rid_of_bank_vault()
