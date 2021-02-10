@@ -156,6 +156,16 @@ if SERVER then
 		_G.hostname(("Meta Theft Auto - %s"):format(slogan))
 	end
 
+	local function get_rid_of_bank_vault()
+		local entities = ents.FindByModel("models/uc/props_unioncity/bankvault_door.mdl")
+		for _, ent in pairs(entities) do
+			if ent:CreatedByMap() then
+				ent:Fire("open")
+				SafeRemoveEntity(ent)
+			end
+		end
+	end
+
 	local max_wanders = 40
 	function GM:InitPostEntity()
 		spawn_ents()
@@ -187,6 +197,7 @@ if SERVER then
 		end)
 
 		timer.Create("DynHostname", 10, 0, set_custom_hostname)
+		get_rid_of_bank_vault()
 	end
 
 	function GM:PlayerCanHearPlayersVoice(listener, speaker)
