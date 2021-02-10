@@ -3,8 +3,9 @@ include("sh_hud.lua")
 include("sh_gunstore.lua")
 
 function GM:MTAInitialized()
-	derma.RefreshSkins()
 	hook.Remove("ForceDermaSkin", "derma_skin_metastruct")
+	derma.RefreshSkins()
+	MTA_COLOR_HACK()
 	hook.Add("ForceDermaSkin", "MTA_GM", function() return "MTA" end)
 end
 
