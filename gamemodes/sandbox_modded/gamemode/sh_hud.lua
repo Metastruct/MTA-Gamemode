@@ -1161,30 +1161,36 @@ local function Map()
 	end
 
 	local find_by_class = ents.FindByClass
-	local dealer_npc
-	local next_dealer_search = 0
-	local function get_dealer_npc()
-		if IsValid(dealer_npc) then return dealer_npc end
-		if CurTime() < next_dealer_search then return end
-
-		for _, npc in pairs(ents.FindByClass("lua_npc")) do
-			if npc:GetNWBool("MTADealer") then
-				dealer_npc = npc
-				break
-			end
-		end
-
-		next_dealer_search = CurTime() + 2
-		return dealer_npc
-	end
-
 	local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
 	local icon_size = 30 * MTAHud.Config.ScrRatio
 	local icon_offset = icon_size * 0.5
 
+	local function DrawMapObjects(origin)
+		surface.SetMaterial(vault_icon)
+		for _, vault in ipairs(find_by_class("mta_vault")) do
+			if not IsValid(vault) then continue end
+
+			local px, py = GetMapDrawPos(origin, vault:GetPos())
+			if px < MapW - icon_offset and py < MapH - icon_offset then
+				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+			end
+		end
+
+		for _, npc in ipairs(find_by_class("lua_npc")) do
+			if not IsValid(npc) or not npc:GetNWBool("MTADealer") then continue end
+
+			local px, py = GetMapDrawPos(origin, npc:GetPos())
+			if px < MapW - icon_offset and py < MapH - icon_offset then
+				surface.SetMaterial(dealer_icon)
+				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+			end
+		end
+	end
+
 	return {
 		Draw = function()
+			local lp_pos = LocalPlayer():GetPos()
 			local yaw = -EyeAngles().y
 
 			local mat = Matrix()
@@ -1197,7 +1203,6 @@ local function Map()
 			mat:SetTranslation(MatVec)
 
 			cam.PushModelMatrix(mat)
-				local lp_pos = LocalPlayer():GetPos()
 				local rx, ry = GetMapTexturePos(lp_pos)
 
 				local startU = (rx - MapZoom) / 1024
@@ -1209,24 +1214,7 @@ local function Map()
 				surface.SetDrawColor(255, 255, 255, 180)
 				surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
 
-				surface.SetMaterial(vault_icon)
-				for _, vault in ipairs(find_by_class("mta_vault")) do
-					if not IsValid(vault) then continue end
-				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
-				 	if px < MapW - icon_offset and py < MapH - icon_offset then
-				 		surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
-					end
-				end
-
-				for _, npc in ipairs(find_by_class("lua_npc")) do
-					if npc:GetNWBool("MTADealer") then
-						local px, py = GetMapDrawPos(lp_pos, npc:GetPos())
-						if px < MapW - icon_offset and py < MapH - icon_offset then
-							surface.SetMaterial(dealer_icon)
-							surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
-					   end
-					end
-				end
+				DrawMapObjects(lp_pos)
 
 				local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
 				tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
