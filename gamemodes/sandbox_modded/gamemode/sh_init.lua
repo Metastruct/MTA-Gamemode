@@ -76,7 +76,7 @@ if SERVER then
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(6048, -362, 555),
+			["pos"] = Vector(6048, -374, 5504),
 			["class"] = "mta_vault",
 		},
 		{
