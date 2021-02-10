@@ -1190,12 +1190,6 @@ local function Map()
 				surface.SetDrawColor(255, 255, 255, 180)
 				surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
 
-				local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
-				tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
-				draw.NoTexture()
-				surface.SetDrawColor(255, 255, 255, 180)
-				surface.DrawPoly(tri)
-
 				surface.SetMaterial(vault_icon)
 				for _, vault in ipairs(find_by_class("mta_vault")) do
 				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
@@ -1203,6 +1197,11 @@ local function Map()
 				 		surface.DrawTexturedRect(px - vault_icon_offset, py - vault_icon_offset, vault_icon_size, vault_icon_size)
 					end
 				end
+
+				local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
+				tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
+				draw.NoTexture()
+				surface.DrawPoly(tri)
 
 				surface.SetDrawColor(244, 135, 2)
 				surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
