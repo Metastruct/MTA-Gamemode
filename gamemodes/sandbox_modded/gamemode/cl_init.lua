@@ -2,6 +2,12 @@ include("sh_init.lua")
 include("sh_hud.lua")
 include("sh_gunstore.lua")
 
+function GM:MTAInitialized()
+	derma.RefreshSkins()
+	hook.Remove("ForceDermaSkin", "derma_skin_metastruct")
+	hook.Add("ForceDermaSkin", "MTA_GM", function() return "MTA_GM" end)
+end
+
 --[[function GM:OnSpawnMenuOpen()
 	return false
 end
