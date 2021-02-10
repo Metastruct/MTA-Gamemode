@@ -5,6 +5,7 @@ if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/secammo.vmt")
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
 	resource.AddFile("materials/vgui/mta_hud/vault_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/dealer_icon.png")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
 	return
@@ -1160,9 +1161,27 @@ local function Map()
 	end
 
 	local find_by_class = ents.FindByClass
+	local dealer_npc
+	local next_dealer_search = 0
+	local function get_dealer_npc()
+		if IsValid(dealer_npc) then return dealer_npc end
+		if CurTime() < next_dealer_search then return end
+
+		for _, npc in pairs(ents.FindByClass("lua_npc")) do
+			if npc:GetNWBool("MTADealer") then
+				dealer_npc = npc
+				break
+			end
+		end
+
+		next_dealer_search = CurTime() + 2
+		return dealer_npc
+	end
+
+	local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
-	local vault_icon_size = 20 * MTAHud.Config.ScrRatio
-	local vault_icon_offset = vault_icon_size * 0.5
+	local icon_size = 30 * MTAHud.Config.ScrRatio
+	local icon_offset = icon_size * 0.5
 
 	return {
 		Draw = function()
@@ -1194,8 +1213,18 @@ local function Map()
 				for _, vault in ipairs(find_by_class("mta_vault")) do
 					if not IsValid(vault) then continue end
 				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
-				 	if px < MapW - vault_icon_offset and py < MapH - vault_icon_offset then
-				 		surface.DrawTexturedRect(px - vault_icon_offset, py - vault_icon_offset, vault_icon_size, vault_icon_size)
+				 	if px < MapW - icon_offset and py < MapH - icon_offset then
+				 		surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+					end
+				end
+
+				for _, npc in ipairs(find_by_class("lua_npc")) do
+					if npc:GetNWBool("MTADealer") then
+						local px, py = GetMapDrawPos(lp_pos, npc:GetPos())
+						if px < MapW - icon_offset and py < MapH - icon_offset then
+							surface.SetMaterial(dealer_icon)
+							surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+					   end
 					end
 				end
 
