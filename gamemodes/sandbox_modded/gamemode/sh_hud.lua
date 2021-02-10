@@ -1,15 +1,10 @@
 if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vmt")
-	resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vtf")
-
 	resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
-	resource.AddFile("materials/vgui/mta_hud/hpicon.vtf")
 	resource.AddFile("materials/vgui/mta_hud/apicon.vmt")
-	resource.AddFile("materials/vgui/mta_hud/apicon.vtf")
 	resource.AddFile("materials/vgui/mta_hud/secammo.vmt")
-	resource.AddFile("materials/vgui/mta_hud/secammo.vtf")
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
-	resource.AddFile("materials/vgui/mta_hud/ammobg.vtf")
+	resource.AddFile("materials/vgui/mta_hud/vault_icon.png")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
 	return
@@ -1164,6 +1159,8 @@ local function Map()
 		return rotated
 	end
 
+	local find_by_class = ents.FindByClass
+	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
 	return {
 		Draw = function()
 			local yaw = -EyeAngles().y
@@ -1178,7 +1175,8 @@ local function Map()
 			mat:SetTranslation(MatVec)
 
 			cam.PushModelMatrix(mat)
-				local rx, ry = GetMapTexturePos(LocalPlayer():GetPos())
+				local lp_pos = LocalPlayer():GetPos()
+				local rx, ry = GetMapTexturePos(lp_pos)
 
 				local startU = (rx - MapZoom) / 1024
 				local startV = (ry - MapZoom) / 1024
@@ -1195,12 +1193,13 @@ local function Map()
 				surface.SetDrawColor(255, 255, 255, 180)
 				surface.DrawPoly(tri)
 
-				-- for k, v in ipairs(player.GetAll()) do
-				-- 	if v == LocalPlayer() then continue end
-				-- 	local px, py = GetMapDrawPos(LocalPlayer():GetPos(), v:GetPos())
-				-- 	if px > MapW - 5 or py > MapH - 5 then continue end
-				-- 	surface.DrawRect(px - 5, py - 5, 10, 10)
-				-- end
+				surface.SetMaterial(vault_icon)
+				for _, vault in ipairs(find_by_class("mta_vault")) do
+				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
+				 	if px < MapW - 5 and py < MapH - 5 then
+				 		surface.DrawTexturedRect(px - 5, py - 5, 20, 20)
+					end
+				end
 
 				surface.SetDrawColor(244, 135, 2)
 				surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
