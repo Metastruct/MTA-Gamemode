@@ -1092,12 +1092,46 @@ local function Hud()
 end
 
 local function Map()
-	local function GetMapDrawPos(pos)
+	local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
+
+	local MapPosXLeft = MTAHud.Config.ScrRatio * 30
+	local MapPosXRight = ScrW() - (MTAHud.Config.ScrRatio * 280)
+	local MapPosYLeft = MTAHud.Config.ScrRatio * 30
+	local MapPosYRight = MTAHud.Config.ScrRatio * 50
+
+	local MapW = 250 * MTAHud.Config.ScrRatio
+	local MapH = 250 * MTAHud.Config.ScrRatio
+	local MapZoom = MTAHud.Config.ScrRatio * 50
+
+	local PlayerTriangle = {
+		{ x = 0, y = 13 * MTAHud.Config.ScrRatio },
+		{ x = -7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio },
+		{ x = 0, y = 0 },
+		{ x = 7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio }
+	}
+
+	local MatVec = Vector()
+
+	local function GetMapTexturePos(pos)
 		local pxD = 1024 / 2
 		local pyD = 1024 / 2
 
 		local rx = -pos.y * (-pxD / -16384) + pxD
 		local ry = pos.x * ((1024 - pyD) / -16384) + pyD
+
+		return rx, ry
+	end
+
+	local function GetMapDrawPos(origin, pos)
+		local scale = MapZoom / 512
+
+		local diff = (origin - pos) / scale
+
+		local pxD = MapW / 2
+		local pyD = MapH / 2
+
+		local rx = diff.y * (-pxD / -16384) + pxD
+		local ry = -diff.x * ((MapH - pyD) / -16384) + pyD
 
 		return rx, ry
 	end
@@ -1130,26 +1164,6 @@ local function Map()
 		return rotated
 	end
 
-	local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
-
-	local MapPosXLeft = MTAHud.Config.ScrRatio * 30
-	local MapPosXRight = ScrW() - (MTAHud.Config.ScrRatio * 280)
-	local MapPosYLeft = MTAHud.Config.ScrRatio * 30
-	local MapPosYRight = MTAHud.Config.ScrRatio * 50
-
-	local MapW = 250 * MTAHud.Config.ScrRatio
-	local MapH = 250 * MTAHud.Config.ScrRatio
-	local MapZoom = MTAHud.Config.ScrRatio * 50
-
-	local PlayerTriangle = {
-		{ x = 0, y = 13 * MTAHud.Config.ScrRatio },
-		{ x = -7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio },
-		{ x = 0, y = 0 },
-		{ x = 7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio }
-	}
-
-	local MatVec = Vector()
-
 	return {
 		Draw = function()
 			local yaw = -EyeAngles().y
@@ -1164,7 +1178,7 @@ local function Map()
 			mat:SetTranslation(MatVec)
 
 			cam.PushModelMatrix(mat)
-				local rx, ry = GetMapDrawPos(LocalPlayer():GetPos())
+				local rx, ry = GetMapTexturePos(LocalPlayer():GetPos())
 
 				local startU = (rx - MapZoom) / 1024
 				local startV = (ry - MapZoom) / 1024
@@ -1180,6 +1194,13 @@ local function Map()
 				draw.NoTexture()
 				surface.SetDrawColor(255, 255, 255, 180)
 				surface.DrawPoly(tri)
+
+				-- for k, v in ipairs(player.GetAll()) do
+				-- 	if v == LocalPlayer() then continue end
+				-- 	local px, py = GetMapDrawPos(LocalPlayer():GetPos(), v:GetPos())
+				-- 	if px > MapW - 5 or py > MapH - 5 then continue end
+				-- 	surface.DrawRect(px - 5, py - 5, 10, 10)
+				-- end
 
 				surface.SetDrawColor(244, 135, 2)
 				surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
