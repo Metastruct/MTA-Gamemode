@@ -1192,6 +1192,7 @@ local function Map()
 
 				surface.SetMaterial(vault_icon)
 				for _, vault in ipairs(find_by_class("mta_vault")) do
+					if not IsValid(vault) then continue end
 				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
 				 	if px < MapW - vault_icon_offset and py < MapH - vault_icon_offset then
 				 		surface.DrawTexturedRect(px - vault_icon_offset, py - vault_icon_offset, vault_icon_size, vault_icon_size)
