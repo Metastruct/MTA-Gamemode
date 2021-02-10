@@ -1161,6 +1161,9 @@ local function Map()
 
 	local find_by_class = ents.FindByClass
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
+	local vault_icon_size = 20 * MTAHud.Config.ScrRatio
+	local vault_icon_offset = vault_icon_size * 0.5
+
 	return {
 		Draw = function()
 			local yaw = -EyeAngles().y
@@ -1196,8 +1199,8 @@ local function Map()
 				surface.SetMaterial(vault_icon)
 				for _, vault in ipairs(find_by_class("mta_vault")) do
 				 	local px, py = GetMapDrawPos(lp_pos, vault:GetPos())
-				 	if px < MapW - 5 and py < MapH - 5 then
-				 		surface.DrawTexturedRect(px - 5, py - 5, 20, 20)
+				 	if px < MapW - vault_icon_offset and py < MapH - vault_icon_offset then
+				 		surface.DrawTexturedRect(px - vault_icon_offset, py - vault_icon_offset, vault_icon_size, vault_icon_size)
 					end
 				end
 
