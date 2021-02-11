@@ -414,7 +414,7 @@ end
 
 local function DoNotice()
 
-	local text = "Your " .. (MTACars.LastCarName or "car") .. " is waiting outside the garage."
+	local text = "Your car is waiting outside the garage."
 	hook.Add("HUDPaint", tag, function()
 
 		surface.SetFont("DermaLarge")
