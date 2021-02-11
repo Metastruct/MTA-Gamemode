@@ -153,7 +153,7 @@ local function SetupGarage()
 		function ent:CanProperty() return false end
 
 		if data.parentName then
-			local parent = ents.FindByName("grgcl")[1]
+			local parent = ents.FindByName(data.parentName)[1]
 			if not IsValid(parent) then return end
 
 			ent:SetPos(parent:GetPos())
@@ -221,7 +221,7 @@ end
 net.Receive(tag, function(len, ply)
 	if not IsValid(ply) then return end
 	if not ply._inCarDeal then
-		print(ply, "Requested car dealer without using the NPC first?") 
+		print(ply, "Requested car dealer without using the NPC first?")
 		return
 	end
 	ply._inCarDeal = nil
@@ -257,7 +257,7 @@ hook.Add("CanPlayerEnterVehicle", tag, function(ply, car)
 	if not car.fphysSeat then return end
 
 	local veh = car.base
-	if not base then return end
+	if not veh then return end
 
 	--If the renter has not entered this vehicle yet, no one else can
 	if not veh.FreeForAll and ply ~= veh.Renter then
