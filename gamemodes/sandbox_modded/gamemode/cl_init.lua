@@ -9,6 +9,10 @@ function GM:MTAInitialized()
 	derma.RefreshSkins()
 	MTA_COLOR_HACK()
 	hook.Add("ForceDermaSkin", "MTA_GM", function() return "MTA" end)
+
+	--'DefaultBold' isn't a valid font, breaks votes and votekicks for many people.
+	--Add default font to fix GVote, Otherwise no issues.
+	surface.CreateFont("DefaultBold", {})
 end
 
 --[[function GM:OnSpawnMenuOpen()
