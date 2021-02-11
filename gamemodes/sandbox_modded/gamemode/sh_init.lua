@@ -65,6 +65,12 @@ if SERVER then
 			["role"] = "dealer",
 		},
 		{
+			["ang"] = Angle(0, -63, 0),
+			["pos"] = Vector(-1586, 5550, 5416),
+			["class"] = "lua_npc",
+			["role"] = "car_dealer",
+		},
+		{
 			["ang"] = Angle(0, 0, 0),
 			["pos"] = Vector(3904, 7282, 5510),
 			["class"] = "mta_vault",
