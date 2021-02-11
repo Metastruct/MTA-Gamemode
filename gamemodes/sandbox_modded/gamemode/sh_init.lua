@@ -133,6 +133,10 @@ if SERVER then
 			ent:SetAngles(data.ang)
 			ent.role = data.role
 			ent:Spawn()
+
+			if data.role and data.class == "lua_npc" then
+				ent:SetNWString("npc_role", data.role)
+			end
 			--ent:DropToFloor()
 		end
 	end
