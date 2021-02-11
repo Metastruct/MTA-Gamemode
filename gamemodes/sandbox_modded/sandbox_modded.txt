@@ -4,4 +4,17 @@
 	"title"		"MTA"
 	"maps"		"rp_unioncity"
 	"menusystem"	"0"
+
+	"settings"
+	{
+		1
+		{
+			"name"		"sbox_godmode"
+			"text"		"allow_god_mode"
+			"help"		"If enabled, all players will be invincible"
+			"type"		"CheckBox"
+			"default"	"0"
+			"singleplayer" "0"
+		}
+	}
 }

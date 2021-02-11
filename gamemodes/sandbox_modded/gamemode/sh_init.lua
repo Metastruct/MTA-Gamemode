@@ -19,9 +19,6 @@ if SERVER then
 		game.ConsoleCommand("pac_sv_projectiles 0\n")
 	end
 
-	game.ConsoleCommand("sbox_godmode 0\n")
-	game.ConsoleCommand("sv_allowcslua 0\n")
-
 	local hooks = {
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
 		"PlayerSpawnSENT", "PlayerSpawnSWEP", "PlayerSpawnVehicle", "PlayerNoClip", "PlayerGiveSWEP",
@@ -157,6 +154,9 @@ if SERVER then
 		"RDM RDM RDM"
 	}
 	local function set_custom_hostname()
+		game.ConsoleCommand("sv_gamename_override MTA\n")
+		game.ConsoleCommand("sv_allowcslua 0\n")
+
 		if not _G.hostname then return end
 		local slogan = slogans[math.random(#slogans)]
 		_G.hostname(("Meta Theft Auto WIP - %s"):format(slogan))
