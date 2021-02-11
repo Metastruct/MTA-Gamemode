@@ -6,6 +6,8 @@ if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
 	resource.AddFile("materials/vgui/mta_hud/vault_icon.png")
 	resource.AddFile("materials/vgui/mta_hud/dealer_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/business_icon.png")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
 	return
@@ -1163,8 +1165,16 @@ local function Map()
 	local find_by_class = ents.FindByClass
 	local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
+	local vehicle_icon = Material("vgui/mta_hud/vehicle_icon.png")
+	local unknown_role_icon = Material("vgui/mta_hud/business_icon.png")
 	local icon_size = 30 * MTAHud.Config.ScrRatio
 	local icon_offset = icon_size * 0.5
+
+	--this is icons based of the npc role
+	local known_npc_icons = {
+		["dealer"] = dealer_icon,
+		["car_dealer"] = vehicle_icon,
+	}
 
 	local function DrawMapObjects(origin)
 		surface.SetMaterial(vault_icon)
@@ -1178,11 +1188,16 @@ local function Map()
 		end
 
 		for _, npc in ipairs(find_by_class("lua_npc")) do
-			if not IsValid(npc) or not npc:GetNWBool("MTADealer") then continue end
+			if not IsValid(npc) then continue end  --or not npc:GetNWBool("MTADealer") then continue end
 
+			local role = npc:GetNWString("npc_role", "_bad")
+			if role == "_bad" then continue end
+
+			--grab the npc role icon or default to "unknown role" to always display an npc with a role
+			local icon = known_npc_icons[role] or unknown_role_icon
 			local px, py = GetMapDrawPos(origin, npc:GetPos())
 			if px < MapW - icon_offset and py < MapH - icon_offset then
-				surface.SetMaterial(dealer_icon)
+				surface.SetMaterial(icon)
 				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
 			end
 		end
