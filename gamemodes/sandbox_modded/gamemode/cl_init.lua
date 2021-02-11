@@ -143,6 +143,13 @@ language.Add("weapon_striderbuster", "Striderbuster")
 language.Add("npc_grenade_frag", "Grenade")
 language.Add("npc_bullseye", "Bullseye")
 language.Add("weapon_alyxgun", "Alyx gun")
+language.Add("lua_npc", "Dealer")
+language.Add("lua_npc_wander", "") -- dont show because only inflictor is relevant, it gets confusing
+language.Add("mta_vault", "Vault")
+language.Add("mta_jukebox", "Jukebox")
+language.Add("mta_riot_shield", "Riot Shield")
+language.Add("mta_teleporter_area", "Teleporter")
+language.Add("mta_skills_computer", "Computer")
 
 -- And some more
 local trans = {
