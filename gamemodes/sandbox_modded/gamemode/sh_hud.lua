@@ -6,7 +6,7 @@ if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
 	resource.AddFile("materials/vgui/mta_hud/vault_icon.png")
 	resource.AddFile("materials/vgui/mta_hud/dealer_icon.png")
-	resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/car_dealer_icon.png")
 	resource.AddFile("materials/vgui/mta_hud/business_icon.png")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
@@ -1165,7 +1165,7 @@ local function Map()
 	local find_by_class = ents.FindByClass
 	local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
-	local vehicle_icon = Material("vgui/mta_hud/vehicle_icon.png")
+	local vehicle_icon = Material("vgui/mta_hud/car_dealer_icon.png")
 	local unknown_role_icon = Material("vgui/mta_hud/business_icon.png")
 	local icon_size = 30 * MTAHud.Config.ScrRatio
 	local icon_offset = icon_size * 0.5
