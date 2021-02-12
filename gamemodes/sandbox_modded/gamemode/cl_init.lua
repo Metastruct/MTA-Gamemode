@@ -150,6 +150,7 @@ language.Add("mta_jukebox", "Jukebox")
 language.Add("mta_riot_shield", "Riot Shield")
 language.Add("mta_teleporter_area", "Teleporter")
 language.Add("mta_skills_computer", "Computer")
+language.Add("func_tracktrain", "Train")
 
 -- And some more
 local trans = {
