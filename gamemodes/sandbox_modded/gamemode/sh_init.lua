@@ -122,6 +122,21 @@ if SERVER then
 			["pos"] = Vector(966, 7508, 5550),
 			["class"] = "mta_riot_shield_table",
 		},
+		{
+			["ang"] = Angle(0, 0, 0),
+			["pos"] = Vector (1369, 8447, 5605),
+			["class"] = "mta_vault"
+		},
+		{
+			["ang"] = Angle(0, 0, 0),
+			["pos"] = Vector (-4382, -1918, 5424),
+			["class"] = "mta_vault"
+		},
+		{
+			["ang"] = Angle(0, 180, 0),
+			["pos"] = Vector (-3633, -4745, 5296),
+			["class"] = "mta_vault"
+		}
 	}
 
 	local function spawn_ents()
