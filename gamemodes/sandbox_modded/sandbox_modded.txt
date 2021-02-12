@@ -16,5 +16,13 @@
 			"default"	"0"
 			"singleplayer" "0"
 		}
+		2
+		{
+			"name"		"sbox_maxnpcs"
+			"text"		"max_npcs"
+			"help"		"Maximum NPCs a single player can create"
+			"type"		"Numeric"
+			"default"	"1000"
+		}
 	}
 }
