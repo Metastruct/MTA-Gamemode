@@ -191,7 +191,10 @@ if SERVER then
 				nodes = navmesh.GetAllNavAreas()
 				node_poses = {}
 				for _, node in pairs(nodes) do
-					table.insert(node_poses, node:GetCenter())
+					local pos = node:GetCenter()
+					if pos.z > 4800 then
+						table.insert(node_poses, pos)
+					end
 				end
 			end
 
@@ -202,9 +205,6 @@ if SERVER then
 			local wanders = ents.FindByClass("lua_npc_wander")
 			if #wanders < max_wanders then
 				local node = nodes[math.random(#nodes)]
-				local pos = node:GetCenter()
-				if pos.z <= subway_z then return end
-
 				local wander = ents.Create("lua_npc_wander")
 				wander:SetPos(node:GetCenter())
 				wander:Spawn()
