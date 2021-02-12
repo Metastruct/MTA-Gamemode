@@ -160,6 +160,7 @@ if SERVER then
 	local function set_custom_hostname()
 		game.ConsoleCommand("sv_gamename_override MTA\n")
 		game.ConsoleCommand("sv_allowcslua 0\n")
+		game.ConsoleCommand("sbox_maxnpcs 1000")
 
 		if not _G.hostname then return end
 		local slogan = slogans[math.random(#slogans)]
