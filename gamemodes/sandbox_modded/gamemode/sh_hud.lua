@@ -1194,34 +1194,33 @@ local function Map()
 	local function DrawMapObjects(origin)
 		surface.SetMaterial(vault_icon)
 		for _, vault in ipairs(find_by_class("mta_vault")) do
-			if not IsValid(vault) then continue end
-
-			local px, py = GetMapDrawPos(origin, vault:GetPos())
-			if px < MapW - icon_offset and py < MapH - icon_offset then
-				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+			if IsValid(vault) then
+				local px, py = GetMapDrawPos(origin, vault:GetPos())
+				if px < MapW - icon_offset and py < MapH - icon_offset then
+					surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+				end
 			end
 		end
 
 		for _, npc in ipairs(find_by_class("lua_npc")) do
-			if not IsValid(npc) then continue end
-
-			local role = npc:GetNWString("npc_role", "_bad")
-			if npc_black_list[role] then continue end
-
-			-- Grab the npc role icon or default to "unknown role" to always display an npc with a role
-			local icon = known_npc_icons[role] or unknown_role_icon
-			local px, py = GetMapDrawPos(origin, npc:GetPos())
-			if px < MapW - icon_offset and py < MapH - icon_offset then
-				surface.SetMaterial(icon)
-				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+			if IsValid(npc) then
+				local role = npc:GetNWString("npc_role", "_bad")
+				if not npc_black_list[role] then
+					-- Grab the npc role icon or default to "unknown role" to always display an npc with a role
+					local icon = known_npc_icons[role] or unknown_role_icon
+					local px, py = GetMapDrawPos(origin, npc:GetPos())
+					if px < MapW - icon_offset and py < MapH - icon_offset then
+						surface.SetMaterial(icon)
+						surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+					end
+				end
 			end
 		end
 
 		-- Draw your vehicle on the map
 		if MTACars then
 			local curVehicle = MTACars.CurrentVehicle
-
-			if IsValid(curVehicle) then
+			if IsValid(curVehicle) and curVehicle:GetDriver() ~= LocalPlayer() then
 				local px, py = GetMapDrawPos(origin, curVehicle:GetPos())
 				if px < MapW - veh_icon_offset and py < MapH - veh_icon_offset then
 					surface.SetMaterial(vehicle_icon)
