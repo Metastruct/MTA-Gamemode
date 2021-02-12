@@ -204,6 +204,10 @@ if SERVER then
 				local wander = ents.Create("lua_npc_wander")
 				wander:SetPos(node:GetCenter())
 				wander:Spawn()
+
+				function wander:OnStuck()
+					SafeRemoveEntity(self)
+				end
 			end
 		end)
 
