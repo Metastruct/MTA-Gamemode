@@ -6,8 +6,14 @@ if SERVER then
 	resource.AddFile("materials/vgui/mta_hud/ammobg.vmt")
 	resource.AddFile("materials/vgui/mta_hud/vault_icon.png")
 	resource.AddFile("materials/vgui/mta_hud/dealer_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/business_icon.png")
 	resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 	resource.AddFile("resource/fonts/orbitron black.ttf")
+
+	-- MTACars
+	resource.AddFile("materials/vgui/mta_hud/garage_icon.png")
+	resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
+
 	return
 end
 
@@ -1163,8 +1169,27 @@ local function Map()
 	local find_by_class = ents.FindByClass
 	local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
 	local vault_icon = Material("vgui/mta_hud/vault_icon.png")
+	local car_dealer_icon = Material("vgui/mta_hud/garage_icon.png")
+	local vehicle_icon = Material("vgui/mta_hud/vehicle_icon.png")
+	local unknown_role_icon = Material("vgui/mta_hud/business_icon.png")
+
 	local icon_size = 30 * MTAHud.Config.ScrRatio
 	local icon_offset = icon_size * 0.5
+
+	-- Scale it up a bit since it looks smaller then the other icons
+	local veh_icon_size = icon_size * 1.5
+	local veh_icon_offset = icon_offset * 1.5
+
+	-- This is icons based of the npc role
+	local known_npc_icons = {
+		["dealer"] = dealer_icon,
+		["car_dealer"] = car_dealer_icon,
+	}
+
+	-- If you want to blacklist your npc from the map, perhaps "secret" npc
+	local npc_black_list = {
+		["_bad"] = true, -- Default return for npc without role
+	}
 
 	local function DrawMapObjects(origin)
 		surface.SetMaterial(vault_icon)
@@ -1178,12 +1203,30 @@ local function Map()
 		end
 
 		for _, npc in ipairs(find_by_class("lua_npc")) do
-			if not IsValid(npc) or not npc:GetNWBool("MTADealer") then continue end
+			if not IsValid(npc) then continue end
 
+			local role = npc:GetNWString("npc_role", "_bad")
+			if npc_black_list[role] then continue end
+
+			-- Grab the npc role icon or default to "unknown role" to always display an npc with a role
+			local icon = known_npc_icons[role] or unknown_role_icon
 			local px, py = GetMapDrawPos(origin, npc:GetPos())
 			if px < MapW - icon_offset and py < MapH - icon_offset then
-				surface.SetMaterial(dealer_icon)
+				surface.SetMaterial(icon)
 				surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+			end
+		end
+
+		-- Draw your vehicle on the map
+		if MTACars then
+			local curVehicle = MTACars.CurrentVehicle
+
+			if IsValid(curVehicle) then
+				local px, py = GetMapDrawPos(origin, curVehicle:GetPos())
+				if px < MapW - veh_icon_offset and py < MapH - veh_icon_offset then
+					surface.SetMaterial(vehicle_icon)
+					surface.DrawTexturedRect(px - veh_icon_offset, py - veh_icon_offset, veh_icon_size, veh_icon_size)
+				end
 			end
 		end
 	end
