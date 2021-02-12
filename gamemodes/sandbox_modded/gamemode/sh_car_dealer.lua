@@ -200,6 +200,10 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 		car:SetColor(color)
 	end
 
+	if skin then
+		car:SetSkin(skin)
+	end
+
 	for id, group in pairs(modParts) do
 		car:SetBodygroup(id, group)
 	end
