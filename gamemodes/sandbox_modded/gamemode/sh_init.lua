@@ -178,7 +178,7 @@ if SERVER then
 	end
 
 	local max_wanders = 40
-	local subway_z = 4800
+	local subway_z = 5000
 	function GM:InitPostEntity()
 		spawn_ents()
 
@@ -192,7 +192,7 @@ if SERVER then
 				node_poses = {}
 				for _, node in pairs(nodes) do
 					local pos = node:GetCenter()
-					if pos.z > 4800 then
+					if pos.z > subway_z then
 						table.insert(node_poses, pos)
 					end
 				end
