@@ -166,6 +166,23 @@ if SERVER then
 		spawn_ents()
 	end
 
+	-- the gamemode config isnt enough to set these sadly
+	local cvars_to_set = {
+		sv_gamename_override = "MTA",
+		sv_allowcslua = "0",
+		sbox_maxnpcs = "1000",
+		sbox_godmode = "0",
+	}
+	local function set_cvars()
+		for cvar_name, value in pairs(cvars_to_set) do
+			game.ConsoleCommand(("%s %s\n"):format(cvar_name, value))
+		end
+	end
+
+	function GM:Initialize()
+		set_cvars()
+	end
+
 	local slogans = {
 		"Almost like DarkRP",
 		"PayDay 3",
@@ -179,10 +196,7 @@ if SERVER then
 		"RDM RDM RDM"
 	}
 	local function set_custom_hostname()
-		game.ConsoleCommand("sv_gamename_override MTA\n")
-		game.ConsoleCommand("sv_allowcslua 0\n")
-		game.ConsoleCommand("sbox_maxnpcs 1000\n")
-
+		set_cvars()
 		if not _G.hostname then return end
 		local slogan = slogans[math.random(#slogans)]
 		_G.hostname(("Meta Theft Auto WIP - %s"):format(slogan))
