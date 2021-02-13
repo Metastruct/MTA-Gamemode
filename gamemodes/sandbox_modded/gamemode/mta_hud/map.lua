@@ -144,10 +144,10 @@ return {
 
         local mat = Matrix()
 
-        mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and -0.08 or 0.08)
+        mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
 
-        MatVec.x = (MTAHud.Config.HudPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
-        MatVec.y = (MTAHud.Config.HudPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
+        MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
+        MatVec.y = (MTAHud.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
         mat:SetTranslation(MatVec)
 
