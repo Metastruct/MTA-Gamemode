@@ -5,6 +5,14 @@ local mat_vec = Vector()
 
 local mat = Matrix()
 
+surface.CreateFont("MTADrillFont", {
+	font = "Orbitron",
+	size = 26 * MTAHud.Config.ScrRatio,
+	weight = 600,
+	shadow = false,
+	extended = true,
+})
+
 return function()
 	local vault = LocalPlayer():GetNWEntity("MTAVault", NULL)
 	if not IsValid(vault) then return end
@@ -27,7 +35,7 @@ return function()
 
 	surface.SetTextColor(white_color)
 	surface.SetTextPos(x + 10 * coef, y + (4 * MTAHud.Config.ScrRatio))
-	surface.SetFont("MTALargeFont")
+	surface.SetFont("MTADrillFont")
 	surface.DrawText("/// DRILL PROGRESS ///")
 
 	local perc = vault:GetNWInt("DrillingProgress", 0)
