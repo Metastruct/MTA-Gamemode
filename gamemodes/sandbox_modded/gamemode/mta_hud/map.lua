@@ -1,6 +1,6 @@
 local FindByClass = ents.FindByClass
 local DealerIcon = Material("vgui/mta_hud/dealer_icon.png")
-local vault_icon = Material("vgui/mta_hud/vault_icon.png")
+local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
 local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
 local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
 local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
@@ -44,6 +44,7 @@ local PlayerTriangle = {
     { x = 7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio }
 }
 
+local Mat = Matrix()
 local MatVec = Vector()
 
 local function GetMapTexturePos(pos)
@@ -99,7 +100,7 @@ local function RotatePoly(poly, angle, ox, oy)
 end
 
 local function DrawMapObjects(origin)
-    surface.SetMaterial(vault_icon)
+    surface.SetMaterial(VaultIcon)
     for _, vault in ipairs(FindByClass("mta_vault")) do
         if IsValid(vault) then
             local px, py = GetMapDrawPos(origin, vault:GetPos())
@@ -141,16 +142,14 @@ return function()
     local lp_pos = LocalPlayer():GetPos()
     local yaw = -EyeAngles().y
 
-    local mat = Matrix()
-
-    mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
+    Mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
 
     MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
     MatVec.y = (MTAHud.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
-    mat:SetTranslation(MatVec)
+    Mat:SetTranslation(MatVec)
 
-    cam.PushModelMatrix(mat)
+    cam.PushModelMatrix(Mat)
         local rx, ry = GetMapTexturePos(lp_pos)
 
         local startU = (rx - MapZoom) / 1024
