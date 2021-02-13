@@ -32,6 +32,30 @@ MTAHud.UpdateVars = function(self)
 	end
 end
 
+surface.CreateFont("MTAMissionsFont", {
+	font = "Orbitron",
+	size = 20 * MTAHud.Config.ScrRatio,
+	weight = 600,
+	shadow = false,
+	extended = true
+})
+
+surface.CreateFont("MTAMissionsFontDesc", {
+	font = "Alte Haas Grotesk",
+	size = 20 * MTAHud.Config.ScrRatio,
+	weight = 600,
+	shadow = false,
+	extended = true
+})
+
+surface.CreateFont("MTAMissionsFontTitle", {
+	font = "Alte Haas Grotesk",
+	size = 30 * MTAHud.Config.ScrRatio,
+	weight = 600,
+	shadow = false,
+	extended = true
+})
+
 MTAHud.Components = {}
 MTAHud.DrawComponents = function(self)
 	for k, v in pairs(self.Components) do
