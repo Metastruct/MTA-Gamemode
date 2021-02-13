@@ -66,6 +66,7 @@ if SERVER then
 			["pos"] = Vector(-1586, 5550, 5416),
 			["class"] = "lua_npc",
 			["role"] = "car_dealer",
+			["model"] = "models/odessa.mdl",
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
@@ -148,6 +149,11 @@ if SERVER then
 			ent:SetAngles(data.ang)
 			ent.role = data.role
 			ent:Spawn()
+
+			-- not allowed to set before npc spawn, after it works though
+			if data.model then
+				ent:SetModel(data.model)
+			end
 
 			if data.role and data.class == "lua_npc" then
 				ent:SetNWString("npc_role", data.role)
