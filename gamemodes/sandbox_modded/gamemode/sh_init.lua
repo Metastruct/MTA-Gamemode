@@ -247,6 +247,22 @@ if SERVER then
 				function wander:OnStuck()
 					SafeRemoveEntity(self)
 				end
+
+				local old_think = wander.Think
+				function wander:Think()
+					if self:GetPos().z < subway_z then
+						SafeRemoveEntity(self)
+						return
+					end
+
+					local phys = self:GetPhysicsObject()
+					if IsValid(phys) and phys:IsPenetrating() then
+						SafeRemoveEntity(self)
+						return
+					end
+
+					old_think(self)
+				end
 			end
 		end)
 
