@@ -64,5 +64,5 @@ hook.Add("HUDShouldDraw", "mta_hud", function(element)
 	end
 end)
 
-MTAHud.AddComponent("hud", include("mta_hud/hud.lua"))
-MTAHud.AddComponent("map", include("mta_hud/map.lua"))
+MTAHud:AddComponent("hud", include("mta_hud/hud.lua"))
+MTAHud:AddComponent("map", include("mta_hud/map.lua"))
