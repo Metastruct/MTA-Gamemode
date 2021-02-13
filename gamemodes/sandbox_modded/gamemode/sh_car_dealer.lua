@@ -273,7 +273,7 @@ hook.Add("CanPlayerEnterVehicle", tag, function(ply, car)
 	if not car.fphysSeat then return end
 
 	local veh = car.base
-	if not veh then return end
+	if not veh or not veh.IsMTACar then return end
 
 	--If the renter has not entered this vehicle yet, no one else can
 	if not veh.FreeForAll and ply ~= veh.Renter then
