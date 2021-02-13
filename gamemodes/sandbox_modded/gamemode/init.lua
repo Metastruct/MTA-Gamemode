@@ -2,6 +2,7 @@ IS_MTA_GMA = true
 
 AddCSLuaFile("sh_init.lua")
 AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_outlines.lua")
 AddCSLuaFile("sh_daily_challenges.lua")
 AddCSLuaFile("sh_gunstore.lua")
 AddCSLuaFile("sh_car_dealer.lua")
