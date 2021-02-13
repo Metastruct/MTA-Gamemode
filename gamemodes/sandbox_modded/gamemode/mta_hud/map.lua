@@ -44,9 +44,6 @@ local PlayerTriangle = {
     { x = 7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio }
 }
 
-local Mat = Matrix()
-local MatVec = Vector()
-
 local function GetMapTexturePos(pos)
     local pxD = 1024 / 2
     local pyD = 1024 / 2
@@ -138,10 +135,43 @@ local function DrawMapObjects(origin)
     end
 end
 
-return function()
+if IsValid(MTAHud.Vars.MapPanel) then MTAHud.Vars.MapPanel:Remove() end
+
+MTAHud.Vars.MapPanel = vgui.Create("Panel")
+MTAHud.Vars.MapPanel:SetSize(MapW, MapH)
+MTAHud.Vars.MapPanel:SetPaintedManually(true)
+MTAHud.Vars.MapPanel:SetKeyboardInputEnabled(false)
+MTAHud.Vars.MapPanel:SetMouseInputEnabled(false)
+MTAHud.Vars.MapPanel.Paint = function(self, w, h)
     local lp_pos = LocalPlayer():GetPos()
     local yaw = -EyeAngles().y
 
+    local rx, ry = GetMapTexturePos(lp_pos)
+
+    local startU = (rx - MapZoom) / 1024
+    local startV = (ry - MapZoom) / 1024
+    local endU = (rx + MapZoom) / 1024
+    local endV = (ry + MapZoom) / 1024
+
+    surface.SetMaterial(MapImage)
+    surface.SetDrawColor(255, 255, 255, 180)
+    surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
+
+    DrawMapObjects(lp_pos)
+
+    local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
+    tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
+    draw.NoTexture()
+    surface.DrawPoly(tri)
+
+    surface.SetDrawColor(244, 135, 2)
+    surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+end
+
+local Mat = Matrix()
+local MatVec = Vector()
+
+return function()
     Mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
 
     MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
@@ -150,26 +180,7 @@ return function()
     Mat:SetTranslation(MatVec)
 
     cam.PushModelMatrix(Mat)
-        local rx, ry = GetMapTexturePos(lp_pos)
-
-        local startU = (rx - MapZoom) / 1024
-        local startV = (ry - MapZoom) / 1024
-        local endU = (rx + MapZoom) / 1024
-        local endV = (ry + MapZoom) / 1024
-
-        surface.SetMaterial(MapImage)
-        surface.SetDrawColor(255, 255, 255, 180)
-        surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
-
-        DrawMapObjects(lp_pos)
-
-        local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
-        tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
-        draw.NoTexture()
-        surface.DrawPoly(tri)
-
-        surface.SetDrawColor(244, 135, 2)
-        surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+        MTAHud.Vars.MapPanel:PaintManual()
 
         surface.SetMaterial(DoshIcon)
         surface.SetDrawColor(255, 255, 255, 180)
