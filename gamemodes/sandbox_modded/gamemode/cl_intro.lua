@@ -181,14 +181,6 @@ local phases = {
 	}
 }
 
-surface.CreateFont("MTAIntroFont", {
-	font = "Alte Haas Grotesk",
-	size = 32 * MTAHud.Config.ScrRatio,
-	weight = 600,
-	shadow = false,
-	extended = true,
-})
-
 local cur_phase = phases[1]
 local cur_index = 1
 
@@ -245,6 +237,14 @@ local next_space = 0
 local station
 local url = "https://cdn.zeni.space/meta/song_8%2eogg"
 local function init_intro()
+	surface.CreateFont("MTAIntroFont", {
+		font = "Alte Haas Grotesk",
+		size = 32 * MTAHud.Config.ScrRatio,
+		weight = 600,
+		shadow = false,
+		extended = true,
+	})
+
 	cur_phase.start() -- first one
 
 	sound.PlayURL(url, "noblock", function(music)
