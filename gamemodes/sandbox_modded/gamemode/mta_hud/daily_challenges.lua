@@ -61,7 +61,8 @@ return {
 		surface.SetFont("MTAMissionsFontTitle")
 		surface.DrawText("DAILY CHALLENGES")
 
-		for i, mission_id in pairs(selected_mission_ids) do
+		local i = 1
+		for _, mission_id in pairs(selected_mission_ids) do
 			local mission = MTADailyChallenges.BaseChallenges[mission_id]
 			local progress = MTADailyChallenges.GetProgress(LocalPlayer(), mission_id)
 			if progress < mission.Completion then
@@ -87,6 +88,8 @@ return {
 
 				surface.SetDrawColor(orange_color)
 				surface.DrawLine(x - margin, y + 45 * screen_ratio, x + width - margin, y + 45 * screen_ratio)
+
+				i = i + 1
 			end
 		end
 
