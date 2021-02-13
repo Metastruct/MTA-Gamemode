@@ -135,7 +135,7 @@ local function SetupGarage()
 		door2:Fire("Lock")
 	end
 
-	local lift = ents.FindByClass("grgcl")[1]
+	local lift = ents.FindByName("grgcl")[1]
 	if IsValid(lift) then
 		lift:Fire("Lock")
 	end
