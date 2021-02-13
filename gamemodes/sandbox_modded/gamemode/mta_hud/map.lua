@@ -137,50 +137,48 @@ local function DrawMapObjects(origin)
     end
 end
 
-return {
-    Draw = function()
-        local lp_pos = LocalPlayer():GetPos()
-        local yaw = -EyeAngles().y
+return function()
+    local lp_pos = LocalPlayer():GetPos()
+    local yaw = -EyeAngles().y
 
-        local mat = Matrix()
+    local mat = Matrix()
 
-        mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
+    mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
 
-        MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
-        MatVec.y = (MTAHud.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
+    MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
+    MatVec.y = (MTAHud.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
-        mat:SetTranslation(MatVec)
+    mat:SetTranslation(MatVec)
 
-        cam.PushModelMatrix(mat)
-            local rx, ry = GetMapTexturePos(lp_pos)
+    cam.PushModelMatrix(mat)
+        local rx, ry = GetMapTexturePos(lp_pos)
 
-            local startU = (rx - MapZoom) / 1024
-            local startV = (ry - MapZoom) / 1024
-            local endU = (rx + MapZoom) / 1024
-            local endV = (ry + MapZoom) / 1024
+        local startU = (rx - MapZoom) / 1024
+        local startV = (ry - MapZoom) / 1024
+        local endU = (rx + MapZoom) / 1024
+        local endV = (ry + MapZoom) / 1024
 
-            surface.SetMaterial(MapImage)
-            surface.SetDrawColor(255, 255, 255, 180)
-            surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
+        surface.SetMaterial(MapImage)
+        surface.SetDrawColor(255, 255, 255, 180)
+        surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
 
-            DrawMapObjects(lp_pos)
+        DrawMapObjects(lp_pos)
 
-            local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
-            tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
-            draw.NoTexture()
-            surface.DrawPoly(tri)
+        local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
+        tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
+        draw.NoTexture()
+        surface.DrawPoly(tri)
 
-            surface.SetDrawColor(244, 135, 2)
-            surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+        surface.SetDrawColor(244, 135, 2)
+        surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
 
-            surface.SetMaterial(DoshIcon)
-            surface.SetDrawColor(255, 255, 255, 180)
-            surface.DrawTexturedRect(0, MapH + (10 * MTAHud.Config.ScrRatio), IconSize, IconSize)
+        surface.SetMaterial(DoshIcon)
+        surface.SetDrawColor(255, 255, 255, 180)
+        surface.DrawTexturedRect(0, MapH + (10 * MTAHud.Config.ScrRatio), IconSize, IconSize)
 
-            surface.SetFont("MTAMissionsFontDesc")
-            surface.SetTextColor(WhiteColor)
-            surface.SetTextPos(IconSize + (10 * MTAHud.Config.ScrRatio), MapH + (12 * MTAHud.Config.ScrRatio))
-            surface.DrawText(MTA.GetPlayerStat("points"))
-        cam.PopModelMatrix()
-    end
-}
+        surface.SetFont("MTAMissionsFontDesc")
+        surface.SetTextColor(WhiteColor)
+        surface.SetTextPos(IconSize + (10 * MTAHud.Config.ScrRatio), MapH + (12 * MTAHud.Config.ScrRatio))
+        surface.DrawText(MTA.GetPlayerStat("points"))
+    cam.PopModelMatrix()
+end
