@@ -32,6 +32,16 @@ if SERVER then
 		end
 	end
 
+	-- hack to spawn people in the hospital
+	local hospital_entry = Vector (-5716, -1462, 5416)
+	function GM:CanPlyRespawn(ply, transition)
+		player_manager.SetPlayerClass(ply, "player_sandbox")
+		self.BaseClass.PlayerSpawn(self, ply, transition)
+
+		local rand_pos = hospital_entry + Vector(0, math.random(-500, 500), 0)
+		ply:SetPos(rand_pos)
+	end
+
 	function GM:PlayerLoadout(ply)
 		if ply:IsAdmin() then
 			ply:Give("weapon_physgun")
