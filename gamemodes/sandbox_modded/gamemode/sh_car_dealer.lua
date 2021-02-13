@@ -180,7 +180,7 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 
 	if not vehicle then return end
 
-	local car = simfphys.SpawnVehicle(ply, vSpawnPos, vSpawnAng, vehicle.Model, vehicle.Class, sim, vehicle)
+	local car = simfphys.SpawnVehicle(ply, vSpawnPos, vSpawnAng, vehicle.Model, vehicle.Class, sim, vehicle, true)
 	if not IsValid(car) then return end
 
 	--checks say it's good! let's take those points
@@ -198,6 +198,10 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 
 	if color then
 		car:SetColor(color)
+	end
+
+	if skin then
+		car:SetSkin(skin)
 	end
 
 	for id, group in pairs(modParts) do
