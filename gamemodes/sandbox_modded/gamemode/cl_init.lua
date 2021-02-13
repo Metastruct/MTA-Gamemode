@@ -3,7 +3,7 @@ include("sh_gunstore.lua")
 include("sh_car_dealer.lua")
 include("cl_car_dealer.lua")
 
-include("mta_hud/cl_hud.lua")
+include("cl_hud.lua")
 
 function GM:MTAInitialized()
 	hook.Remove("ForceDermaSkin", "derma_skin_metastruct")
