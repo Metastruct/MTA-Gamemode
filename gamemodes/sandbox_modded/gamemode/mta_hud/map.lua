@@ -101,9 +101,7 @@ local function DrawMapObjects(origin)
     for _, vault in ipairs(FindByClass("mta_vault")) do
         if IsValid(vault) then
             local px, py = GetMapDrawPos(origin, vault:GetPos())
-            if px < MapW - IconOffset and py < MapH - IconOffset then
-                surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
-            end
+            surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
         end
     end
 
@@ -114,10 +112,8 @@ local function DrawMapObjects(origin)
                 -- Grab the npc role icon or default to "unknown role" to always display an npc with a role
                 local icon = KnownNpcIcons[role] or UnknownRoleIcon
                 local px, py = GetMapDrawPos(origin, npc:GetPos())
-                if px < MapW - IconOffset and py < MapH - IconOffset then
-                    surface.SetMaterial(icon)
-                    surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
-                end
+                surface.SetMaterial(icon)
+                surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
             end
         end
     end
@@ -127,10 +123,8 @@ local function DrawMapObjects(origin)
         local curVehicle = MTACars.CurrentVehicle
         if IsValid(curVehicle) and curVehicle:GetDriver() ~= LocalPlayer() then
             local px, py = GetMapDrawPos(origin, curVehicle:GetPos())
-            if px < MapW - VehicleIconOffset and py < MapH - VehicleIconOffset then
-                surface.SetMaterial(VehicleIcon)
-                surface.DrawTexturedRect(px - VehicleIconOffset, py - VehicleIconOffset, VehicleIconSize, VehicleIconSize)
-            end
+            surface.SetMaterial(VehicleIcon)
+            surface.DrawTexturedRect(px - VehicleIconOffset, py - VehicleIconOffset, VehicleIconSize, VehicleIconSize)
         end
     end
 end
@@ -155,17 +149,17 @@ MTAHud.Vars.MapPanel.Paint = function(self, w, h)
 
     surface.SetMaterial(MapImage)
     surface.SetDrawColor(255, 255, 255, 180)
-    surface.DrawTexturedRectUV(0, 0, MapW, MapH, startU, startV, endU, endV)
+    surface.DrawTexturedRectUV(0, 0, w, h, startU, startV, endU, endV)
 
     DrawMapObjects(lp_pos)
 
-    local tri = TranslatePoly(PlayerTriangle, MapW / 2, MapH / 2 - (10 * MTAHud.Config.ScrRatio))
-    tri = RotatePoly(tri, yaw, MapW / 2, MapH / 2)
+    local tri = TranslatePoly(PlayerTriangle, w / 2, h / 2 - (10 * MTAHud.Config.ScrRatio))
+    tri = RotatePoly(tri, yaw, w / 2, h / 2)
     draw.NoTexture()
     surface.DrawPoly(tri)
 
     surface.SetDrawColor(244, 135, 2)
-    surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+    surface.DrawOutlinedRect(0, 0, w, h, 2)
 end
 
 local Mat = Matrix()
