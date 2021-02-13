@@ -23,13 +23,19 @@ if SERVER then
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
 		"PlayerSpawnSENT", "PlayerSpawnSWEP", "PlayerSpawnVehicle", "PlayerNoClip", "PlayerGiveSWEP",
 		"CanSSJump", "AowlGiveAmmo", "CanPlyTeleport", "CanBoxify", "PlayerFly", "CanPlyGoBack",
-		"CanPlyGoto"
 	}
 
 	for _, hook_name in pairs(hooks) do
 		GM[hook_name] = function(gm, ply)
 			return ply:IsAdmin()
 		end
+	end
+
+	function GM:CanPlyGoto(ply, line)
+		local dest = (line or ""):Trim():lower()
+		if aowl and aowl.GotoLocations and aowl.GotoLocations[dest] then return end
+
+		return ply:IsAdmin()
 	end
 
 	-- hack to spawn people in the hospital
