@@ -37,7 +37,7 @@ MTAHud.Components = {}
 MTAHud.DrawComponents = function(self)
 	for name, component in pairs(self.Components) do
 		if hook.Run("MTAHUDShouldDraw", name) ~= false then
-			component:Draw()
+			component()
 		end
 	end
 end
@@ -50,9 +50,6 @@ end
 
 local changed_hit_text_font = false
 hook.Add("HUDPaint", "mta_hud", function()
-	MTAHud:UpdateVars()
-	MTAHud:DrawComponents()
-
 	-- redefine the hit damage font to its in line with the rest of the hud
 	if not changed_hit_text_font then
 		surface.CreateFont("HitTextFont", {
@@ -64,6 +61,9 @@ hook.Add("HUDPaint", "mta_hud", function()
 		})
 		changed_hit_text_font = true
 	end
+
+	MTAHud:UpdateVars()
+	MTAHud:DrawComponents()
 end)
 
 local elements_to_hide = {
