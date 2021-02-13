@@ -23,7 +23,6 @@ local CNextTimer = 0
 local AmNextTimer = 0
 local NNextTimer = 0
 
--- local HpFlashAlpha = 0
 local AmmoLocation = 0
 
 local WeaponNameAlpha = 0
@@ -41,12 +40,7 @@ local ClipAlpha = 255
 local ClipAlphaDir = 0
 local ClipAlphaVel = 0
 
--- local AmmoShakeH = 0
--- local AmmoShakeW = 0
--- local AmmoShakeTime = 0
-
 local AmmoAnimTime = 0
--- local AmmoAnimTime2 = 0
 local AmmoAnimStep = 0
 
 local AmmoFlash = 0
@@ -57,77 +51,82 @@ local ApIcon = surface.GetTextureID("vgui/mta_hud/apicon")
 local SecAmmoIcon = surface.GetTextureID("vgui/mta_hud/secammo")
 local AmmoCountBG = surface.GetTextureID("vgui/mta_hud/ammobg")
 
-local function LoadFonts()
-    surface.CreateFont("Font Ammo", {
-        font = "Alte Haas Grotesk",
-        size = 34 * MTAHud.Config.ScrRatio,
-        weight = 500,
-        blursize = 0,
-        scanlines = 0,
-        antialias = true,
-        underline = false,
-        italic = false,
-        strikeout = false,
-        symbol = false,
-        rotary = false,
-        shadow = false,
-        additive = false,
-        outline = false
-    })
+local WeaponAmmoColor = Color(255, 255, 255)
+local WeaponNameColor = Color(255, 255, 255)
+local WeaponClipColor = Color(0, 0, 0)
+local WeaponClipWhiteColor = Color(255, 255, 255)
+local HpGainColor = Color(255, 255, 255)
+local ApGainColor = Color(255, 255, 255)
+local HealthColor = Color(229, 45, 47, 255)
+local ApColor = Color(49, 194, 213, 255)
 
-    surface.CreateFont("Font Bars", {
-        font = "Alte Haas Grotesk",
-        size = 22 * MTAHud.Config.ScrRatio,
-        weight = 500,
-        blursize = 0,
-        scanlines = 0,
-        antialias = true,
-        underline = false,
-        italic = false,
-        strikeout = false,
-        symbol = false,
-        rotary = false,
-        shadow = false,
-        additive = false,
-        outline = false
-    })
+surface.CreateFont("Font Ammo", {
+    font = "Alte Haas Grotesk",
+    size = 34 * MTAHud.Config.ScrRatio,
+    weight = 500,
+    blursize = 0,
+    scanlines = 0,
+    antialias = true,
+    underline = false,
+    italic = false,
+    strikeout = false,
+    symbol = false,
+    rotary = false,
+    shadow = false,
+    additive = false,
+    outline = false
+})
 
-    surface.CreateFont("Font Name", {
-        font = "Alte Haas Grotesk",
-        size = 26 * MTAHud.Config.ScrRatio,
-        weight = 500,
-        blursize = 0,
-        scanlines = 0,
-        antialias = true,
-        underline = false,
-        italic = false,
-        strikeout = false,
-        symbol = false,
-        rotary = false,
-        shadow = false,
-        additive = false,
-        outline = false
-    })
+surface.CreateFont("Font Bars", {
+    font = "Alte Haas Grotesk",
+    size = 22 * MTAHud.Config.ScrRatio,
+    weight = 500,
+    blursize = 0,
+    scanlines = 0,
+    antialias = true,
+    underline = false,
+    italic = false,
+    strikeout = false,
+    symbol = false,
+    rotary = false,
+    shadow = false,
+    additive = false,
+    outline = false
+})
 
-    surface.CreateFont("Font Clip", {
-        font = "Orbitron",
-        size = 45 * MTAHud.Config.ScrRatio,
-        weight = 500,
-        blursize = 0,
-        scanlines = 0,
-        antialias = true,
-        underline = false,
-        italic = false,
-        strikeout = false,
-        symbol = false,
-        rotary = false,
-        shadow = false,
-        additive = false,
-        outline = false
-    })
-end
+surface.CreateFont("Font Name", {
+    font = "Alte Haas Grotesk",
+    size = 26 * MTAHud.Config.ScrRatio,
+    weight = 500,
+    blursize = 0,
+    scanlines = 0,
+    antialias = true,
+    underline = false,
+    italic = false,
+    strikeout = false,
+    symbol = false,
+    rotary = false,
+    shadow = false,
+    additive = false,
+    outline = false
+})
 
-LoadFonts()
+surface.CreateFont("Font Clip", {
+    font = "Orbitron",
+    size = 45 * MTAHud.Config.ScrRatio,
+    weight = 500,
+    blursize = 0,
+    scanlines = 0,
+    antialias = true,
+    underline = false,
+    italic = false,
+    strikeout = false,
+    symbol = false,
+    rotary = false,
+    shadow = false,
+    additive = false,
+    outline = false
+})
 
 local function CalculateLossTransition(value, name)
     if not Transitions[name].Lost then
@@ -369,8 +368,6 @@ return {
             local Ammo = player:GetAmmoCount(Weapon:GetPrimaryAmmoType())
             local SecAmmo = player:GetAmmoCount(Weapon:GetSecondaryAmmoType())
             local AmmoType = LocalPlayer():GetActiveWeapon():GetPrimaryAmmoType()
-            -- local SecAmmoType = LocalPlayer():GetActiveWeapon():GetSecondaryAmmoType()
-            -- local GrenadeCount = LocalPlayer():GetAmmoCount("grenade")
             local WeaponName = Weapon:GetPrintName()
 
             -- Weapons that doesn't have magazine
@@ -384,21 +381,6 @@ return {
                 Clip = Ammo
                 MaxClip = StoredMaxAmmo[WeaponName]
             end
-
-            -- Location calculation
-
-            -- local AmmoCountLocationW = HealthBarPercentageStartW + (HpBarLength * 2) - (232 * MTAHud.Config.ScrRatio) + (Separated * 4)
-            -- local AmmoCountLocationH = HealthBarPercentageStartH - (59 * MTAHud.Config.ScrRatio)
-
-            -- local AmmoIconW = 256 * MTAHud.Config.ScrRatio
-            -- local AmmoIconH = 64 * MTAHud.Config.ScrRatio
-
-            -- Texture scissor coordinates
-
-            -- AmmoRectStartX = AmmoCountLocationW - (5 * MTAHud.Config.ScrRatio)
-            -- AmmoRectStartY = AmmoCountLocationH + (14 * MTAHud.Config.ScrRatio)
-            -- AmmoRectStopX = AmmoCountLocationW + (232 * MTAHud.Config.ScrRatio)
-            -- AmmoRectStopY = AmmoCountLocationH + (53 * MTAHud.Config.ScrRatio)
 
             -- If custom ammo type, display SMG icon
 
@@ -504,7 +486,6 @@ return {
             -- Step 1: Bullet slash and shading
             if AmmoAnimStep == 1 then
                 AmmoFlash = AmmoFlash + 100
-                AmmoShakeTime = CurTime() + 0.05
                 AmmoLocation = 0
             end
 
@@ -528,7 +509,6 @@ return {
 
             if AmmoAnimStep == 11 then
                 AmmoFlash = AmmoFlash + 100
-                AmmoShakeTime = CurTime() + 0.05
             end
 
             if (CurrentTimer > AmmoAnimTime) and AmmoAnimStep == 11 then
@@ -550,14 +530,8 @@ return {
                 AmmoFade = math.Rand(25, 75)
             end
 
-            -- Ammo shaking coordinates
-
-            -- AmmoShakeW = math.Rand(-150 * MTAHud.Config.ScrRatio, 150 * MTAHud.Config.ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
-            -- AmmoShakeH = math.Rand(-150 * MTAHud.Config.ScrRatio, 150 * MTAHud.Config.ScrRatio) * math.min(CurTime() - AmmoShakeTime, 0)
-
             -- Ammo Counter + weapon name
             WeaponNameAlpha = math.Clamp(WeaponNameAlpha - RealFrameTime() * 250, 0, 250)
-            WeaponNameAlphaFlick = math.random(WeaponNameAlpha - 50, WeaponNameAlpha)
             AmmoAlpha = math.Clamp(AmmoAlpha + RealFrameTime() * 250, 0, 250)
 
             if not WeaponNameNew then
@@ -579,11 +553,14 @@ return {
                 AmmoAlpha = 0
             end
 
+            WeaponAmmoColor.a = AmmoAlpha
+            WeaponNameColor.a = math.random(WeaponNameAlpha - 50, WeaponNameAlpha)
+
             if Ammo > 0 then
                 draw.SimpleText(Ammo, "Font Ammo",
                     HealthBarPercentageStartW + (10 * MTAHud.Config.ScrRatio) + (ClipShakeW / 2),
                     HealthBarPercentageStartH - (43 * MTAHud.Config.ScrRatio) + (ClipShakeH / 2),
-                    Color(255, 255, 255, AmmoAlpha),
+                    WeaponAmmoColor,
                     0,
                     0
                 )
@@ -591,7 +568,7 @@ return {
                 draw.SimpleText("EMPTY", "Font Ammo",
                     HealthBarPercentageStartW + (10 * MTAHud.Config.ScrRatio) + (ClipShakeW / 2),
                     HealthBarPercentageStartH - (43 * MTAHud.Config.ScrRatio) + (ClipShakeH / 2),
-                    Color(255, 255, 255, AmmoAlpha),
+                    WeaponAmmoColor,
                     0,
                     0
                 )
@@ -600,7 +577,7 @@ return {
             draw.SimpleText(WeaponName:upper(), "Font Name",
                 HealthBarPercentageStartW + (8 * MTAHud.Config.ScrRatio),
                 HealthBarPercentageStartH - (39 * MTAHud.Config.ScrRatio),
-                Color(255, 255, 255, WeaponNameAlphaFlick),
+                WeaponNameColor,
                 0,
                 0
             )
@@ -708,12 +685,15 @@ return {
                     ClipContent = "NO"
                 end
 
+                WeaponClipColor.a = ClipAlpha
+                WeaponClipWhiteColor.a = ClipAlpha
+
                 draw.SimpleText(
                     ClipContent,
                     "Font Clip",
                     HealthBarPercentageStartW - 2 + ClipLocation + ClipShakeW + BgClipShakeW,
                     ClipLocationV + (4 * MTAHud.Config.ScrRatio) + ClipShakeH + BgClipShakeH,
-                    Color(0, 0, 0, ClipAlpha),
+                    WeaponClipColor,
                     1,
                     0
                 )
@@ -723,7 +703,7 @@ return {
                         "Font Bars",
                         HealthBarPercentageStartW - 2 + ClipLocation + BgClipShakeW,
                         ClipLocationV + (-17 * MTAHud.Config.ScrRatio) + BgClipShakeH,
-                        Color(255, 255, 255, ClipAlpha),
+                        WeaponClipWhiteColor,
                         1,
                         0
                     )
@@ -762,8 +742,12 @@ return {
         -- Gained health transition
         player.HpGainDifference, HpGainAlpha = CalculateGainTransition(player:Health(), "GainHealth", 100)
 
+        HpGainColor.a = HpGainAlpha
+
         -- Gained Armor transition
         player.ApGainDifference, ApGainAlpha = CalculateGainTransition(player:Armor(), "GainArmor", 0)
+
+        ApGainColor.a = ApGainAlpha
 
         -- Flashing armor background
         local ApBgClr = 250
@@ -935,7 +919,7 @@ return {
                     "Font Bars",
                     HealthBarPercentageStartW + (4 * MTAHud.Config.ScrRatio),
                     HealthBarPercentageStartH + (-3 * MTAHud.Config.ScrRatio),
-                    Color(255, 255, 255, HpGainAlpha),
+                    HpGainColor,
                     0,
                     0
                 )
@@ -947,7 +931,7 @@ return {
                     "Font Bars",
                     HealthBarPercentageStartW + (22 * MTAHud.Config.ScrRatio),
                     HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio),
-                    Color(229, 45, 47, 255),
+                    HealthColor,
                     0,
                     0
                 )
@@ -982,7 +966,7 @@ return {
                         "Font Bars",
                         ApStart + (4 * MTAHud.Config.ScrRatio),
                         HealthBarPercentageStartH + (-3 * MTAHud.Config.ScrRatio),
-                        Color(255, 255, 255, ApGainAlpha),
+                        ApGainColor,
                         0,
                         0
                     )
@@ -994,7 +978,7 @@ return {
                         "Font Bars",
                         math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTAHud.Config.ScrRatio), 100000) + (22 * MTAHud.Config.ScrRatio),
                         HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio),
-                        Color(49, 194, 213, 255),
+                        ApColor,
                         0,
                         0
                     )

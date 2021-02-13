@@ -17,4 +17,4 @@ resource.AddFile("resource/fonts/orbitron black.ttf")
 resource.AddFile("materials/vgui/mta_hud/garage_icon.png")
 resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
 
-resource.AddFile("vgui/mta_hud/points_icon.png")
+resource.AddFile("materials/vgui/mta_hud/points_icon.png")
