@@ -83,11 +83,11 @@ function MTACars.GetPlayerVehicle(ply)
 end
 
 local propCars = {
-	{
-		model = "models/msavehs/msavehicle1.mdl",
-		ang = Angle(0, 0, 0),
-		parentName = "grgcl"
-	},
+	--{
+	--	model = "models/msavehs/msavehicle1.mdl",
+	--	ang = Angle(0, 0, 0),
+	--	parentName = "grgcl"
+	--},
 	{
 		model = "models/msavehs/msavehicle02.mdl",
 		pos = Vector(-1415, 5425, 5410),
@@ -129,8 +129,16 @@ local function SetupGarage()
 		door1:Fire("Lock")
 	end
 
-	--local door2 = ents.FindByName("grgdr2")[1]
-	--if IsValid(door2) then door2:Fire("Lock") end
+	local door2 = ents.FindByName("grgdr2")[1]
+	if IsValid(door2) then
+		door2:Fire("Open")
+		door2:Fire("Lock")
+	end
+
+	local lift = ents.FindByClass("grgcl")[1]
+	if IsValid(lift) then
+		lift:Fire("Lock")
+	end
 
 	for _, data in ipairs(propCars) do
 		local ent = ents.Create("prop_dynamic")
@@ -162,6 +170,10 @@ local function SetupGarage()
 			ent:SetPos(data.pos)
 		end
 	end
+
+	local repair = ents.Create("car_repair_field")
+	repair:SetPos(Vector(-1740, 5305, 5417))
+	repair:Spawn()
 end
 
 hook.Add("InitPostEntity", tag, function()
