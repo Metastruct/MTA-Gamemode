@@ -46,9 +46,22 @@ MTAHud.RemoveComponent = function(self, name)
 	self.Components[name] = nil
 end
 
+local changed_hit_text_font = false
 hook.Add("HUDPaint", "mta_hud", function()
 	MTAHud:UpdateVars()
 	MTAHud:DrawComponents()
+
+	-- redefine the hit damage font to its in line with the rest of the hud
+	if not changed_hit_text_font then
+		surface.CreateFont("HitTextFont", {
+			font = "Orbitron",
+			extended = true,
+			size = 75 * MTAHud.Config.ScrRatio,
+			weight = 400,
+			antialias = true,
+		})
+		changed_hit_text_font = true
+	end
 end)
 
 local elements_to_hide = {
