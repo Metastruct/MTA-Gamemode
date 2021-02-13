@@ -3,6 +3,7 @@ MTAHud = {}
 MTAHud.Config = {
 	ScrRatio = ScrH() / 1080,
 	HudPos = CreateClientConVar("mta_hud_pos", "0", true, false),
+	MapPos = CreateClientConVar("mta_hud_map_pos", "0", true, false),
 	HudMovement = CreateClientConVar("mta_hud_movement", "1", true, false)
 }
 
