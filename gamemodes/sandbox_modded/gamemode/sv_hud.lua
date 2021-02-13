@@ -2,6 +2,7 @@ AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("mta_hud/hud.lua")
 AddCSLuaFile("mta_hud/map.lua")
 AddCSLuaFile("mta_hud/daily_challenges.lua")
+AddCSLuaFile("mta_hud/vault.lua")
 
 resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vmt")
 resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
