@@ -34,7 +34,8 @@ function ENT:Initialize()
 		platform:SetModel("models/props_phx/construct/metal_plate2x4.mdl")
 		platform:SetPos(self:GetPos())
 		platform:Spawn()
-		platform:SetNoDraw(true)
+		platform:SetRenderMode(RENDERMODE_TRANSCOLOR)
+		platform:SetColor(Color(0, 0, 0, 0))
 
 		local phys = platform:GetPhysicsObject()
 		if IsValid(phys) then
