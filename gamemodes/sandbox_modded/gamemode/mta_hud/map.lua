@@ -1,3 +1,31 @@
+local FindByClass = ents.FindByClass
+local DealerIcon = Material("vgui/mta_hud/dealer_icon.png")
+local vault_icon = Material("vgui/mta_hud/vault_icon.png")
+local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
+local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
+local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
+local DoshIcon = Material("vgui/mta_hud/points_icon.png")
+
+local IconSize = 30 * MTAHud.Config.ScrRatio
+local IconOffset = IconSize * 0.5
+
+-- Scale it up a bit since it looks smaller then the other icons
+local VehicleIconSize = IconSize * 1.5
+local VehicleIconOffset = IconOffset * 1.5
+
+-- This is icons based of the npc role
+local KnownNpcIcons = {
+    ["dealer"] = DealerIcon,
+    ["car_dealer"] = CarDealerIcon,
+}
+
+-- If you want to blacklist your npc from the map, perhaps "secret" npc
+local NpcBlacklist = {
+    ["_bad"] = true, -- Default return for npc without role
+}
+
+local WhiteColor = Color(255, 255, 255)
+
 local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 
 local MapPosXLeft = MTAHud.Config.ScrRatio * 30
@@ -70,52 +98,27 @@ local function RotatePoly(poly, angle, ox, oy)
     return rotated
 end
 
-local find_by_class = ents.FindByClass
-local dealer_icon = Material("vgui/mta_hud/dealer_icon.png")
-local vault_icon = Material("vgui/mta_hud/vault_icon.png")
-local car_dealer_icon = Material("vgui/mta_hud/garage_icon.png")
-local vehicle_icon = Material("vgui/mta_hud/vehicle_icon.png")
-local unknown_role_icon = Material("vgui/mta_hud/business_icon.png")
-
-local icon_size = 30 * MTAHud.Config.ScrRatio
-local icon_offset = icon_size * 0.5
-
--- Scale it up a bit since it looks smaller then the other icons
-local veh_icon_size = icon_size * 1.5
-local veh_icon_offset = icon_offset * 1.5
-
--- This is icons based of the npc role
-local known_npc_icons = {
-    ["dealer"] = dealer_icon,
-    ["car_dealer"] = car_dealer_icon,
-}
-
--- If you want to blacklist your npc from the map, perhaps "secret" npc
-local npc_black_list = {
-    ["_bad"] = true, -- Default return for npc without role
-}
-
 local function DrawMapObjects(origin)
     surface.SetMaterial(vault_icon)
-    for _, vault in ipairs(find_by_class("mta_vault")) do
+    for _, vault in ipairs(FindByClass("mta_vault")) do
         if IsValid(vault) then
             local px, py = GetMapDrawPos(origin, vault:GetPos())
-            if px < MapW - icon_offset and py < MapH - icon_offset then
-                surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+            if px < MapW - IconOffset and py < MapH - IconOffset then
+                surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
             end
         end
     end
 
-    for _, npc in ipairs(find_by_class("lua_npc")) do
+    for _, npc in ipairs(FindByClass("lua_npc")) do
         if IsValid(npc) then
             local role = npc:GetNWString("npc_role", "_bad")
-            if not npc_black_list[role] then
+            if not NpcBlacklist[role] then
                 -- Grab the npc role icon or default to "unknown role" to always display an npc with a role
-                local icon = known_npc_icons[role] or unknown_role_icon
+                local icon = KnownNpcIcons[role] or UnknownRoleIcon
                 local px, py = GetMapDrawPos(origin, npc:GetPos())
-                if px < MapW - icon_offset and py < MapH - icon_offset then
+                if px < MapW - IconOffset and py < MapH - IconOffset then
                     surface.SetMaterial(icon)
-                    surface.DrawTexturedRect(px - icon_offset, py - icon_offset, icon_size, icon_size)
+                    surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
                 end
             end
         end
@@ -126,9 +129,9 @@ local function DrawMapObjects(origin)
         local curVehicle = MTACars.CurrentVehicle
         if IsValid(curVehicle) and curVehicle:GetDriver() ~= LocalPlayer() then
             local px, py = GetMapDrawPos(origin, curVehicle:GetPos())
-            if px < MapW - veh_icon_offset and py < MapH - veh_icon_offset then
-                surface.SetMaterial(vehicle_icon)
-                surface.DrawTexturedRect(px - veh_icon_offset, py - veh_icon_offset, veh_icon_size, veh_icon_size)
+            if px < MapW - VehicleIconOffset and py < MapH - VehicleIconOffset then
+                surface.SetMaterial(VehicleIcon)
+                surface.DrawTexturedRect(px - VehicleIconOffset, py - VehicleIconOffset, VehicleIconSize, VehicleIconSize)
             end
         end
     end
@@ -169,6 +172,15 @@ return {
 
             surface.SetDrawColor(244, 135, 2)
             surface.DrawOutlinedRect(0, 0, MapW, MapH, 2)
+
+            surface.SetMaterial(DoshIcon)
+            surface.SetDrawColor(255, 255, 255, 180)
+            surface.DrawTexturedRect(0, MapH + (10 * MTAHud.Config.ScrRatio), IconSize, IconSize)
+
+            surface.SetFont("MTAMissionsFontDesc")
+            surface.SetTextColor(WhiteColor)
+            surface.SetTextPos(IconSize + (10 * MTAHud.Config.ScrRatio), MapH + (12 * MTAHud.Config.ScrRatio))
+            surface.DrawText(MTA.GetPlayerStat("points"))
         cam.PopModelMatrix()
     end
 }
