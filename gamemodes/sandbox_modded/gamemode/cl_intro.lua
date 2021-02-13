@@ -236,7 +236,11 @@ end
 local next_space = 0
 local station
 local url = "https://cdn.zeni.space/meta/song_8%2eogg"
+local is_playing = false
 local function init_intro()
+	if is_playing then return end
+	is_playing = true
+
 	surface.CreateFont("MTAIntroFont", {
 		font = "Alte Haas Grotesk",
 		size = 32 * MTAHud.Config.ScrRatio,
@@ -298,3 +302,5 @@ hook.Add("InitPostEntity", tag, function()
 		cookie.Set(tag, "1")
 	end
 end)
+
+concommand.Add("mta_intro", mta_intro, nil, "Plays the MTA intro / tutorial")
