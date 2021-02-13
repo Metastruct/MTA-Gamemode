@@ -8,7 +8,7 @@ AddCSLuaFile("sh_car_dealer.lua")
 AddCSLuaFile("cl_car_dealer.lua")
 
 include("sh_init.lua")
-include("sh_daily_challenges")
+include("sh_daily_challenges.lua")
 include("sh_gunstore.lua")
 include("sh_car_dealer.lua")
 
