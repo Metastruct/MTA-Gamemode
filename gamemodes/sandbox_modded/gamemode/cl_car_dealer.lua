@@ -290,8 +290,8 @@ local function CreateCarDealerUI()
 
 			surface.SetFont("Trebuchet18")
 
-			local _, tH = surface.GetTextSize(self.Text)
-			surface.SetTextPos(self.Right and arrowSize * -2 or arrowSize * 2, h / 2 - tH / 2)
+			local tW, tH = surface.GetTextSize(self.Text)
+			surface.SetTextPos(arrowSize / 2 + tW / 2, h / 2 - tH / 2)
 			surface.DrawText(self.Text)
 
 			surface.SetMaterial(arrow)
@@ -327,7 +327,7 @@ local function CreateCarDealerUI()
 	NEXT_CAR_BUTTON_L.Paint = CarButtonDraw
 
 	function NEXT_CAR_BUTTON_L:DoClick()
-		selectedCar = selectedCar - 1 < 1 and #carList or selectedCar - 1
+		selectedCar = selectedCar - 1 < 1 and carAmount or selectedCar - 1
 		CAR_VIEW:ResetCar()
 	end
 
