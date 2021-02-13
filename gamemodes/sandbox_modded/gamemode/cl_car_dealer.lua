@@ -19,9 +19,9 @@ local function CallBuyServer()
 end
 
 local MTA_COLOR = Color(244, 136, 0)
-
+local WHITE = Color(255, 255, 255)
 local function CreateCarDealerUI()
-	local WHITE = Color(255, 255, 255)
+
 	local WIDTH, HEIGHT = ScrW() / 2, ScrH() / 2
 
 	local FRAME
@@ -47,6 +47,16 @@ local function CreateCarDealerUI()
 	FRAME:SetTitle("Car Dealer")
 	FRAME.btnMaxim:Hide()
 	FRAME.btnMinim:Hide()
+	function FRAME:Paint(w, h)
+		DFrame.Paint(self, w, h)
+
+		local text = "Your points: " .. MTA.GetPlayerStat("points")
+		surface.SetFont("Trebuchet18")
+		local tW, tH = surface.GetTextSize(text)
+		surface.SetDrawColor(MTA_COLOR)
+		surface.SetTextPos(w / 2 - tW / 2, tH / 4)
+		surface.DrawText(text)
+	end
 
 	RIGHT_DOCK = FRAME:Add("DPanel")
 	RIGHT_DOCK:SetWidth(WIDTH / 3)
