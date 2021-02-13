@@ -1,5 +1,6 @@
 include("sh_init.lua")
 include("cl_outlines.lua")
+include("cl_intro.lua")
 include("sh_daily_challenges.lua")
 include("sh_gunstore.lua")
 include("sh_car_dealer.lua")
