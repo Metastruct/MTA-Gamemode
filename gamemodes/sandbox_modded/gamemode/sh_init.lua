@@ -162,6 +162,11 @@ if SERVER then
 
 		for _, data in pairs(mta_ents) do
 			local ent = ents.Create(data.class)
+
+			function ent:UpdateTransmitState()
+				return TRANSMIT_ALWAYS
+			end
+
 			ent:SetPos(data.pos)
 			ent:SetAngles(data.ang)
 			ent.role = data.role
