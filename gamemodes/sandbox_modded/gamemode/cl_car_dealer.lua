@@ -423,7 +423,7 @@ local function CreateCarDealerUI()
 
 	CAR_VIEW:ResetCar()
 end
-CreateCarDealerUI()
+
 local function DoNotice()
 
 	local text = "Your car is waiting outside the garage."
