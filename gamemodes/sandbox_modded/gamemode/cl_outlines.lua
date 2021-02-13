@@ -16,36 +16,35 @@ local surface = surface
 
 module("outline", package.seeall)
 
-local List, ListSize = {}, 0
+local List = {}
 local RenderEnt = NULL
 
 local OutlineMatSettings = {
 	["$ignorez"] = 1,
 	["$alphatest"] = 1
 }
-
 local CopyMat = Material("pp/copy")
 local OutlineMat = CreateMaterial("OutlineMat", "UnlitGeneric", OutlineMatSettings)
+
 local StoreTexture = render.GetScreenEffectTexture(0)
 local DrawTexture = render.GetScreenEffectTexture(1)
 
 local ENTS = 1
 local COLOR = 2
 local MODE = 3
+local SIZE = 4
 
-function Add(ents, color, mode)
-	if ListSize >= 255 then return end --Maximum 255 reference values
+function Add(ents, color, mode, size)
+	if #List >= 255 then return end --Maximum 255 reference values
 	if not istable(ents) then ents = { ents } end --Support for passing Entity as first argument
 	if ents[1] == nil then return end --Do not pass empty tables
 
-	local t = {
+	List[#List + 1] = {
 		[ENTS] = ents,
 		[COLOR] = color,
-		[MODE] = mode or OUTLINE_MODE_BOTH
+		[MODE] = mode or OUTLINE_MODE_BOTH,
+		[SIZE] = size or 1
 	}
-
-	ListSize = ListSize + 1
-	List[ListSize] = t
 end
 
 function RenderedEntity()
@@ -57,6 +56,7 @@ local function Render()
 	local IsLineOfSightClear = ply.IsLineOfSightClear
 
 	local scene = render.GetRenderTarget()
+
 	render.CopyRenderTargetToTexture(StoreTexture)
 
 	local w = ScrW()
@@ -77,19 +77,14 @@ local function Render()
 	render.SetStencilPassOperation(STENCIL_REPLACE)
 
 	cam.Start3D()
-
-	for i = 1, ListSize do
-		local v = List[i]
+	for i, v in ipairs(List) do
 		local mode = v[MODE]
 		local ents = v[ENTS]
-
 		render.SetStencilReferenceValue(i)
 
-		for j = 1, #ents do
-			local ent = ents[j]
-
+		for _, ent in ipairs(ents) do
 			if IsValid(ent) then
-				if not (mode == OUTLINE_MODE_NOTVISIBLE and IsLineOfSightClear(ply, ent)) or (mode == OUTLINE_MODE_VISIBLE and not IsLineOfSightClear(ply, ent)) then
+				if not ((mode == OUTLINE_MODE_NOTVISIBLE and IsLineOfSightClear(ply, ent)) or (mode == OUTLINE_MODE_VISIBLE and not IsLineOfSightClear(ply, ent))) then
 					RenderEnt = ent
 					ent:DrawModel()
 				end
@@ -98,20 +93,16 @@ local function Render()
 	end
 
 	RenderEnt = NULL
-
 	cam.End3D()
 
 	render.SetStencilCompareFunction(STENCIL_EQUAL)
 
 	cam.Start2D()
-
-	for i = 1, ListSize do
+	for i, v in ipairs(List) do
 		render.SetStencilReferenceValue(i)
-
-		surface.SetDrawColor(List[i][COLOR])
+		surface.SetDrawColor(v[COLOR]:Unpack())
 		surface.DrawRect(0, 0, w, h)
 	end
-
 	cam.End2D()
 
 	render.SuppressEngineLighting(false)
@@ -132,22 +123,21 @@ local function Render()
 	OutlineMat:SetTexture("$basetexture", DrawTexture)
 	render.SetMaterial(OutlineMat)
 
-	render.DrawScreenQuadEx(-1, -1, w, h)
-	render.DrawScreenQuadEx(-1, 0, w, h)
-	render.DrawScreenQuadEx(-1, 1, w, h)
-	render.DrawScreenQuadEx(0, -1, w, h)
-	render.DrawScreenQuadEx(0, 1, w, h)
-	render.DrawScreenQuadEx(1, 1, w, h)
-	render.DrawScreenQuadEx(1, 0, w, h)
-	render.DrawScreenQuadEx(1, 1, w, h)
-
+	for i = 1, #List do
+		local size = List[i][SIZE]
+		for x = -size, size, 1 do
+			for y = -size, size, 1 do
+				render.DrawScreenQuadEx(x, y, w, h)
+			end
+		end
+	end
 	render.SetStencilEnable(false)
 end
 
 hook.Add("PostDrawEffects", "RenderOutlines", function()
 	hook.Run("PreDrawOutlines")
-	if ListSize == 0 then return end
+	if #List == 0 then return end
 
 	Render()
-	List, ListSize = {}, 0
+	List = {}
 end)
