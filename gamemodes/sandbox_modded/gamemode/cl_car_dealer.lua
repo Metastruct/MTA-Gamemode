@@ -47,16 +47,6 @@ local function CreateCarDealerUI()
 	FRAME:SetTitle("Car Dealer")
 	FRAME.btnMaxim:Hide()
 	FRAME.btnMinim:Hide()
-	function FRAME:Paint(w, h)
-		DFrame.Paint(self, w, h)
-
-		local text = "Your points: " .. MTA.GetPlayerStat("points")
-		surface.SetFont("Trebuchet18")
-		local tW, tH = surface.GetTextSize(text)
-		surface.SetDrawColor(MTA_COLOR)
-		surface.SetTextPos(w / 2 - tW / 2, tH / 4)
-		surface.DrawText(text)
-	end
 
 	RIGHT_DOCK = FRAME:Add("DPanel")
 	RIGHT_DOCK:SetWidth(WIDTH / 3)
@@ -77,7 +67,7 @@ local function CreateCarDealerUI()
 
 	COLOR_MIXER = RIGHT_DOCK:Add("DColorMixer")
 	COLOR_MIXER:Dock(TOP)
-	COLOR_MIXER:SetHeight(HEIGHT / 2)
+	COLOR_MIXER:SetHeight(HEIGHT / 2.5)
 	COLOR_MIXER:SetPalette(true)
 	COLOR_MIXER:SetAlphaBar(false)
 	COLOR_MIXER:SetWangs(true)
@@ -125,7 +115,11 @@ local function CreateCarDealerUI()
 
 	PRICE_LIST = RIGHT_DOCK:Add("RichText")
 	PRICE_LIST:Dock(BOTTOM)
-	PRICE_LIST:SetHeight(64)
+	PRICE_LIST:SetHeight(96)
+	function PRICE_LIST:PerformLayout()
+		self:SetFontInternal("DermaDefaultBold")
+		self:SetFGColor(255, 255, 255)
+	end
 
 	function PRICE_LIST:Update()
 		self:SetText("")
@@ -145,6 +139,14 @@ local function CreateCarDealerUI()
 		if partCost > 0 then
 			self:AppendText("Modifications" .. " - " .. partCost .. " points\n")
 		end
+
+		self:InsertColorChange(255, 225, 100, 255)
+		local points = MTA.GetPlayerStat("points")
+		local sum = paintPrice + skinPrice + partCost + curCarCost
+		local finalPoints = points - sum
+
+		local text = points .. " - " .. sum .. " = " .. finalPoints .. " points left after purchase."
+		self:AppendText("\n" .. text)
 	end
 
 	DESCRIPTION = RIGHT_DOCK:Add("RichText")
@@ -421,7 +423,7 @@ local function CreateCarDealerUI()
 
 	CAR_VIEW:ResetCar()
 end
-
+CreateCarDealerUI()
 local function DoNotice()
 
 	local text = "Your car is waiting outside the garage."
