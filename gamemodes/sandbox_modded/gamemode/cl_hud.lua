@@ -35,8 +35,10 @@ end
 
 MTAHud.Components = {}
 MTAHud.DrawComponents = function(self)
-	for k, v in pairs(self.Components) do
-		v:Draw()
+	for name, component in pairs(self.Components) do
+		if hook.Run("MTAHUDShouldDraw", name) ~= false then
+			component:Draw()
+		end
 	end
 end
 MTAHud.AddComponent = function(self, name, tbl)
