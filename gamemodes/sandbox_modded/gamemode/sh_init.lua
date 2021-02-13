@@ -22,7 +22,8 @@ if SERVER then
 	local hooks = {
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
 		"PlayerSpawnSENT", "PlayerSpawnSWEP", "PlayerSpawnVehicle", "PlayerNoClip", "PlayerGiveSWEP",
-		"CanSSJump", "AowlGiveAmmo", "CanPlyTeleport", "CanBoxify", "PlayerFly"
+		"CanSSJump", "AowlGiveAmmo", "CanPlyTeleport", "CanBoxify", "PlayerFly", "CanPlyGoBack",
+		"CanPlyGoto"
 	}
 
 	for _, hook_name in pairs(hooks) do
