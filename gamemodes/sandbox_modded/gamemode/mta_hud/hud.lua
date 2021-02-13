@@ -252,6 +252,7 @@ local HpBarHeight = 18 * MTAHud.Config.ScrRatio
 local HealthBarPercentageStartW = 50
 local HealthBarPercentageStartH = 125 * MTAHud.Config.ScrRatio
 
+local Mat = Matrix()
 local MatVec = Vector()
 
 return function()
@@ -330,16 +331,14 @@ return function()
 
     player.DispHealth = player:Health()
 
-    local mat = Matrix()
-
-    mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and 0.1 or -0.1)
+    Mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and 0.1 or -0.1)
 
     MatVec.x = (MTAHud.Config.HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
     MatVec.y = (MTAHud.Config.HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
 
-    mat:SetTranslation(MatVec)
+    Mat:SetTranslation(MatVec)
 
-    cam.PushModelMatrix(mat)
+    cam.PushModelMatrix(Mat)
 
     -- Background elements
     if player:Alive() then
