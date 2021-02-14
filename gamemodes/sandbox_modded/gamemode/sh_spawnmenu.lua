@@ -479,7 +479,7 @@ if CLIENT then
 		return false
 	end
 
-	function GAMEMODE:OnSpawnMenuClose()
+	function GM:OnSpawnMenuClose()
 		gui.EnableScreenClicker(false)
 		if IsValid(menu) then
 			menu:Remove()
@@ -488,7 +488,7 @@ if CLIENT then
 		return false
 	end
 
-	function GAMEMODE:MTAHUDShouldDraw(element)
+	function GM:MTAHUDShouldDraw(element)
 		if menu then return false end
 	end
 end
