@@ -41,7 +41,7 @@ if SERVER then
 		dmg_info:SetInflictor(hurting_obj)
 		dmg_info:SetDamageType(DMG_VEHICLE)
 		dmg_info:SetDamage(150)
-		dmg_info:SetDamageForce(vel)
+		dmg_info:SetDamageForce(vel * 100)
 
 		if math.random(0, 100) < 10 then
 			npc:EmitSound("mta/wilhelmscream.ogg", 100)
