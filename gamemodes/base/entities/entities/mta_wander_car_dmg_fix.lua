@@ -43,7 +43,7 @@ if SERVER then
 		dmg_info:SetDamage(150)
 		dmg_info:SetDamageForce(vel)
 
-		if math.random(0, 100) <= 25 then
+		if math.random(0, 100) < 10 then
 			npc:EmitSound("mta/wilhelmscream.ogg", 100)
 		end
 
