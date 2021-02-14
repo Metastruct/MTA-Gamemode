@@ -271,6 +271,7 @@ if SERVER then
 				end
 
 				local old_think = wander.Think
+				local next_door_check = 0
 				function wander:Think()
 					if self:GetPos().z < subway_z then
 						SafeRemoveEntity(self)
@@ -281,6 +282,26 @@ if SERVER then
 					if IsValid(phys) and phys:IsPenetrating() then
 						SafeRemoveEntity(self)
 						return
+					end
+
+					if CurTime() >= next_door_check then
+						for _, ent in ipairs(ents.FindInSphere(wander:GetPos(), 150)) do
+							if ent:GetClass():match("door") and not ent.wander_toggle then
+								ent:Fire("open")
+
+								local old_solid = ent:IsSolid()
+								ent:SetNotSolid(true)
+								ent.wander_toggle = true
+								timer.Simple(5, function()
+									if IsValid(ent) then
+										ent:Fire("close")
+										ent:SetNotSolid(old_solid)
+										ent.wander_toggle = nil
+									end
+								end)
+							end
+						end
+						next_door_check = CurTime() + 1
 					end
 
 					old_think(self)
