@@ -25,6 +25,7 @@ local NpcBlacklist = {
 }
 
 local WhiteColor = Color(255, 255, 255)
+local OrangeColor = Color(244, 135, 2)
 
 local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 
@@ -128,7 +129,7 @@ local function DrawMapObjects(origin)
         end
     end
 
-    surface.SetDrawColor(orange_color)
+    surface.SetDrawColor(OrangeColor)
     for _, ply in ipairs(player.GetAll()) do
         if ply ~= LocalPlayer() then
             local yaw = ply:EyeAngles().yaw
