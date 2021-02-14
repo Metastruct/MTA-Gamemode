@@ -230,7 +230,7 @@ if CLIENT then
 
 			surface.SetDrawColor(orange_color)
 			for _, ply in ipairs(player.GetAll()) do
-				if ply ~= LocalPlayer() then
+				if ply ~= LocalPlayer() and ply:Alive() then
 					local yaw = ply:EyeAngles().yaw
 					local px, py = self:GetMapDrawPos(origin, ply:GetPos())
 					local tri = self:TranslatePoly(PlayerTriangle, px, py - 10)
