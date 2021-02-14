@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local ENT = {}
 ENT.Type = "anim"
 ENT.Base = "base_anim"
 ENT.RenderGroup = RENDERGROUP_OPAQUE
@@ -11,8 +10,6 @@ ENT.Spawnable = false
 if CLIENT then
 	language.Add("mta_wander_car_dmg_fix", "Vehicle")
 end
-
-scripted_ents.Register(ENT, "mta_wander_car_dmg_fix")
 
 if SERVER then
 	local fix
