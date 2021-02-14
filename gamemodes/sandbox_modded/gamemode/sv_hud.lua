@@ -19,4 +19,5 @@ resource.AddFile("resource/fonts/orbitron black.ttf")
 resource.AddFile("materials/vgui/mta_hud/garage_icon.png")
 resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
 
-resource.AddFile("materials/vgui/mta_hud/points_icon.png")
+resource.AddFile("materials/vgui/mta_hud/points_icon.png") -- Should be used for coins later or ditched, we changed points icon to "CP"
+resource.AddFile("materials/vgui/mta_hud/cp_icon.png")
