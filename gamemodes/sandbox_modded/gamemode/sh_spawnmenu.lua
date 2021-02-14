@@ -89,7 +89,7 @@ if CLIENT then
 	local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
 	local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
 
-	local IconSize = 60 * ratio_h
+	local IconSize = 30 * ratio_h
 	local IconOffset = IconSize * 0.5
 
 	-- Scale it up a bit since it looks smaller then the other icons
@@ -296,7 +296,7 @@ if CLIENT then
 				surface.DrawRect(0, 0, w, 25)
 
 				surface.SetTextColor(white_color)
-				surface.SetFont("MTAMenuPlayerFont")
+				surface.SetFont("DermaLarge")
 				surface.SetTextPos(7, -2)
 				surface.DrawText("LEADERBOARD")
 			end
@@ -470,7 +470,7 @@ if CLIENT then
 	vgui.Register("mta_menu", PANEL, "DPanel")
 
 	local menu
-	function GAMEMODE:OnSpawnMenuOpen()
+	function GM:OnSpawnMenuOpen()
 		if IsValid(menu) then
 			menu:Remove()
 			menu = nil
