@@ -227,9 +227,10 @@ if SERVER then
 	local function get_rid_of_bank_vault()
 		local entities = ents.FindByModel("models/uc/props_unioncity/bankvault_door.mdl")
 		for _, ent in pairs(entities) do
-			if ent:CreatedByMap() then
-				ent:Fire("open")
-				SafeRemoveEntity(ent)
+			local door = ent:GetParent()
+			if ent:CreatedByMap() and IsValid(door) then
+				door:Fire("open")
+				SafeRemoveEntityDelayed(door, 0.5)
 			end
 		end
 	end
