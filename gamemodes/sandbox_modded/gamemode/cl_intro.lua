@@ -303,4 +303,4 @@ hook.Add("InitPostEntity", tag, function()
 	end
 end)
 
-concommand.Add("mta_intro", mta_intro, nil, "Plays the MTA intro / tutorial")
+concommand.Add("mta_intro", init_intro, nil, "Plays the MTA intro / tutorial")
