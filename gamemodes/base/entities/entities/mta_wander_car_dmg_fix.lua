@@ -45,6 +45,7 @@ if SERVER then
 
 		if math.random(0, 100) < 10 then
 			npc:EmitSound("mta/wilhelmscream.ogg", 100)
+			dmg_info:SetDamageForce(vel * 100 + Vector(0, 0, 50000))
 		end
 
 		npc:TakeDamageInfo(dmg_info)
