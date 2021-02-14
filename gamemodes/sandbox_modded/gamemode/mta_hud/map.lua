@@ -127,6 +127,18 @@ local function DrawMapObjects(origin)
             surface.DrawTexturedRect(px - VehicleIconOffset, py - VehicleIconOffset, VehicleIconSize, VehicleIconSize)
         end
     end
+
+    surface.SetDrawColor(orange_color)
+    for _, ply in ipairs(player.GetAll()) do
+        if ply ~= LocalPlayer() then
+            local yaw = ply:EyeAngles().yaw
+            local px, py = GetMapDrawPos(origin, ply:GetPos())
+            local tri = TranslatePoly(PlayerTriangle, px, py - 10)
+            tri = RotatePoly(tri, -yaw, px, py)
+            draw.NoTexture()
+            surface.DrawPoly(tri)
+        end
+    end
 end
 
 if IsValid(MTAHud.Vars.MapPanel) then MTAHud.Vars.MapPanel:Remove() end

@@ -5,6 +5,7 @@ include("sh_daily_challenges.lua")
 include("sh_gunstore.lua")
 include("sh_car_dealer.lua")
 include("cl_car_dealer.lua")
+include("sh_spawnmenu.lua")
 
 include("cl_hud.lua")
 
@@ -18,14 +19,6 @@ function GM:MTAInitialized()
 	--Add default font to fix GVote, Otherwise no issues.
 	surface.CreateFont("DefaultBold", {})
 end
-
---[[function GM:OnSpawnMenuOpen()
-	return false
-end
-
-function GM:OnSpawnMenuClose()
-	return false
-end]]--
 
 language.Add("worldspawn", "Ground")
 language.Add("world", "World")
