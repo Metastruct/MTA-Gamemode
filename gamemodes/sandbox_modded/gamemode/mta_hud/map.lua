@@ -140,6 +140,7 @@ local function DrawMapObjects(origin)
             surface.DrawPoly(tri)
         end
     end
+    surface.SetDrawColor(WhiteColor)
 end
 
 if IsValid(MTAHud.Vars.MapPanel) then MTAHud.Vars.MapPanel:Remove() end
