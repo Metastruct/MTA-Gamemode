@@ -208,6 +208,10 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 
 	car.PhysgunDisabled = true
 
+	function car:UpdateTransmitState()
+		return TRANSMIT_ALWAYS
+	end
+
 	if color then
 		car:SetColor(color)
 	end
