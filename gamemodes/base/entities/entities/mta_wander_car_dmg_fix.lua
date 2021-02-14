@@ -33,12 +33,8 @@ if SERVER then
 		if vel:Length() < 50 then return end
 
 		local hurting_obj = get_fix()
-		local driver = car:GetDriver()
-		if IsValid(driver) then
-			npc:TakeDamage(150, driver, hurting_obj)
-		else
-			npc:TakeDamage(150, hurting_obj, hurting_obj)
-		end
+		npc:TakeDamage(150, hurting_obj, hurting_obj)
+
 		npc.rolled_over = true
 	end
 
