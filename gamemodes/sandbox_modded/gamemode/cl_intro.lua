@@ -1,5 +1,5 @@
 local tag = "mta_intro"
-
+local is_playing = false
 local phases = {
 	{
 		duration = 30,
@@ -177,6 +177,7 @@ local phases = {
 			hook.Remove("HUDShouldDraw", tag)
 			hook.Remove("DeathNotice", tag)
 			hook.Remove("Move", tag)
+			is_playing = false
 		end
 	}
 }
@@ -236,7 +237,6 @@ end
 local next_space = 0
 local station
 local url = "https://cdn.zeni.space/meta/song_8%2eogg"
-local is_playing = false
 local function init_intro()
 	if is_playing then return end
 	is_playing = true
