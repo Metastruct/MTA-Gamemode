@@ -463,6 +463,13 @@ local function DoNotice()
 	end)
 end
 
+hook.Add("PreDrawOutlines", tag, function()
+	if IsValid(MTACars.CurrentVehicle) then
+		if MTACars.CurrentVehicle:GetDriver() == LocalPlayer() then return end
+		outline.Add(MTACars.CurrentVehicle, MTA_COLOR, OUTLINE_MODE_BOTH, 4)
+	end
+end)
+
 net.Receive(tag, function()
 	local isUi = net.ReadBool()
 	if isUi then
