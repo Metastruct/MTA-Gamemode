@@ -4,7 +4,8 @@ local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
 local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
 local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
 local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
-local DoshIcon = Material("vgui/mta_hud/points_icon.png")
+--local DoshIcon = Material("vgui/mta_hud/points_icon.png") -- Unused right now
+local PointsIcon = Material("vgui/mta_hud/cp_icon.png")
 
 local IconSize = 30 * MTAHud.Config.ScrRatio
 local IconOffset = IconSize * 0.5
@@ -190,7 +191,7 @@ return function()
     cam.PushModelMatrix(Mat)
         MTAHud.Vars.MapPanel:PaintManual()
 
-        surface.SetMaterial(DoshIcon)
+        surface.SetMaterial(PointsIcon)
         surface.SetDrawColor(255, 255, 255, 180)
         surface.DrawTexturedRect(0, MapH + (10 * MTAHud.Config.ScrRatio), IconSize, IconSize)
 
