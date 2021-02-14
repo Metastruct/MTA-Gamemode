@@ -131,7 +131,7 @@ local function DrawMapObjects(origin)
 
     surface.SetDrawColor(OrangeColor)
     for _, ply in ipairs(player.GetAll()) do
-        if ply ~= LocalPlayer() then
+        if ply ~= LocalPlayer() and ply:Alive() then
             local yaw = ply:EyeAngles().yaw
             local px, py = GetMapDrawPos(origin, ply:GetPos())
             local tri = TranslatePoly(PlayerTriangle, px, py - 10)
