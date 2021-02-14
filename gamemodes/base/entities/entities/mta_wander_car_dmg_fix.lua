@@ -12,6 +12,9 @@ if CLIENT then
 end
 
 if SERVER then
+	resource.AddFile("sound/mta/wilhelmscream.ogg")
+	util.PrecacheSound("mta/wilhelmscream.ogg")
+
 	local fix
 	local function get_fix()
 		if not IsValid(fix) then
@@ -33,7 +36,18 @@ if SERVER then
 		if vel:Length() < 50 then return end
 
 		local hurting_obj = get_fix()
-		npc:TakeDamage(150, hurting_obj, hurting_obj)
+		local dmg_info = DamageInfo()
+		dmg_info:SetAttacker(hurting_obj)
+		dmg_info:SetInflictor(hurting_obj)
+		dmg_info:SetDamageType(DMG_VEHICLE)
+		dmg_info:SetDamage(150)
+		dmg_info:SetDamageForce(vel)
+
+		if math.random(0, 100) <= 25 then
+			npc:EmitSound("mta/wilhelmscream.ogg", 100)
+		end
+
+		npc:TakeDamageInfo(dmg_info)
 
 		npc.rolled_over = true
 	end
