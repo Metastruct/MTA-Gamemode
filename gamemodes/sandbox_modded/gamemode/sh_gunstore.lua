@@ -143,8 +143,12 @@ if SERVER then
 			for k, door in ipairs(ents.FindInSphere(pos, 5)) do
 
 				if IsValid(door) and door:GetClass() == "func_door" then
+
 					door:Fire("Open")
-					door:Fire("Lock")
+					timer.Simple(0.5, function()
+						door:Fire("Lock")
+					end)
+
 					door:SetNotSolid(true) -- its in the way
 				end
 			end
