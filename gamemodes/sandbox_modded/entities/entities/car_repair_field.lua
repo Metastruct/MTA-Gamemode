@@ -13,18 +13,13 @@ function ENT:SetupTriggerBox(mins, maxs)
 	self:SetRenderMode(RENDERMODE_TRANSTEXTURE)
 	self:DrawShadow(false)
 
-	if CLIENT then --This is for drawing
-		local mins, maxs = self:GetCollisionBounds()
-		self:SetRenderBounds(mins, maxs)
-	end
-
 	if SERVER then
 		self:SetTrigger(true)
 	end
 end
 
 local TRIGGER_MAXS = Vector(72, 128, 64)
-local TRIGGER_MINS = Vector(72, 128, 0)
+local TRIGGER_MINS = Vector(-72, -128, 0)
 
 function ENT:Initialize()
 	self:SetupTriggerBox(TRIGGER_MINS, TRIGGER_MAXS)
@@ -125,12 +120,12 @@ if CLIENT then
 		["$vertexcolor"] = 1
 	})
 
-	function ENT:Draw()
+	function ENT:DrawTranslucent()
 		self:SetRenderBounds(self:GetCollisionBounds()) --TESTING ONLY
 
 		render.SetMaterial(mat)
 		local mins, maxs = self:GetCollisionBounds()
 		render.DrawBox(self:GetPos(), self:GetAngles(), mins, maxs, Color(255, 255, 255))
 	end
-]]
+--]]
 end
