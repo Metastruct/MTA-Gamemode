@@ -143,9 +143,11 @@ if SERVER then
 			for k, door in ipairs(ents.FindInSphere(pos, 5)) do
 
 				if IsValid(door) and door:GetClass() == "func_door" then
-					door:Fire("Open")
-					door:Fire("Lock")
-					door:SetNotSolid(true) -- its in the way
+					SafeRemoveEntity(door)
+					--door:Fire("Open")
+					--door:Fire("Lock")
+
+					--door:SetNotSolid(true) -- its in the way
 				end
 			end
 		end
