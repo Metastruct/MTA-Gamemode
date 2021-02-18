@@ -19,13 +19,13 @@ if SERVER then
 		game.ConsoleCommand("pac_sv_projectiles 0\n")
 	end
 
-	local hooks = {
+	local DENIED_HOOKS = {
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
 		"PlayerSpawnSENT", "PlayerSpawnSWEP", "PlayerSpawnVehicle", "PlayerNoClip", "PlayerGiveSWEP",
 		"CanSSJump", "AowlGiveAmmo", "CanPlyTeleport", "CanBoxify", "PlayerFly", "CanPlyGoBack",
 	}
 
-	for _, hook_name in pairs(hooks) do
+	for _, hook_name in pairs(DENIED_HOOKS) do
 		GM[hook_name] = function(gm, ply)
 			return ply:IsAdmin()
 		end
@@ -39,12 +39,12 @@ if SERVER then
 	end
 
 	-- hack to spawn people in the hospital
-	local hospital_entry = Vector (-5716, -1462, 5416)
+	local HOSPITAL_ENTRY_POS = Vector (-5716, -1462, 5416)
 	function GM:CanPlyRespawn(ply, transition)
 		player_manager.SetPlayerClass(ply, "player_sandbox")
 		self.BaseClass.PlayerSpawn(self, ply, transition)
 
-		local rand_pos = hospital_entry + Vector(0, math.random(-500, 500), 0)
+		local rand_pos = HOSPITAL_ENTRY_POS + Vector(0, math.random(-500, 500), 0)
 		ply:SetPos(rand_pos)
 	end
 
@@ -66,7 +66,7 @@ if SERVER then
 		if target:GetClass() == "lua_npc" then return true end
 	end
 
-	local mta_ents = {
+	local MAP_ENTS = {
 		{
 			["ang"] = Angle(0, 0, 0),
 			["pos"] = Vector(840, -4237, 5498),
@@ -160,7 +160,7 @@ if SERVER then
 	local function spawn_ents()
 		if not game.GetMap():match("^rp%_unioncity") then return end
 
-		for _, data in pairs(mta_ents) do
+		for _, data in pairs(MAP_ENTS) do
 			local ent = ents.Create(data.class)
 
 			function ent:UpdateTransmitState()
@@ -205,7 +205,7 @@ if SERVER then
 		set_cvars()
 	end
 
-	local slogans = {
+	local HOSTNAMES = {
 		"Almost like DarkRP",
 		"PayDay 3",
 		"Bootleg GTA",
@@ -220,7 +220,7 @@ if SERVER then
 	local function set_custom_hostname()
 		set_cvars()
 		if not _G.hostname then return end
-		local slogan = slogans[math.random(#slogans)]
+		local slogan = HOSTNAMES[math.random(#HOSTNAMES)]
 		_G.hostname(("Meta Theft Auto WIP - %s"):format(slogan))
 	end
 
@@ -235,8 +235,8 @@ if SERVER then
 		end
 	end
 
-	local max_wanders = 40
-	local subway_z = 5000
+	local MAX_WANDERS = 40
+	local SUBWAY_Z = 5000
 	function GM:InitPostEntity()
 		spawn_ents()
 
@@ -250,7 +250,7 @@ if SERVER then
 				node_poses = {}
 				for _, node in pairs(nodes) do
 					local pos = node:GetCenter()
-					if pos.z > subway_z then
+					if pos.z > SUBWAY_Z then
 						table.insert(node_poses, pos)
 					end
 				end
@@ -261,7 +261,7 @@ if SERVER then
 			ms.mapdata.w_walktable = node_poses
 
 			local wanders = ents.FindByClass("lua_npc_wander")
-			if #wanders < max_wanders then
+			if #wanders < MAX_WANDERS then
 				local node = nodes[math.random(#nodes)]
 				local wander = ents.Create("lua_npc_wander")
 				wander:SetPos(node:GetCenter())
@@ -274,7 +274,7 @@ if SERVER then
 				local old_think = wander.Think
 				local next_door_check = 0
 				function wander:Think()
-					if self:GetPos().z < subway_z then
+					if self:GetPos().z < SUBWAY_Z then
 						SafeRemoveEntity(self)
 						return
 					end
@@ -290,13 +290,12 @@ if SERVER then
 							if ent:GetClass():match("door") and not ent.wander_toggle then
 								ent:Fire("open")
 
-								local old_solid = ent:IsSolid()
 								ent:SetNotSolid(true)
 								ent.wander_toggle = true
 								timer.Simple(5, function()
 									if IsValid(ent) then
 										ent:Fire("close")
-										ent:SetNotSolid(old_solid)
+										ent:SetNotSolid(false)
 										ent.wander_toggle = nil
 									end
 								end)
@@ -318,7 +317,7 @@ if SERVER then
 		return true, true
 	end
 
-	local jail_spots = {
+	local JAIL_SPOTS = {
 		Vector(1870, -974, 5416),
 		Vector(2124, -985, 5416),
 		Vector(2112, -1329, 5416),
@@ -326,7 +325,7 @@ if SERVER then
 		Vector(1888, -1331, 5416)
 	}
 	function GM:MTAPlayerFailed(ply, max_factor, old_factor, is_death)
-		local spot = jail_spots[math.random(#jail_spots)]
+		local spot = JAIL_SPOTS[math.random(#JAIL_SPOTS)]
 		timer.Simple(0.5, function()
 			if not IsValid(ply) then return end
 			ply:Spawn()
