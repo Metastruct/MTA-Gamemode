@@ -3,23 +3,23 @@ MTACars.Config = {
 	CarList = {
 		[1] = {
 			veh = "sim_fphys_msa_vehicle_1",
-			price = 50,
+			price = 40,
 			model = "models/msavehs/msavehicle1.mdl",
 			name = "Charger",
 			desc = "A luxurious car which fits all your needs.\nWant to drive around the town in full glory?\nBuy the Charger."
 		},
 		[2] = {
 			veh = "sim_fphys_msa_vehicle_2",
-			price = 50,
+			price = 40,
 			model = "models/msavehs/msavehicle02.mdl",
 			name = "Golf",
 			desc = "A comfortable everyday car.\nEconomic and perfect for those who don't need anything special."
 		},
 	},
 	StylePrices = {
-		paint = 8,
-		mod = 6,
-		skin = 10,
+		paint = 4,
+		mod = 3,
+		skin = 5,
 	},
 }
 
@@ -224,6 +224,13 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 		car:SetBodygroup(id, group)
 	end
 
+	for _, wheel in ipairs(ent.Wheels) do
+		if IsValid(wheel) then
+			wheel.doorexploding = true
+		end
+	end
+
+	car.doorexploding = true
 	car.IsMTACar = true
 	car.Renter = ply
 
