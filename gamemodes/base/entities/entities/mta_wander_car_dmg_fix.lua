@@ -26,8 +26,8 @@ if SERVER then
 		return fix
 	end
 
-	local function apply_dmg(car, npc)
-		if npc.rolled_over then return end
+	local function apply_dmg(car, ent)
+		if ent.rolled_over then return end
 
 		local phys = car:GetPhysicsObject()
 		if not IsValid(phys) then return end
@@ -44,21 +44,42 @@ if SERVER then
 		dmg_info:SetDamageForce(vel * 100)
 
 		if math.random(0, 100) < 10 then
-			npc:EmitSound("mta/wilhelmscream.ogg", 100)
+			ent:EmitSound("mta/wilhelmscream.ogg", 100)
 			dmg_info:SetDamageForce(vel * 100 + Vector(0, 0, 50000))
 		end
 
-		npc:TakeDamageInfo(dmg_info)
+		ent:TakeDamageInfo(dmg_info)
+		ent.rolled_over = true
+		timer.Simple(1, function()
+			if not IsValid(ent) then return end
+			ent.rolled_over = nil
+		end)
 
-		npc.rolled_over = true
+		local driver = car:GetDriver()
+		if MTA.ShouldIncreasePlayerFactor() then
+			local factor_amount = 1
+			if MTA.HasCoeficients(ent) then
+				factor_amount = MTA.Coeficients[ent:GetClass()].kill_coef
+			end
+
+			MTA.IncreasePlayerFactor(driver, factor_amount)
+		end
+	end
+
+	local function is_damageable_ent(ent)
+		if ent2:GetClass() == "lua_npc_wander" then return true end
+		if ent:IsNPC() and ent:GetNWBool("MTACombine") then return true end
+		if ent:IsPlayer() then return true end
+
+		return false
 	end
 
 	hook.Add("ShouldCollide", "fuck", function(ent1, ent2)
-		if ent1:IsVehicle() and ent2:GetClass() == "lua_npc_wander" then
+		if ent1:IsVehicle() and is_damageable_ent(ent2) then
 			apply_dmg(ent1, ent2)
 			return true
 		end
-		if ent2:IsVehicle() and ent1:GetClass() == "lua_npc_wander" then
+		if ent2:IsVehicle() and is_damageable_ent(ent1) then
 			apply_dmg(ent2, ent1)
 			return true
 		end
