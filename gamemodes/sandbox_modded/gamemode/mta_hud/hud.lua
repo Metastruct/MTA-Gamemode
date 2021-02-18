@@ -434,15 +434,20 @@ return function()
             ViewModel = LocalPlayer():GetViewModel()
         end
 
-        local SequenceName = ViewModel:GetSequenceName(ViewModel:GetSequence())
-        local SequenceCycle = -(ViewModel:GetCycle()) + 1
+        local SequenceCycle = 0
 
-        if string.find(string.lower(SequenceName), "reload") and not Reloading or string.find(string.lower(SequenceName), "wet") and not Reloading then
-            Reloading = true
-        end
+        -- View models can be invalid, this breaks the hud if it happens, example: dying in a vehicle occasinally does this
+        if IsValid(ViewModel) then
+            local SequenceName = ViewModel:GetSequenceName(ViewModel:GetSequence())
+            SequenceCycle = -(ViewModel:GetCycle()) + 1
 
-        if Reloading and ViewModel:GetCycle() >= 0.97 then
-            Reloading = false
+            if string.find(string.lower(SequenceName), "reload") and not Reloading or string.find(string.lower(SequenceName), "wet") and not Reloading then
+                Reloading = true
+            end
+
+            if Reloading and ViewModel:GetCycle() >= 0.97 then
+                Reloading = false
+            end
         end
 
         -- Shake clip counter
