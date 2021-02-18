@@ -35,6 +35,9 @@ if SERVER then
 		local vel = phys:GetVelocity()
 		if vel:Length() < 50 then return end
 
+		local driver = car:GetDriver()
+		if driver == ent then return end
+
 		local hurting_obj = get_fix()
 		local dmg_info = DamageInfo()
 		dmg_info:SetAttacker(hurting_obj)
@@ -55,8 +58,7 @@ if SERVER then
 			ent.rolled_over = nil
 		end)
 
-		local driver = car:GetDriver()
-		if MTA.ShouldIncreasePlayerFactor() then
+		if MTA.ShouldIncreasePlayerFactor(driver) then
 			local factor_amount = 1
 			if MTA.HasCoeficients(ent) then
 				factor_amount = MTA.Coeficients[ent:GetClass()].kill_coef
@@ -67,7 +69,7 @@ if SERVER then
 	end
 
 	local function is_damageable_ent(ent)
-		if ent2:GetClass() == "lua_npc_wander" then return true end
+		if ent:GetClass() == "lua_npc_wander" then return true end
 		if ent:IsNPC() and ent:GetNWBool("MTACombine") then return true end
 		if ent:IsPlayer() then return true end
 
@@ -83,5 +85,13 @@ if SERVER then
 			apply_dmg(ent2, ent1)
 			return true
 		end
+	end)
+
+	hook.Add("EntityTakeDamage", "fuck", function(ent, dmg_info)
+		local inflictor = dmg_info:GetInflictor()
+		if not IsValid(inflictor) then return end
+		if not inflictor:IsVehicle() then return end
+		apply_dmg(inflictor, ent)
+		return true
 	end)
 end
