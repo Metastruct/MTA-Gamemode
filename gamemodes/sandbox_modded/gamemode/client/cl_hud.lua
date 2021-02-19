@@ -80,7 +80,7 @@ hook.Add("HUDShouldDraw", "mta_hud", function(element)
 	end
 end)
 
-MTAHud:AddComponent("hud", include("client/mta_hud/hud.lua"))
-MTAHud:AddComponent("map", include("client/mta_hud/map.lua"))
-MTAHud:AddComponent("daily_missions", include("client/mta_hud/daily_challenges.lua"))
-MTAHud:AddComponent("vault", include("client/mta_hud/vault.lua"))
+MTAHud:AddComponent("hud", include("mta_hud/hud.lua"))
+MTAHud:AddComponent("map", include("mta_hud/map.lua"))
+MTAHud:AddComponent("daily_missions", include("mta_hud/daily_challenges.lua"))
+MTAHud:AddComponent("vault", include("mta_hud/vault.lua"))
