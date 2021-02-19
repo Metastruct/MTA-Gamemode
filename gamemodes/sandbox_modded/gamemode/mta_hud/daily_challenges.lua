@@ -1,7 +1,22 @@
 local tag = "mta_daily_missions"
+
 local selected_mission_ids = {}
+local all_done = false
+local function check_completed_state()
+	all_done = true
+	for _, mission_id in pairs(selected_mission_ids) do
+		local mission = MTADailyChallenges.BaseChallenges[mission_id]
+		local progress = MTADailyChallenges.GetProgress(LocalPlayer(), mission_id)
+		if progress < mission.Completion then
+			all_done = false
+			return
+		end
+	end
+end
+
 net.Receive(tag, function()
 	selected_mission_ids = net.ReadTable()
+	check_completed_state()
 end)
 
 surface.CreateFont("MTAMissionsFont", {
@@ -33,7 +48,15 @@ local white_color = Color(255, 255, 255)
 local mat_vec = Vector()
 local mat = Matrix()
 
+local next_check = 0
 return function()
+	if all_done then return end
+
+	if CurTime() >= next_check then
+		check_completed_state()
+		next_check = CurTime() + 2
+	end
+
 	local offset_x = 300 * MTAHud.Config.ScrRatio
 	local width = 280 * MTAHud.Config.ScrRatio
 
