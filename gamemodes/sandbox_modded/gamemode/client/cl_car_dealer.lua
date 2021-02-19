@@ -1,5 +1,3 @@
-if not MTACars then return end
-
 local tag = "MTA_Car_Dealer"
 
 local selectedCar   = 1
