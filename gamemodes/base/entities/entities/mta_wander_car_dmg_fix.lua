@@ -33,7 +33,7 @@ if SERVER then
 		if not IsValid(phys) then return end
 
 		local vel = phys:GetVelocity()
-		if vel:Length() < 50 then return end
+		if vel:Length() < 500 then return end
 
 		local driver = car:GetDriver()
 		if driver == ent then return end
