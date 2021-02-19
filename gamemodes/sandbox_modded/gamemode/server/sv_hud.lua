@@ -1,8 +1,8 @@
-AddCSLuaFile("client/cl_hud.lua")
-AddCSLuaFile("client/mta_hud/hud.lua")
-AddCSLuaFile("client/mta_hud/map.lua")
-AddCSLuaFile("client/mta_hud/daily_challenges.lua")
-AddCSLuaFile("client/mta_hud/vault.lua")
+AddCSLuaFile("sandbox_modded/gamemode/client/cl_hud.lua")
+AddCSLuaFile("sandbox_modded/gamemode/client/mta_hud/hud.lua")
+AddCSLuaFile("sandbox_modded/gamemode/client/mta_hud/map.lua")
+AddCSLuaFile("sandbox_modded/gamemode/client/mta_hud/daily_challenges.lua")
+AddCSLuaFile("sandbox_modded/gamemode/client/mta_hud/vault.lua")
 
 resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vmt")
 resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
