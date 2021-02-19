@@ -1,5 +1,3 @@
-include ("cl_targetid.lua")
-
 DeriveGamemode("sandbox")
 
 GM.Name = "MTA"
