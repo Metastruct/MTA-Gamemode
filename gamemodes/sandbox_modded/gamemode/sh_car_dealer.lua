@@ -224,7 +224,7 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 		car:SetBodygroup(id, group)
 	end
 
-	for _, wheel in ipairs(ent.Wheels) do
+	for _, wheel in ipairs(car.Wheels) do
 		if IsValid(wheel) then
 			wheel.doorexploding = true
 		end
