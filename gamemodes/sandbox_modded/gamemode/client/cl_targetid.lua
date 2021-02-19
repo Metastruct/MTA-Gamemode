@@ -1,7 +1,3 @@
-AddCSLuaFile()
-
-if SERVER then return end
-
 local default_color = Color(68, 112, 146, 255)
 local black_color = Color(0, 0, 0, 255)
 

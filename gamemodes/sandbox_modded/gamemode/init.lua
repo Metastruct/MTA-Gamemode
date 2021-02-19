@@ -2,23 +2,27 @@ IS_MTA_GMA = true
 
 AddCSLuaFile("sh_init.lua")
 AddCSLuaFile("cl_init.lua")
-AddCSLuaFile("cl_outlines.lua")
-AddCSLuaFile("cl_intro.lua")
-AddCSLuaFile("sh_daily_challenges.lua")
-AddCSLuaFile("sh_gunstore.lua")
-AddCSLuaFile("sh_car_dealer.lua")
-AddCSLuaFile("cl_car_dealer.lua")
-AddCSLuaFile("sh_spawnmenu.lua")
+
+AddCSLuaFile("client/cl_outlines.lua")
+AddCSLuaFile("client/cl_targetid.lua")
+AddCSLuaFile("client/cl_intro.lua")
+AddCSLuaFile("client/cl_car_dealer.lua")
+
+AddCSLuaFile("shared/sh_daily_challenges.lua")
+AddCSLuaFile("shared/sh_gunstore.lua")
+AddCSLuaFile("shared/sh_car_dealer.lua")
+AddCSLuaFile("shared/sh_spawnmenu.lua")
 
 include("sh_init.lua")
-include("sh_daily_challenges.lua")
-include("sh_gunstore.lua")
-include("sh_car_dealer.lua")
-include("sh_spawnmenu.lua")
 
-include("sv_hud.lua")
-include("sv_zones.lua")
-include("sv_misc_map_ents.lua")
+include("shared/sh_daily_challenges.lua")
+include("shared/sh_gunstore.lua")
+include("shared/sh_car_dealer.lua")
+include("shared/sh_spawnmenu.lua")
+
+include("server/sv_hud.lua")
+include("server/sv_zones.lua")
+include("server/sv_misc_map_ents.lua")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.
