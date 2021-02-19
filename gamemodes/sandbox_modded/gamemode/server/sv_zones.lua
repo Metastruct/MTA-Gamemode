@@ -30,7 +30,20 @@ local zones = {
 				ang = Angle(0, 180, 90),
 			}
 		},
-	}
+	},
+	sewer = {
+		onlyLimiter = true,
+		limiters = {
+			{
+				pos = Vector(-5663.3862304688, 3444.435546875, 5370.1962890625),
+				ang = Angle(25, 0, 0),
+			},
+			{
+				pos = Vector(-6890, 3235, 5508.2260742188),
+				ang = Angle(0, -90, 90),
+			}
+		},
+	},
 }
 
 local function ZoneCheck(ply, zone)
@@ -55,14 +68,18 @@ MTAZones.ZoneUpdate = function(zone, ent, entered)
 end
 
 local function SpawnZone(name, data)
-	if MTAZones.Zones[name] then return end
+	--if MTAZones.Zones[name] then return end
 
-	local ent = ents.Create("zone_trigger")
-	ent:SetPos(data.pos)
-	ent:Spawn()
+	local ent
+	if not data.onlyLimiter then
+		ent = ents.Create("zone_trigger")
+		ent:SetPos(data.pos)
+		ent:Spawn()
 
-	ent.Zone = name
-	ent:SetupTriggerBox(data.mins, data.maxs)
+		ent.Zone = name
+		ent:SetupTriggerBox(data.mins, data.maxs)
+	end
+
 	MTAZones.Zones[name] = {
 		ent = ent,
 		limiters = {},
