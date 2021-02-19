@@ -2,8 +2,6 @@ if not MTACars then return end
 
 local tag = "MTA_Car_Dealer"
 
-local carAmount     = #MTACars.Config.CarList
-local curCarCost    = MTACars.GetCarPrice(1)
 local selectedCar   = 1
 local selectedColor = Color(255, 255, 255)
 local selectedBodygroups = {}
@@ -21,6 +19,7 @@ end
 local MTA_COLOR = Color(244, 136, 0)
 local WHITE = Color(255, 255, 255)
 local function CreateCarDealerUI()
+	if not MTACars then return end
 
 	local WIDTH, HEIGHT = ScrW() / 2, ScrH() / 2
 
@@ -39,6 +38,9 @@ local function CreateCarDealerUI()
 	local PRICE_LIST
 	local NEXT_CAR_BUTTON_R
 	local NEXT_CAR_BUTTON_L
+
+	local carAmount     = #MTACars.Config.CarList
+	local curCarCost    = MTACars.GetCarPrice(1)
 
 	FRAME = vgui.Create("DFrame")
 	FRAME:SetSize(WIDTH, HEIGHT)
@@ -464,7 +466,7 @@ local function DoNotice()
 end
 
 hook.Add("PreDrawOutlines", tag, function()
-	if IsValid(MTACars.CurrentVehicle) then
+	if MTACars and IsValid(MTACars.CurrentVehicle) then
 		if MTACars.CurrentVehicle:GetDriver() == LocalPlayer() then return end
 		outline.Add(MTACars.CurrentVehicle, MTA_COLOR, OUTLINE_MODE_BOTH, 4)
 	end
