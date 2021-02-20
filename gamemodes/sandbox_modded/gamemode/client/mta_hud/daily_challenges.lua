@@ -5,8 +5,8 @@ local all_done = false
 local function check_completed_state()
 	all_done = true
 	for _, mission_id in pairs(selected_mission_ids) do
-		local mission = MTADailyChallenges.BaseChallenges[mission_id]
-		local progress = MTADailyChallenges.GetProgress(LocalPlayer(), mission_id)
+		local mission = MTA.DailyChallenges.BaseChallenges[mission_id]
+		local progress = MTA.DailyChallenges.GetProgress(LocalPlayer(), mission_id)
 		if progress < mission.Completion then
 			all_done = false
 			return
@@ -83,8 +83,8 @@ return function()
 
 		local i = 1
 		for _, mission_id in pairs(selected_mission_ids) do
-			local mission = MTADailyChallenges.BaseChallenges[mission_id]
-			local progress = MTADailyChallenges.GetProgress(LocalPlayer(), mission_id)
+			local mission = MTA.DailyChallenges.BaseChallenges[mission_id]
+			local progress = MTA.DailyChallenges.GetProgress(LocalPlayer(), mission_id)
 			if progress < mission.Completion then
 				surface.SetFont("MTAMissionsFontDesc")
 				local desc = mission.Description:upper()
