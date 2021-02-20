@@ -9,13 +9,18 @@ include("sh_init.lua")
 include("client/cl_outlines.lua")
 include("client/cl_targetid.lua")
 include("client/cl_intro.lua")
-include("client/cl_car_dealer.lua")
 include("client/cl_hud.lua")
 
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_gunstore.lua")
-include("shared/sh_car_dealer.lua")
 include("shared/sh_spawnmenu.lua")
+
+-- MTA Cars
+-- these need to be included in that specific order
+do
+	include("shared/sh_car_dealer.lua")
+	include("client/cl_car_dealer.lua")
+end
 
 function GM:MTAInitialized()
 	hook.Remove("ForceDermaSkin", "derma_skin_metastruct")
