@@ -25,6 +25,8 @@ local NpcBlacklist = {
     ["_bad"] = true, -- Default return for npc without role
 }
 
+local PlayerVerticalLimit = 72
+
 local WhiteColor = Color(255, 255, 255)
 local OrangeColor = Color(244, 135, 2)
 
@@ -44,6 +46,18 @@ local PlayerTriangle = {
     { x = -7 * MTA.HUD.Config.ScrRatio, y = 18 * MTA.HUD.Config.ScrRatio },
     { x = 0, y = 0 },
     { x = 7 * MTA.HUD.Config.ScrRatio, y = 18 * MTA.HUD.Config.ScrRatio }
+}
+
+local ArrowUp = {
+    { x = -5 * MTA.HUD.Config.ScrRatio, y = 0 },
+    { x = 0, y = -7 * MTA.HUD.Config.ScrRatio },
+    { x = 5 * MTA.HUD.Config.ScrRatio, y = 0 }
+}
+
+local ArrowDown = {
+    { x = 5 * MTA.HUD.Config.ScrRatio, y = 0 },
+    { x = 0, y = 7 * MTA.HUD.Config.ScrRatio },
+    { x = -5 * MTA.HUD.Config.ScrRatio, y = 0 }
 }
 
 local function GetMapTexturePos(pos)
@@ -139,6 +153,16 @@ local function DrawMapObjects(origin)
             tri = RotatePoly(tri, -yaw, px, py)
             draw.NoTexture()
             surface.DrawPoly(tri)
+
+            if ply:GetPos().z > LocalPlayer():GetPos().z + PlayerVerticalLimit then
+                local up = TranslatePoly(ArrowUp, px, py - 20)
+                surface.DrawPoly(up)
+            end
+
+            if ply:GetPos().z < LocalPlayer():GetPos().z - PlayerVerticalLimit then
+                local down = TranslatePoly(ArrowDown, px, py + 20)
+                surface.DrawPoly(down)
+            end
         end
     end
     surface.SetDrawColor(WhiteColor)
