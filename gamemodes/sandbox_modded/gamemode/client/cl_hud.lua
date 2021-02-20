@@ -1,4 +1,4 @@
-MTAHud = {}
+local MTAHud = MTA_TABLE("HUD")
 
 MTAHud.Config = {
 	ScrRatio = ScrH() / 1080,

@@ -1,8 +1,7 @@
 local tag = "MTAZones"
-MTAZones = MTAZones or {
-	Players = {},
-	Zones = {},
-}
+local MTAZones = MTA_TABLE("Zones")
+MTAZones.Players = MTAZones.Players or {}
+MTAZones.Zones = MTAZones.Zones or {}
 
 local zones = {
 	hospital = {

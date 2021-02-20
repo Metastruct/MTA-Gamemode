@@ -1,7 +1,6 @@
 local tag = "mta_daily_missions"
 
-local MTADailyChallenges = _G.MTADailyChallenges or {}
-_G.MTADailyChallenges = MTADailyChallenges
+local MTADailyChallenges = MTA_TABLE("DailyChallenges")
 
 MTADailyChallenges.BaseChallenges = {}
 MTADailyChallenges.CurrentChallenges = MTADailyChallenges.CurrentChallenges or {}

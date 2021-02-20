@@ -1,9 +1,10 @@
-if not MTACars then return end
+if not MTA then return end
+if not MTA.Cars then return end
 
 local tag = "MTA_Car_Dealer"
 
-local carAmount     = #MTACars.Config.CarList
-local curCarCost    = MTACars.GetCarPrice(1)
+local carAmount     = #MTA.Cars.Config.CarList
+local curCarCost    = MTA.Cars.GetCarPrice(1)
 local selectedCar   = 1
 local selectedColor = Color(255, 255, 255)
 local selectedBodygroups = {}
@@ -90,12 +91,12 @@ local function CreateCarDealerUI()
 	BUY_BUTTON:Dock(BOTTOM)
 	BUY_BUTTON.Price = 0
 	function BUY_BUTTON:UpdatePrice()
-		local cost = MTACars.GetTotalPrice(selectedCar, selectedColor, selectedSkin, selectedBodygroups)
+		local cost = MTA.Cars.GetTotalPrice(selectedCar, selectedColor, selectedSkin, selectedBodygroups)
 
-		if not MTACars.CanBuy(cost) then
+		if not MTA.Cars.CanBuy(cost) then
 			self:SetDisabled(true)
 			self:SetText("Can't afford - " .. cost .. " points")
-		elseif IsValid(MTACars.CurrentCar) then
+		elseif IsValid(MTA.Cars.CurrentCar) then
 			self:SetDisabled(true)
 			self:SetText("You already own a vehicle.")
 		else
@@ -108,7 +109,7 @@ local function CreateCarDealerUI()
 	end
 
 	function BUY_BUTTON:DoClick(w, h)
-		if not MTACars.CanBuy(self.Price) then return end
+		if not MTA.Cars.CanBuy(self.Price) then return end
 		CallBuyServer()
 		FRAME:Close()
 	end
@@ -123,9 +124,9 @@ local function CreateCarDealerUI()
 
 	function PRICE_LIST:Update()
 		self:SetText("")
-		local paintPrice = MTACars.GetPaintPrice(selectedColor)
-		local skinPrice  = MTACars.GetSkinPrice(selectedSkin)
-		local partCost   = MTACars.GetModificationPrice(selectedBodygroups)
+		local paintPrice = MTA.Cars.GetPaintPrice(selectedColor)
+		local skinPrice  = MTA.Cars.GetSkinPrice(selectedSkin)
+		local partCost   = MTA.Cars.GetModificationPrice(selectedBodygroups)
 
 		self:InsertColorChange(255, 255, 255, 255)
 		self:AppendText("Rental - " .. curCarCost .. " points\n")
@@ -160,19 +161,19 @@ local function CreateCarDealerUI()
 		DESCRIPTION:SetText("")
 		DESCRIPTION:InsertColorChange(MTA_COLOR:Unpack())
 
-		local name = MTACars.GetCarName(selectedCar)
+		local name = MTA.Cars.GetCarName(selectedCar)
 		DESCRIPTION:AppendText(name .. "\n")
-		MTACars.LastCarName = name
+		MTA.Cars.LastCarName = name
 
 		DESCRIPTION:InsertColorChange(255, 255, 224, 255)
-		DESCRIPTION:AppendText(MTACars.GetCarDescription(selectedCar))
+		DESCRIPTION:AppendText(MTA.Cars.GetCarDescription(selectedCar))
 		DESCRIPTION:InsertColorChange(200, 100, 100, 255)
 		DESCRIPTION:AppendText("\nNOTE: Currently cars do not save.")
 	end
 
 	CAR_VIEW = MIDDLE_DOCK:Add("DModelPanel")
 	CAR_VIEW:Dock(FILL)
-	CAR_VIEW:SetModel(MTACars.GetCarModel(1))
+	CAR_VIEW:SetModel(MTA.Cars.GetCarModel(1))
 	CAR_VIEW.Angle = Angle()
 
 	function CAR_VIEW:LayoutEntity(ent)
@@ -244,7 +245,7 @@ local function CreateCarDealerUI()
 	}
 
 	function CAR_VIEW:ResetCar()
-		self:SetModel(MTACars.GetCarModel(selectedCar))
+		self:SetModel(MTA.Cars.GetCarModel(selectedCar))
 		DESCRIPTION:UpdateText()
 
 		STYLE_SKIN:ResetSkins()
@@ -448,7 +449,7 @@ local function DoNotice()
 		surface.DrawText(text)
 
 		-- If the car somehow vanishes
-		if not IsValid(MTACars.CurrentVehicle) then
+		if not IsValid(MTA.Cars.CurrentVehicle) then
 			hook.Remove("HUDPaint", tag)
 			return
 		end
@@ -457,16 +458,16 @@ local function DoNotice()
 		local veh = LocalPlayer():GetVehicle()
 		if not IsValid(veh) then return end
 
-		if MTACars.CurrentVehicle == veh.vehiclebase then
+		if MTA.Cars.CurrentVehicle == veh.vehiclebase then
 			hook.Remove("HUDPaint", tag)
 		end
 	end)
 end
 
 hook.Add("PreDrawOutlines", tag, function()
-	if IsValid(MTACars.CurrentVehicle) then
-		if MTACars.CurrentVehicle:GetDriver() == LocalPlayer() then return end
-		outline.Add(MTACars.CurrentVehicle, MTA_COLOR, OUTLINE_MODE_BOTH, 4)
+	if IsValid(MTA.Cars.CurrentVehicle) then
+		if MTA.Cars.CurrentVehicle:GetDriver() == LocalPlayer() then return end
+		outline.Add(MTA.Cars.CurrentVehicle, MTA_COLOR, OUTLINE_MODE_BOTH, 4)
 	end
 end)
 
@@ -476,7 +477,7 @@ net.Receive(tag, function()
 		CreateCarDealerUI()
 	else
 		local veh = net.ReadEntity()
-		MTACars.CurrentVehicle = veh
+		MTA.Cars.CurrentVehicle = veh
 		DoNotice()
 	end
 end)

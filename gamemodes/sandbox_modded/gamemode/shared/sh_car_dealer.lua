@@ -1,4 +1,4 @@
-MTACars = MTACars or {}
+MTACars = MTA_TABLE("Cars")
 MTACars.Config = {
 	CarList = {
 		[1] = {

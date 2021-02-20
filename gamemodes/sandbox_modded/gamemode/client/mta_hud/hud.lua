@@ -62,7 +62,7 @@ local ApColor = Color(49, 194, 213, 255)
 
 surface.CreateFont("Font Ammo", {
     font = "Alte Haas Grotesk",
-    size = 34 * MTAHud.Config.ScrRatio,
+    size = 34 * MTA.HUD.Config.ScrRatio,
     weight = 500,
     blursize = 0,
     scanlines = 0,
@@ -79,7 +79,7 @@ surface.CreateFont("Font Ammo", {
 
 surface.CreateFont("Font Bars", {
     font = "Alte Haas Grotesk",
-    size = 22 * MTAHud.Config.ScrRatio,
+    size = 22 * MTA.HUD.Config.ScrRatio,
     weight = 500,
     blursize = 0,
     scanlines = 0,
@@ -96,7 +96,7 @@ surface.CreateFont("Font Bars", {
 
 surface.CreateFont("Font Name", {
     font = "Alte Haas Grotesk",
-    size = 26 * MTAHud.Config.ScrRatio,
+    size = 26 * MTA.HUD.Config.ScrRatio,
     weight = 500,
     blursize = 0,
     scanlines = 0,
@@ -113,7 +113,7 @@ surface.CreateFont("Font Name", {
 
 surface.CreateFont("Font Clip", {
     font = "Orbitron",
-    size = 45 * MTAHud.Config.ScrRatio,
+    size = 45 * MTA.HUD.Config.ScrRatio,
     weight = 500,
     blursize = 0,
     scanlines = 0,
@@ -236,21 +236,21 @@ local function CalculateGainTransition(value, name, default)
     return Transition.HpGainDifference, Transition.GainAlpha
 end
 
-local HudPosXLeft = MTAHud.Config.ScrRatio * 10
-local HudPosXRight = ScrW() - (MTAHud.Config.ScrRatio * 450)
-local HudPosYLeft = ScrH() - (MTAHud.Config.ScrRatio * 190)
-local HudPosYRight = ScrH() - (MTAHud.Config.ScrRatio * 220)
+local HudPosXLeft = MTA.HUD.Config.ScrRatio * 10
+local HudPosXRight = ScrW() - (MTA.HUD.Config.ScrRatio * 450)
+local HudPosYLeft = ScrH() - (MTA.HUD.Config.ScrRatio * 190)
+local HudPosYRight = ScrH() - (MTA.HUD.Config.ScrRatio * 220)
 
 local Separated = 1
 
 local FixedAp = 0
 local BarsDigits = 1
 
-local HpBarLength = 180 * MTAHud.Config.ScrRatio
-local HpBarHeight = 18 * MTAHud.Config.ScrRatio
+local HpBarLength = 180 * MTA.HUD.Config.ScrRatio
+local HpBarHeight = 18 * MTA.HUD.Config.ScrRatio
 
 local HealthBarPercentageStartW = 50
-local HealthBarPercentageStartH = 125 * MTAHud.Config.ScrRatio
+local HealthBarPercentageStartH = 125 * MTA.HUD.Config.ScrRatio
 
 local Mat = Matrix()
 local MatVec = Vector()
@@ -331,10 +331,10 @@ return function()
 
     player.DispHealth = player:Health()
 
-    Mat:SetField(2, 1, MTAHud.Config.HudPos:GetBool() and 0.1 or -0.1)
+    Mat:SetField(2, 1, MTA.HUD.Config.HudPos:GetBool() and 0.1 or -0.1)
 
-    MatVec.x = (MTAHud.Config.HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
-    MatVec.y = (MTAHud.Config.HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
+    MatVec.x = (MTA.HUD.Config.HudPos:GetBool() and HudPosXRight or HudPosXLeft) + (MTA.HUD.Config.HudMovement:GetBool() and MTA.HUD.Vars.LastTranslateY * 2 or 0)
+    MatVec.y = (MTA.HUD.Config.HudPos:GetBool() and HudPosYRight or HudPosYLeft) + (MTA.HUD.Config.HudMovement:GetBool() and MTA.HUD.Vars.LastTranslateP * 3 or 0)
 
     Mat:SetTranslation(MatVec)
 
@@ -344,9 +344,9 @@ return function()
     if player:Alive() then
         -- Ammo background
         local x, y, w, h = HealthBarPercentageStartW,
-            HealthBarPercentageStartH - (45 * MTAHud.Config.ScrRatio),
+            HealthBarPercentageStartH - (45 * MTA.HUD.Config.ScrRatio),
             HpBarLength * 2 + (Separated * 4),
-            39 * MTAHud.Config.ScrRatio
+            39 * MTA.HUD.Config.ScrRatio
 
         surface.SetDrawColor(0, 0, 0, 150)
         surface.DrawRect(x, y, w, h)
@@ -407,7 +407,7 @@ return function()
             NextFire = 0
         end
 
-        AmmoVel = 44 / NextFire * MTAHud.Config.ScrRatio
+        AmmoVel = 44 / NextFire * MTA.HUD.Config.ScrRatio
         if AmmoVel <= 0 then
             AmmoVel = 300
         end
@@ -474,10 +474,10 @@ return function()
             AmNextTimer = CurTime() + 0.05
         end
 
-        ClipShakeH = math.Rand(-200 * MTAHud.Config.ScrRatio, 200 * MTAHud.Config.ScrRatio) * math.min(CurTime() - ClipShakeTime, 0)
-        ClipShakeW = math.Rand(-200 * MTAHud.Config.ScrRatio, 200 * MTAHud.Config.ScrRatio) * math.min(CurTime() - ClipShakeTime, 0)
-        BgClipShakeH = math.Rand(-100 * MTAHud.Config.ScrRatio, 100 * MTAHud.Config.ScrRatio) * math.min(CurTime() - BgClipShakeTime, 0)
-        BgClipShakeW = math.Rand(-100 * MTAHud.Config.ScrRatio, 100 * MTAHud.Config.ScrRatio) * math.min(CurTime() - BgClipShakeTime, 0)
+        ClipShakeH = math.Rand(-200 * MTA.HUD.Config.ScrRatio, 200 * MTA.HUD.Config.ScrRatio) * math.min(CurTime() - ClipShakeTime, 0)
+        ClipShakeW = math.Rand(-200 * MTA.HUD.Config.ScrRatio, 200 * MTA.HUD.Config.ScrRatio) * math.min(CurTime() - ClipShakeTime, 0)
+        BgClipShakeH = math.Rand(-100 * MTA.HUD.Config.ScrRatio, 100 * MTA.HUD.Config.ScrRatio) * math.min(CurTime() - BgClipShakeTime, 0)
+        BgClipShakeW = math.Rand(-100 * MTA.HUD.Config.ScrRatio, 100 * MTA.HUD.Config.ScrRatio) * math.min(CurTime() - BgClipShakeTime, 0)
 
         -- Ammo Consuption Animation
         if ((ClipNum < ClipNumNew) and (WeaponName == WeaponNameNew)) or ((AmmoNum < AmmoNumNew) and (WeaponName == WeaponNameNew) and ClipNum < 0) then
@@ -495,7 +495,7 @@ return function()
         -- Step 2: Stop shading and place bullet at bottom
         if (CurrentTimer > AmmoAnimTime) and AmmoAnimStep == 1 then
             AmmoAnimStep = 2
-            AmmoLocation = (44 * MTAHud.Config.ScrRatio)
+            AmmoLocation = (44 * MTA.HUD.Config.ScrRatio)
         end
 
         -- Reset to step 0
@@ -529,7 +529,7 @@ return function()
         -- Ammo reload animation (thanks to )
 
         if Reloading == true and AmmoAnimStep == 0 then
-            AmmoLocation = (44 * MTAHud.Config.ScrRatio) * SequenceCycle
+            AmmoLocation = (44 * MTA.HUD.Config.ScrRatio) * SequenceCycle
             AmmoFade = math.Rand(25, 75)
         end
 
@@ -561,16 +561,16 @@ return function()
 
         if Ammo > 0 then
             draw.SimpleText(Ammo, "Font Ammo",
-                HealthBarPercentageStartW + (10 * MTAHud.Config.ScrRatio) + (ClipShakeW / 2),
-                HealthBarPercentageStartH - (43 * MTAHud.Config.ScrRatio) + (ClipShakeH / 2),
+                HealthBarPercentageStartW + (10 * MTA.HUD.Config.ScrRatio) + (ClipShakeW / 2),
+                HealthBarPercentageStartH - (43 * MTA.HUD.Config.ScrRatio) + (ClipShakeH / 2),
                 WeaponAmmoColor,
                 0,
                 0
             )
         else
             draw.SimpleText("EMPTY", "Font Ammo",
-                HealthBarPercentageStartW + (10 * MTAHud.Config.ScrRatio) + (ClipShakeW / 2),
-                HealthBarPercentageStartH - (43 * MTAHud.Config.ScrRatio) + (ClipShakeH / 2),
+                HealthBarPercentageStartW + (10 * MTA.HUD.Config.ScrRatio) + (ClipShakeW / 2),
+                HealthBarPercentageStartH - (43 * MTA.HUD.Config.ScrRatio) + (ClipShakeH / 2),
                 WeaponAmmoColor,
                 0,
                 0
@@ -578,8 +578,8 @@ return function()
         end
 
         draw.SimpleText(WeaponName:upper(), "Font Name",
-            HealthBarPercentageStartW + (8 * MTAHud.Config.ScrRatio),
-            HealthBarPercentageStartH - (39 * MTAHud.Config.ScrRatio),
+            HealthBarPercentageStartW + (8 * MTA.HUD.Config.ScrRatio),
+            HealthBarPercentageStartH - (39 * MTA.HUD.Config.ScrRatio),
             WeaponNameColor,
             0,
             0
@@ -589,7 +589,7 @@ return function()
         ClipLocationLimit = (HpBarLength + (Separated * 2)) * 2
         ClipLocation = math.Clamp(Clip / MaxClip * ClipLocationLimit, 0, ClipLocationLimit + 20)
         ClipPercent = Clip / MaxClip * 100
-        ClipLocationV = HealthBarPercentageStartH - (110 * MTAHud.Config.ScrRatio)
+        ClipLocationV = HealthBarPercentageStartH - (110 * MTA.HUD.Config.ScrRatio)
 
         if (not ClipContent) then
             ClipContent = Clip
@@ -661,10 +661,10 @@ return function()
             surface.SetTexture(AmmoCountBG)
             surface.SetDrawColor(ACR, ACG, ACB, 255)
             surface.DrawTexturedRect(
-                HealthBarPercentageStartW - (36 * MTAHud.Config.ScrRatio) + ClipLocation + BgClipShakeW,
+                HealthBarPercentageStartW - (36 * MTA.HUD.Config.ScrRatio) + ClipLocation + BgClipShakeW,
                 ClipLocationV + BgClipShakeH,
-                70 * MTAHud.Config.ScrRatio,
-                54 * MTAHud.Config.ScrRatio
+                70 * MTA.HUD.Config.ScrRatio,
+                54 * MTA.HUD.Config.ScrRatio
             )
 
             -- Drawing text
@@ -695,7 +695,7 @@ return function()
                 ClipContent,
                 "Font Clip",
                 HealthBarPercentageStartW - 2 + ClipLocation + ClipShakeW + BgClipShakeW,
-                ClipLocationV + (4 * MTAHud.Config.ScrRatio) + ClipShakeH + BgClipShakeH,
+                ClipLocationV + (4 * MTA.HUD.Config.ScrRatio) + ClipShakeH + BgClipShakeH,
                 WeaponClipColor,
                 1,
                 0
@@ -705,7 +705,7 @@ return function()
                     "+" .. ClipHundred,
                     "Font Bars",
                     HealthBarPercentageStartW - 2 + ClipLocation + BgClipShakeW,
-                    ClipLocationV + (-17 * MTAHud.Config.ScrRatio) + BgClipShakeH,
+                    ClipLocationV + (-17 * MTA.HUD.Config.ScrRatio) + BgClipShakeH,
                     WeaponClipWhiteColor,
                     1,
                     0
@@ -716,10 +716,10 @@ return function()
                 surface.SetTexture(SecAmmoIcon)
                 surface.SetDrawColor(255, 255, 255, 255)
                 surface.DrawTexturedRect(
-                    HealthBarPercentageStartW + (HpBarLength * 2) + (8 * MTAHud.Config.ScrRatio),
-                    HealthBarPercentageStartH - (45 * MTAHud.Config.ScrRatio) + (i * (16 * MTAHud.Config.ScrRatio)),
-                    21 * MTAHud.Config.ScrRatio,
-                    7 * MTAHud.Config.ScrRatio
+                    HealthBarPercentageStartW + (HpBarLength * 2) + (8 * MTA.HUD.Config.ScrRatio),
+                    HealthBarPercentageStartH - (45 * MTA.HUD.Config.ScrRatio) + (i * (16 * MTA.HUD.Config.ScrRatio)),
+                    21 * MTA.HUD.Config.ScrRatio,
+                    7 * MTA.HUD.Config.ScrRatio
                 )
             end
         end
@@ -805,14 +805,14 @@ return function()
             (player.ApGainDifference / MaxAp * HpBarLength * ApRatio * 2)
     else
         if FixedAp == false then
-            ApStart = (HealthBarPercentageStartW + player.LostHealth / MaxHp * HpBarLength * HpRatio * 2) + (4 * MTAHud.Config.ScrRatio)
+            ApStart = (HealthBarPercentageStartW + player.LostHealth / MaxHp * HpBarLength * HpRatio * 2) + (4 * MTA.HUD.Config.ScrRatio)
             ApGainStart =
                 (HealthBarPercentageStartW + (player.LostHealth + player:Armor() + 2) / MaxHp * HpBarLength * HpRatio * 2 -
                 (player.ApGainDifference / MaxAp * ApRatio * 2)) -
                 (player.ApGainDifference / MaxAp * HpBarLength * ApRatio * 2)
             LostApStart = ApStart + player:Armor() / MaxAp * HpBarLength * ApRatio * 2
         else
-            ApStart = (HealthBarPercentageStartW + HpBarLength * HpRatio * 2) + (4 * MTAHud.Config.ScrRatio)
+            ApStart = (HealthBarPercentageStartW + HpBarLength * HpRatio * 2) + (4 * MTA.HUD.Config.ScrRatio)
             ApGainStart = ApStart + (player:Armor() / MaxAp * HpBarLength * ApRatio * 2) - 2 - ApGainLength
             LostApStart = ApStart + player:Armor() / MaxAp * HpBarLength * ApRatio * 2
         end
@@ -904,24 +904,24 @@ return function()
         surface.SetDrawColor(244, 135, 2)
         surface.DrawTexturedRect(
             HealthBarPercentageStartW,
-            HealthBarPercentageStartH + (23 * MTAHud.Config.ScrRatio),
-            18 * MTAHud.Config.ScrRatio,
-            18 * MTAHud.Config.ScrRatio
+            HealthBarPercentageStartH + (23 * MTA.HUD.Config.ScrRatio),
+            18 * MTA.HUD.Config.ScrRatio,
+            18 * MTA.HUD.Config.ScrRatio
         )
 
         draw.SimpleText(
             player:Health(),
             "Font Bars",
             HealthBarPercentageStartW + 30,
-            HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio)
+            HealthBarPercentageStartH + (20 * MTA.HUD.Config.ScrRatio)
         )
 
         if player.HpGainDifference > 0 then
             draw.SimpleText(
                 "+" .. player.HpGainDifference,
                 "Font Bars",
-                HealthBarPercentageStartW + (4 * MTAHud.Config.ScrRatio),
-                HealthBarPercentageStartH + (-3 * MTAHud.Config.ScrRatio),
+                HealthBarPercentageStartW + (4 * MTA.HUD.Config.ScrRatio),
+                HealthBarPercentageStartH + (-3 * MTA.HUD.Config.ScrRatio),
                 HpGainColor,
                 0,
                 0
@@ -932,8 +932,8 @@ return function()
             draw.SimpleText(
                 player:Health(),
                 "Font Bars",
-                HealthBarPercentageStartW + (22 * MTAHud.Config.ScrRatio),
-                HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio),
+                HealthBarPercentageStartW + (22 * MTA.HUD.Config.ScrRatio),
+                HealthBarPercentageStartH + (20 * MTA.HUD.Config.ScrRatio),
                 HealthColor,
                 0,
                 0
@@ -950,25 +950,25 @@ return function()
             surface.SetTexture(ApIcon)
             surface.SetDrawColor(244, 135, 2)
             surface.DrawTexturedRect(
-                math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTAHud.Config.ScrRatio), 100000),
-                HealthBarPercentageStartH + (23 * MTAHud.Config.ScrRatio),
-                18 * MTAHud.Config.ScrRatio,
-                18 * MTAHud.Config.ScrRatio
+                math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTA.HUD.Config.ScrRatio), 100000),
+                HealthBarPercentageStartH + (23 * MTA.HUD.Config.ScrRatio),
+                18 * MTA.HUD.Config.ScrRatio,
+                18 * MTA.HUD.Config.ScrRatio
             )
 
             draw.SimpleText(
                 player:Armor(),
                 "Font Bars",
-                math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTAHud.Config.ScrRatio), 100000) + 30,
-                HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio)
+                math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTA.HUD.Config.ScrRatio), 100000) + 30,
+                HealthBarPercentageStartH + (20 * MTA.HUD.Config.ScrRatio)
             )
 
             if player.ApGainDifference > 0 then
                 draw.SimpleText(
                     "+" .. player.ApGainDifference,
                     "Font Bars",
-                    ApStart + (4 * MTAHud.Config.ScrRatio),
-                    HealthBarPercentageStartH + (-3 * MTAHud.Config.ScrRatio),
+                    ApStart + (4 * MTA.HUD.Config.ScrRatio),
+                    HealthBarPercentageStartH + (-3 * MTA.HUD.Config.ScrRatio),
                     ApGainColor,
                     0,
                     0
@@ -979,8 +979,8 @@ return function()
                 draw.SimpleText(
                     player:Armor(),
                     "Font Bars",
-                    math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTAHud.Config.ScrRatio), 100000) + (22 * MTAHud.Config.ScrRatio),
-                    HealthBarPercentageStartH + (20 * MTAHud.Config.ScrRatio),
+                    math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTA.HUD.Config.ScrRatio), 100000) + (22 * MTA.HUD.Config.ScrRatio),
+                    HealthBarPercentageStartH + (20 * MTA.HUD.Config.ScrRatio),
                     ApColor,
                     0,
                     0
