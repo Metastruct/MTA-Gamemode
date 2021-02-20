@@ -30,6 +30,9 @@ local PlayerVerticalLimit = 72
 local WhiteColor = Color(255, 255, 255)
 local OrangeColor = Color(244, 135, 2)
 
+local ArrowUpColor = Color(100, 255, 100)
+local ArrowDownColor = Color(255, 100, 100)
+
 local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 
 local MapPosXLeft = MTA.HUD.Config.ScrRatio * 30
@@ -144,7 +147,7 @@ local function DrawMapObjects(origin)
         end
     end
 
-    surface.SetDrawColor(OrangeColor)
+    --surface.SetDrawColor(OrangeColor)
     for _, ply in ipairs(player.GetAll()) do
         if ply ~= LocalPlayer() and ply:Alive() then
             local yaw = ply:EyeAngles().yaw
@@ -152,15 +155,18 @@ local function DrawMapObjects(origin)
             local tri = TranslatePoly(PlayerTriangle, px, py - 10)
             tri = RotatePoly(tri, -yaw, px, py)
             draw.NoTexture()
+            surface.SetDrawColor(OrangeColor)
             surface.DrawPoly(tri)
 
             if ply:GetPos().z > LocalPlayer():GetPos().z + PlayerVerticalLimit then
                 local up = TranslatePoly(ArrowUp, px, py - 20)
+                surface.SetDrawColor(ArrowUpColor)
                 surface.DrawPoly(up)
             end
 
             if ply:GetPos().z < LocalPlayer():GetPos().z - PlayerVerticalLimit then
                 local down = TranslatePoly(ArrowDown, px, py + 20)
+                surface.SetDrawColor(ArrowDownColor)
                 surface.DrawPoly(down)
             end
         end
