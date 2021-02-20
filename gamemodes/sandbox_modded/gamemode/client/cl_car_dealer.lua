@@ -462,7 +462,7 @@ local function DoNotice()
 		local veh = LocalPlayer():GetVehicle()
 		if not IsValid(veh) then return end
 
-		if MTA.Cars.CurrentVehicle == veh.vehiclebase then
+		if MTA and MTA.Cars.CurrentVehicle == veh.vehiclebase then
 			hook.Remove("HUDPaint", tag)
 		end
 	end)
