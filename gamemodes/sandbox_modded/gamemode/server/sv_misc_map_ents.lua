@@ -108,7 +108,7 @@ local function CreateCrate(pos)
 	ent:CallOnRemove("crate_gone", function(self)
 		if self.doRespawn then
 			timer.Simple(math.Rand(respawnTime[1], respawnTime[2]), function()
-				MakeCrate(pos)
+				CreateCrate(pos)
 			end)
 		end
 	end)
