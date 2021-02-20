@@ -193,7 +193,7 @@ local function create_subtitles()
 	local panel = vgui.Create("DPanel")
 	panel:Dock(BOTTOM)
 
-	local margin = 10 * MTAHud.Config.ScrRatio
+	local margin = 10 * MTA.HUD.Config.ScrRatio
 	local label = panel:Add("DLabel")
 	label:SetTextColor(Color(255, 255, 255))
 	label:SetFont("MTAIntroFont")
@@ -208,7 +208,7 @@ local function create_subtitles()
 	space_notif:SetTextColor(Color(244, 135, 2))
 	space_notif:SetFont("MTAIntroFont")
 	space_notif:SetText("Press space to continue...")
-	space_notif:SetTall(32 * MTAHud.Config.ScrRatio)
+	space_notif:SetTall(32 * MTA.HUD.Config.ScrRatio)
 
 	function panel:Think()
 		self:SetTall(self.Label:GetTall() + margin * 4)
@@ -243,7 +243,7 @@ local function init_intro()
 
 	surface.CreateFont("MTAIntroFont", {
 		font = "Alte Haas Grotesk",
-		size = 32 * MTAHud.Config.ScrRatio,
+		size = 32 * MTA.HUD.Config.ScrRatio,
 		weight = 600,
 		shadow = false,
 		extended = true,

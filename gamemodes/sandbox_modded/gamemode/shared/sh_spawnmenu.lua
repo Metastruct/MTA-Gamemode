@@ -242,8 +242,8 @@ if CLIENT then
 			surface.SetDrawColor(white_color)
 
 			-- Draw your vehicle on the map
-			if MTACars then
-				local curVehicle = MTACars.CurrentVehicle
+			if MTA.Cars then
+				local curVehicle = MTA.Cars.CurrentVehicle
 				if IsValid(curVehicle) and curVehicle:GetDriver() ~= LocalPlayer() then
 					local px, py = self:GetMapDrawPos(origin, curVehicle:GetPos())
 					surface.SetMaterial(VehicleIcon)

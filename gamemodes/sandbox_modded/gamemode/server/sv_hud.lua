@@ -15,7 +15,7 @@ resource.AddFile("materials/vgui/mta_hud/business_icon.png")
 resource.AddFile("resource/fonts/altehaasgroteskbold.ttf")
 resource.AddFile("resource/fonts/orbitron black.ttf")
 
--- MTACars
+-- MTA Cars
 resource.AddFile("materials/vgui/mta_hud/garage_icon.png")
 resource.AddFile("materials/vgui/mta_hud/vehicle_icon.png")
 

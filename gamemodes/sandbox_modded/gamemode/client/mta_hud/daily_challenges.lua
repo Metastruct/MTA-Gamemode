@@ -21,7 +21,7 @@ end)
 
 surface.CreateFont("MTAMissionsFont", {
 	font = "Orbitron",
-	size = 20 * MTAHud.Config.ScrRatio,
+	size = 20 * MTA.HUD.Config.ScrRatio,
 	weight = 600,
 	shadow = false,
 	extended = true,
@@ -29,7 +29,7 @@ surface.CreateFont("MTAMissionsFont", {
 
 surface.CreateFont("MTAMissionsFontDesc", {
 	font = "Alte Haas Grotesk",
-	size = 20 * MTAHud.Config.ScrRatio,
+	size = 20 * MTA.HUD.Config.ScrRatio,
 	weight = 600,
 	shadow = false,
 	extended = true,
@@ -37,7 +37,7 @@ surface.CreateFont("MTAMissionsFontDesc", {
 
 surface.CreateFont("MTAMissionsFontTitle", {
 	font = "Alte Haas Grotesk",
-	size = 30 * MTAHud.Config.ScrRatio,
+	size = 30 * MTA.HUD.Config.ScrRatio,
 	weight = 600,
 	shadow = false,
 	extended = true,
@@ -57,24 +57,24 @@ return function()
 		next_check = CurTime() + 2
 	end
 
-	local offset_x = 300 * MTAHud.Config.ScrRatio
-	local width = 280 * MTAHud.Config.ScrRatio
+	local offset_x = 300 * MTA.HUD.Config.ScrRatio
+	local width = 280 * MTA.HUD.Config.ScrRatio
 
 	mat:SetField(2, 1, 0.10)
 
-	mat_vec.x = (-25 * MTAHud.Config.ScrRatio) + (MTAHud.Vars.LastTranslateY * 2)
-	mat_vec.y = (-25 * MTAHud.Config.ScrRatio) + (MTAHud.Vars.LastTranslateP * 3)
+	mat_vec.x = (-25 * MTA.HUD.Config.ScrRatio) + (MTA.HUD.Vars.LastTranslateY * 2)
+	mat_vec.y = (-25 * MTA.HUD.Config.ScrRatio) + (MTA.HUD.Vars.LastTranslateP * 3)
 
 	mat:SetTranslation(mat_vec)
 
 	cam.PushModelMatrix(mat)
-		local margin = 5 * MTAHud.Config.ScrRatio
-		local title_x, title_y = ScrW() - offset_x, ScrH() / 2 - 50 * MTAHud.Config.ScrRatio
+		local margin = 5 * MTA.HUD.Config.ScrRatio
+		local title_x, title_y = ScrW() - offset_x, ScrH() / 2 - 50 * MTA.HUD.Config.ScrRatio
 		surface.SetDrawColor(0, 0, 0, 150)
-		surface.DrawRect(title_x - margin, title_y - margin, width, 40 * MTAHud.Config.ScrRatio)
+		surface.DrawRect(title_x - margin, title_y - margin, width, 40 * MTA.HUD.Config.ScrRatio)
 
 		surface.SetDrawColor(orange_color)
-		surface.DrawOutlinedRect(title_x - margin, title_y - margin, width, 40 * MTAHud.Config.ScrRatio, 2)
+		surface.DrawOutlinedRect(title_x - margin, title_y - margin, width, 40 * MTA.HUD.Config.ScrRatio, 2)
 
 		surface.SetTextColor(color_white)
 		surface.SetTextPos(title_x + margin, title_y)
@@ -88,9 +88,9 @@ return function()
 			if progress < mission.Completion then
 				surface.SetFont("MTAMissionsFontDesc")
 				local desc = mission.Description:upper()
-				local x, y = ScrW() - offset_x, ScrH() / 2 + (60 * (i -1) * MTAHud.Config.ScrRatio)
+				local x, y = ScrW() - offset_x, ScrH() / 2 + (60 * (i -1) * MTA.HUD.Config.ScrRatio)
 				surface.SetDrawColor(0, 0, 0, 150)
-				surface.DrawRect(x - margin, y - margin, width, 50 * MTAHud.Config.ScrRatio)
+				surface.DrawRect(x - margin, y - margin, width, 50 * MTA.HUD.Config.ScrRatio)
 
 				surface.SetTextColor(white_color)
 				surface.SetTextPos(x, y)
@@ -98,16 +98,16 @@ return function()
 
 				surface.SetFont("MTAMissionsFont")
 				surface.SetTextColor(orange_color)
-				surface.SetTextPos(x, y + 20 * MTAHud.Config.ScrRatio)
+				surface.SetTextPos(x, y + 20 * MTA.HUD.Config.ScrRatio)
 				surface.DrawText(("%d/%d"):format(progress, mission.Completion))
 
 				local points = mission.Reward .. "pts"
 				local tw, _ = surface.GetTextSize(points)
-				surface.SetTextPos(x + width - (tw + 10 * MTAHud.Config.ScrRatio), y + 20 * MTAHud.Config.ScrRatio)
+				surface.SetTextPos(x + width - (tw + 10 * MTA.HUD.Config.ScrRatio), y + 20 * MTA.HUD.Config.ScrRatio)
 				surface.DrawText(points)
 
 				surface.SetDrawColor(orange_color)
-				surface.DrawLine(x - margin, y + 45 * MTAHud.Config.ScrRatio, x + width - margin, y + 45 * MTAHud.Config.ScrRatio)
+				surface.DrawLine(x - margin, y + 45 * MTA.HUD.Config.ScrRatio, x + width - margin, y + 45 * MTA.HUD.Config.ScrRatio)
 
 				i = i + 1
 			end

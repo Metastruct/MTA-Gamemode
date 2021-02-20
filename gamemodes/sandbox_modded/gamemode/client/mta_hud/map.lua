@@ -7,7 +7,7 @@ local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
 --local DoshIcon = Material("vgui/mta_hud/points_icon.png") -- Unused right now
 local PointsIcon = Material("vgui/mta_hud/cp_icon.png")
 
-local IconSize = 30 * MTAHud.Config.ScrRatio
+local IconSize = 30 * MTA.HUD.Config.ScrRatio
 local IconOffset = IconSize * 0.5
 
 -- Scale it up a bit since it looks smaller then the other icons
@@ -30,20 +30,20 @@ local OrangeColor = Color(244, 135, 2)
 
 local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 
-local MapPosXLeft = MTAHud.Config.ScrRatio * 30
-local MapPosXRight = ScrW() - (MTAHud.Config.ScrRatio * 280)
-local MapPosYLeft = MTAHud.Config.ScrRatio * 30
-local MapPosYRight = MTAHud.Config.ScrRatio * 50
+local MapPosXLeft = MTA.HUD.Config.ScrRatio * 30
+local MapPosXRight = ScrW() - (MTA.HUD.Config.ScrRatio * 280)
+local MapPosYLeft = MTA.HUD.Config.ScrRatio * 30
+local MapPosYRight = MTA.HUD.Config.ScrRatio * 50
 
-local MapW = 250 * MTAHud.Config.ScrRatio
-local MapH = 250 * MTAHud.Config.ScrRatio
-local MapZoom = MTAHud.Config.ScrRatio * 50
+local MapW = 250 * MTA.HUD.Config.ScrRatio
+local MapH = 250 * MTA.HUD.Config.ScrRatio
+local MapZoom = MTA.HUD.Config.ScrRatio * 50
 
 local PlayerTriangle = {
-    { x = 0, y = 13 * MTAHud.Config.ScrRatio },
-    { x = -7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio },
+    { x = 0, y = 13 * MTA.HUD.Config.ScrRatio },
+    { x = -7 * MTA.HUD.Config.ScrRatio, y = 18 * MTA.HUD.Config.ScrRatio },
     { x = 0, y = 0 },
-    { x = 7 * MTAHud.Config.ScrRatio, y = 18 * MTAHud.Config.ScrRatio }
+    { x = 7 * MTA.HUD.Config.ScrRatio, y = 18 * MTA.HUD.Config.ScrRatio }
 }
 
 local function GetMapTexturePos(pos)
@@ -121,8 +121,8 @@ local function DrawMapObjects(origin)
     end
 
     -- Draw your vehicle on the map
-    if MTACars then
-        local curVehicle = MTACars.CurrentVehicle
+    if MTA.Cars then
+        local curVehicle = MTA.Cars.CurrentVehicle
         if IsValid(curVehicle) and curVehicle:GetDriver() ~= LocalPlayer() then
             local px, py = GetMapDrawPos(origin, curVehicle:GetPos())
             surface.SetMaterial(VehicleIcon)
@@ -144,14 +144,14 @@ local function DrawMapObjects(origin)
     surface.SetDrawColor(WhiteColor)
 end
 
-if IsValid(MTAHud.Vars.MapPanel) then MTAHud.Vars.MapPanel:Remove() end
+if IsValid(MTA.HUD.Vars.MapPanel) then MTA.HUD.Vars.MapPanel:Remove() end
 
-MTAHud.Vars.MapPanel = vgui.Create("Panel")
-MTAHud.Vars.MapPanel:SetSize(MapW, MapH)
-MTAHud.Vars.MapPanel:SetPaintedManually(true)
-MTAHud.Vars.MapPanel:SetKeyboardInputEnabled(false)
-MTAHud.Vars.MapPanel:SetMouseInputEnabled(false)
-MTAHud.Vars.MapPanel.Paint = function(self, w, h)
+MTA.HUD.Vars.MapPanel = vgui.Create("Panel")
+MTA.HUD.Vars.MapPanel:SetSize(MapW, MapH)
+MTA.HUD.Vars.MapPanel:SetPaintedManually(true)
+MTA.HUD.Vars.MapPanel:SetKeyboardInputEnabled(false)
+MTA.HUD.Vars.MapPanel:SetMouseInputEnabled(false)
+MTA.HUD.Vars.MapPanel.Paint = function(self, w, h)
     local lp_pos = LocalPlayer():GetPos()
     local yaw = -EyeAngles().y
 
@@ -168,7 +168,7 @@ MTAHud.Vars.MapPanel.Paint = function(self, w, h)
 
     DrawMapObjects(lp_pos)
 
-    local tri = TranslatePoly(PlayerTriangle, w / 2, h / 2 - (10 * MTAHud.Config.ScrRatio))
+    local tri = TranslatePoly(PlayerTriangle, w / 2, h / 2 - (10 * MTA.HUD.Config.ScrRatio))
     tri = RotatePoly(tri, yaw, w / 2, h / 2)
     draw.NoTexture()
     surface.DrawPoly(tri)
@@ -181,23 +181,23 @@ local Mat = Matrix()
 local MatVec = Vector()
 
 return function()
-    Mat:SetField(2, 1, MTAHud.Config.MapPos:GetBool() and -0.08 or 0.08)
+    Mat:SetField(2, 1, MTA.HUD.Config.MapPos:GetBool() and -0.08 or 0.08)
 
-    MatVec.x = (MTAHud.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateY * 2 or 0)
-    MatVec.y = (MTAHud.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTAHud.Config.HudMovement:GetBool() and MTAHud.Vars.LastTranslateP * 3 or 0)
+    MatVec.x = (MTA.HUD.Config.MapPos:GetBool() and MapPosXRight or MapPosXLeft) + (MTA.HUD.Config.HudMovement:GetBool() and MTA.HUD.Vars.LastTranslateY * 2 or 0)
+    MatVec.y = (MTA.HUD.Config.MapPos:GetBool() and MapPosYRight or MapPosYLeft) + (MTA.HUD.Config.HudMovement:GetBool() and MTA.HUD.Vars.LastTranslateP * 3 or 0)
 
     Mat:SetTranslation(MatVec)
 
     cam.PushModelMatrix(Mat)
-        MTAHud.Vars.MapPanel:PaintManual()
+        MTA.HUD.Vars.MapPanel:PaintManual()
 
         surface.SetMaterial(PointsIcon)
         surface.SetDrawColor(255, 255, 255, 180)
-        surface.DrawTexturedRect(0, MapH + (10 * MTAHud.Config.ScrRatio), IconSize, IconSize)
+        surface.DrawTexturedRect(0, MapH + (10 * MTA.HUD.Config.ScrRatio), IconSize, IconSize)
 
         surface.SetFont("MTAMissionsFontDesc")
         surface.SetTextColor(WhiteColor)
-        surface.SetTextPos(IconSize + (10 * MTAHud.Config.ScrRatio), MapH + (12 * MTAHud.Config.ScrRatio))
+        surface.SetTextPos(IconSize + (10 * MTA.HUD.Config.ScrRatio), MapH + (12 * MTA.HUD.Config.ScrRatio))
         surface.DrawText(MTA.GetPlayerStat("points"))
     cam.PopModelMatrix()
 end
