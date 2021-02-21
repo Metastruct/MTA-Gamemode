@@ -102,11 +102,11 @@ local function SpawnZone(name, data)
 			ent = {}
 			for _, zdata in ipairs(data.zones) do
 				local _ent = ents.Create("zone_trigger")
-				_ent:SetPos(data.pos)
+				_ent:SetPos(zdata.pos)
 				_ent:Spawn()
 
 				_ent.Zone = name
-				_ent:SetupTriggerBox(data.mins, data.maxs)
+				_ent:SetupTriggerBox(zdata.mins, zdata.maxs)
 				table.insert(ent, _ent)
 			end
 		else
@@ -138,7 +138,7 @@ local function SpawnZones()
 		SpawnZone(zone, data)
 	end
 end
-
+SpawnZones()
 hook.Add("PlayerShouldTakeDamage", tag, function(ply, attacker)
 	if attacker:IsPlayer() and MTAZones.Players[ply] then return false end
 end)
