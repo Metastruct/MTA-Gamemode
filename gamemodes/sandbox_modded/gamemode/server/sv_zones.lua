@@ -1,6 +1,7 @@
 local tag = "MTAZones"
 local MTAZones = MTA_TABLE("Zones")
 MTAZones.Players = MTAZones.Players or {}
+MTAZones.PlayersZoneEntity = MTAZones.PlayerZones or {}
 MTAZones.Zones = MTAZones.Zones or {}
 
 local zones = {
@@ -30,23 +31,23 @@ local zones = {
 			}
 		},
 	},
-	spawnArea = {
+	spawnarea = {
 		zones = {
 			{
-				mins = Vector(-600, -500, 0),
-				maxs = Vector(500, 500, 450),
-				pos  = Vector(5622.3896484375, 1560, 5025),
+				mins = Vector(-600, -650, 0),
+				maxs = Vector(500, 400, 450),
+				pos  = Vector(5622.3896484375, -1560, 5025),
 			},
 			{
 				mins = Vector(-500, -500, -50),
-				maxs =  Vector(500, 550, 256),
-				pos = Vector(5584.6279296875, -1560, 4800),
+				maxs = Vector(500, 550, 224),
+				pos = Vector(5585, -1560, 4800),
 			},
 		},
 		limiters = {
 			{
-				pos = Vector(5335, -1175, 5435),
-				ang = Angle(0, 180, 90),
+				pos = Vector(5335, -1175, 5425),
+				ang = Angle(0, 180, 45),
 			},
 		},
 	},
@@ -78,16 +79,25 @@ local function ZoneCheck(ply, zone)
 	end
 end
 
-MTAZones.ZoneUpdate = function(zone, ent, entered)
+MTAZones.ZoneUpdate = function(zone, ent, entered, zoneEnt)
 	if ent:IsPlayer() then
 		if entered then
 			if zone == "" then return end --Default zone name
 
 			ZoneCheck(ent, zone)
 			MTAZones.Players[ent] = zone
+			MTAZones.PlayersZoneEntity[ent] = MTAZones.PlayersZoneEntity[ent] or {}
+			MTAZones.PlayersZoneEntity[ent][zoneEnt] = true
 		else
-			--print(ent, zone, "exit")
-			MTAZones.Players[ent] = nil
+			if MTAZones.PlayersZoneEntity[ent] then
+				MTAZones.PlayersZoneEntity[ent][zoneEnt] = nil
+
+				if table.IsEmpty(MTAZones.PlayersZoneEntity[ent]) then
+					MTAZones.Players[ent] = nil
+				end
+			else
+				MTAZones.Players[ent] = nil
+			end
 		end
 	end
 end

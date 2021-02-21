@@ -25,11 +25,11 @@ function ENT:Initialize()
 end
 
 function ENT:StartTouch(ent)
-	MTA.Zones.ZoneUpdate(self.Zone, ent, true)
+	MTA.Zones.ZoneUpdate(self.Zone, ent, true, self)
 end
 
 function ENT:EndTouch(ent)
-	MTA.Zones.ZoneUpdate(self.Zone, ent, false)
+	MTA.Zones.ZoneUpdate(self.Zone, ent, false, self)
 end
 
 function ENT:Touch(ent)
