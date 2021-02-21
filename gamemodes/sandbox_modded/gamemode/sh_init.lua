@@ -203,6 +203,11 @@ if SERVER then
 		set_cvars()
 	end
 
+	function GM:PlayerInitialSpawn(ply, transiton)
+		BaseClass.PlayerInitialSpawn(self, ply, transiton)
+		ply.noleap = true
+	end
+
 	local HOSTNAMES = {
 		"Almost like DarkRP",
 		"PayDay 3",
