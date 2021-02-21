@@ -21,6 +21,7 @@ if SERVER then
 		"PlayerSpawnEffect", "PlayerSpawnNPC", "PlayerSpawnObject", "PlayerSpawnProp",
 		"PlayerSpawnSENT", "PlayerSpawnSWEP", "PlayerSpawnVehicle", "PlayerNoClip", "PlayerGiveSWEP",
 		"CanSSJump", "AowlGiveAmmo", "CanPlyTeleport", "CanBoxify", "PlayerFly", "CanPlyGoBack",
+		"Watt.CanPerformAction",
 	}
 
 	for _, hook_name in pairs(DENIED_HOOKS) do
