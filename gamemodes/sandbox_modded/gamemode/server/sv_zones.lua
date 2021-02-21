@@ -30,6 +30,26 @@ local zones = {
 			}
 		},
 	},
+	spawnArea = {
+		zones = {
+			{
+				mins = Vector(-600, -500, 0),
+				maxs = Vector(500, 500, 450),
+				pos  = Vector(5622.3896484375, 1560, 5025),
+			},
+			{
+				mins = Vector(-500, -500, -50),
+				maxs =  Vector(500, 550, 256),
+				pos = Vector(5584.6279296875, -1560, 4800),
+			},
+		},
+		limiters = {
+			{
+				pos = Vector(5335, -1175, 5435),
+				ang = Angle(0, 180, 90),
+			},
+		},
+	},
 	misc = {
 		onlyLimiter = true,
 		limiters = {
@@ -77,12 +97,26 @@ local function SpawnZone(name, data)
 
 	local ent
 	if not data.onlyLimiter then
-		ent = ents.Create("zone_trigger")
-		ent:SetPos(data.pos)
-		ent:Spawn()
 
-		ent.Zone = name
-		ent:SetupTriggerBox(data.mins, data.maxs)
+		if data.zones then
+			ent = {}
+			for _, zdata in ipairs(data.zones) do
+				local _ent = ents.Create("zone_trigger")
+				_ent:SetPos(data.pos)
+				_ent:Spawn()
+
+				_ent.Zone = name
+				_ent:SetupTriggerBox(data.mins, data.maxs)
+				table.insert(ent, _ent)
+			end
+		else
+			ent = ents.Create("zone_trigger")
+			ent:SetPos(data.pos)
+			ent:Spawn()
+
+			ent.Zone = name
+			ent:SetupTriggerBox(data.mins, data.maxs)
+		end
 	end
 
 	MTAZones.Zones[name] = {
