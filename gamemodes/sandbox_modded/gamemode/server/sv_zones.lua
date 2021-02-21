@@ -138,7 +138,7 @@ local function SpawnZones()
 		SpawnZone(zone, data)
 	end
 end
-SpawnZones()
+
 hook.Add("PlayerShouldTakeDamage", tag, function(ply, attacker)
 	if attacker:IsPlayer() and MTAZones.Players[ply] then return false end
 end)
