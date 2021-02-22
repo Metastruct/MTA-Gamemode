@@ -119,8 +119,8 @@ if CLIENT then
 	})
 
 	surface.CreateFont("MTALeaderboardFont", {
-		font = "Orbitron",
-		size = 13,
+		font = "Open Sans",
+		size = 20,
 		weight = 300,
 		shadow = false,
 		extended = true,
@@ -290,36 +290,39 @@ if CLIENT then
 			surface.DrawRect(0, 0, w, h)
 			surface.SetDrawColor(orange_color)
 			surface.DrawOutlinedRect(0, 0, w, h)
+			surface.DrawOutlinedRect(1, 1, w - 2, h - 2)
 
 			-- header
 			do
-				surface.DrawRect(0, 0, w, 25)
+				surface.DrawRect(0, 0, w, 32)
 
 				surface.SetTextColor(white_color)
 				surface.SetFont("DermaLarge")
-				surface.SetTextPos(7, -2)
+				surface.SetTextPos(7, 1)
 				surface.DrawText("LEADERBOARD")
 			end
 
 			do -- column headers
-				surface.DrawLine(0, 45, w, 45)
+				surface.DrawLine(0, 59, w, 59)
+				surface.DrawLine(0, 60, w, 60)
 				surface.DrawLine(w / 3 * 2, 25, w / 3 * 2, h)
+				surface.DrawLine(w / 3 * 2 + 1, 25, w / 3 * 2 +1, h)
 
 				surface.SetFont("MTALeaderboardFont")
 
-				surface.SetTextPos(7, 28)
+				surface.SetTextPos(7, 36)
 				surface.DrawText("Name")
 
-				surface.SetTextPos(w / 3 * 2 + 10, 28)
+				surface.SetTextPos(w / 3 * 2 + 10, 36)
 				surface.DrawText("Prestige")
 			end
 
 			do -- columns
 				for i, data in ipairs(top_20 or {}) do
-					surface.SetTextPos(7, 40 + (12 * i))
+					surface.SetTextPos(7, 45 + (19 * i))
 					surface.DrawText(data.Name)
 
-					surface.SetTextPos(w / 3 * 2 + 10, 40 + (12 * i))
+					surface.SetTextPos(w / 3 * 2 + 10, 45 + (19 * i))
 					surface.DrawText(data.Level)
 				end
 			end
@@ -372,14 +375,25 @@ if CLIENT then
 			add_ply_info(("%d CPs"):format(MTA.GetPlayerStat("points")))
 
 			if LocalPlayer().GetCoins then
-				add_ply_info(("%d c"):format(LocalPlayer():GetCoins()))
+				add_ply_info(("%s c"):format(string.NiceNumber(LocalPlayer():GetCoins())))
 			end
 		end
 
 		local sheet = self:Add("DPropertySheet")
 		sheet:Dock(FILL)
 		sheet:DockMargin(0, 50 * ratio_h, 5 * ratio_w, 5 * ratio_h)
-		function sheet:Paint() end
+		function sheet:Paint(w) end
+
+		local function tab_paint(self, w, h)
+			if sheet:GetActiveTab() ~= self then return end
+
+			surface.SetDrawColor(0, 0, 0, 150)
+			surface.DrawRect(0, 0, w, h)
+
+			surface.SetDrawColor(orange_color)
+			surface.DrawLine(0, 0, w, 0)
+			surface.DrawLine(0, 1, w, 1)
+		end
 
 		do
 			local map_panel = vgui.Create("DPanel")
@@ -399,13 +413,13 @@ if CLIENT then
 				local _, th = surface.GetTextSize(text)
 
 				surface.SetTextColor(white_color)
-				surface.SetTextPos(base_x + IconSize + (20 * ratio_w), (y * ratio_h) + (IconSize / 2 - th / 2))
+				surface.SetTextPos(base_x + IconSize + 20 * ratio_w, (y * ratio_h) + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
 
 			function map_panel:DrawArrowLegend(text, color, y)
 				local base_x = map:GetWide()
-				local tri = map:TranslatePoly(PlayerTriangle, base_x + (25 * ratio_w), (y * ratio_h) + (10 * ratio_h))
+				local tri = map:TranslatePoly(PlayerTriangle, base_x + (25 * ratio_w), (y * ratio_h))
 
 				surface.SetDrawColor(color)
 				draw.NoTexture()
@@ -415,7 +429,7 @@ if CLIENT then
 				local _, th = surface.GetTextSize(text)
 
 				surface.SetTextColor(white_color)
-				surface.SetTextPos(base_x + IconSize + (20 * ratio_w), (y * ratio_h) + (IconSize / 2 - th / 2))
+				surface.SetTextPos(base_x + IconSize + 20 * ratio_w, y * ratio_h + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
 
@@ -436,11 +450,13 @@ if CLIENT then
 			end
 
 			local sheet_data = sheet:AddSheet("Map", map_panel)
+			sheet_data.Tab.Paint = tab_paint
 			sheet_data.Panel:SetWide(sheet:GetWide())
 		end
 
 		--sheet:AddSheet("Inventory", vgui.Create("DPanel"))
-		sheet:AddSheet("Leaderboard", vgui.Create("mta_leaderboard"))
+		local tab = sheet:AddSheet("Leaderboard", vgui.Create("mta_leaderboard"))
+		tab.Tab.Paint = tab_paint
 	end
 
 	function PANEL:Think()
