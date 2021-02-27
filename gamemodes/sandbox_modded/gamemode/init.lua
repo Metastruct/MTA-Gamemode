@@ -29,6 +29,7 @@ include("shared/sh_spawnmenu.lua")
 include("server/sv_hud.lua")
 include("server/sv_zones.lua")
 include("server/sv_misc_map_ents.lua")
+include("server/hunter_model.lua")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.
