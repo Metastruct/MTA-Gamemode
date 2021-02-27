@@ -207,7 +207,7 @@ if SERVER then
 	end
 
 	function GM:PlayerInitialSpawn(ply, transiton)
-		BaseClass.PlayerInitialSpawn(self, ply, transiton)
+		self.BaseClass.PlayerInitialSpawn(self, ply, transiton)
 		ply.noleap = true
 	end
 
