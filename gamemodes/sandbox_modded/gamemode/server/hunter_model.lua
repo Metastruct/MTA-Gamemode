@@ -106,5 +106,5 @@ local sounds = {
 -- Add all the sounds
 local SOUND_PATH = "sound/npc/ministrider/"
 for _, sound in ipairs(sounds) do
-	resource.AddFile(SOUND_PATH .. "/" .. sound)
+	resource.AddFile(SOUND_PATH .. sound)
 end
