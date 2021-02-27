@@ -24,14 +24,87 @@ local hunter_files = {
 	"particles/hunter_shield_impact.pcf",
 }
 
--- Add all the sounds
-local SOUND_PATH = "sound/npc/ministrider/"
-
-local sounds = file.Find(SOUND_PATH .. "*.wav", "GAME")
-for _, sound in ipairs(sounds) do
-	resource.AddFile(SOUND_PATH .. "/" .. sound)
-end
-
 for _, res in ipairs(hunter_files) do
 	resource.AddFile(res)
+end
+
+local sounds = {
+	[1] = "alert2.wav",
+	[2] = "alert4.wav",
+	[3] = "body_medium_impact_hard1.wav",
+	[4] = "body_medium_impact_hard2.wav",
+	[5] = "body_medium_impact_hard3.wav",
+	[6] = "body_medium_impact_hard4.wav",
+	[7] = "body_medium_impact_hard5.wav",
+	[8] = "body_medium_impact_hard6.wav",
+	[9] = "flechette_explode1.wav",
+	[10] = "flechette_explode2.wav",
+	[11] = "flechette_explode3.wav",
+	[12] = "flechette_flesh_impact1.wav",
+	[13] = "flechette_flesh_impact2.wav",
+	[14] = "flechette_flesh_impact3.wav",
+	[15] = "flechette_flesh_impact4.wav",
+	[16] = "flechette_impact_stick1.wav",
+	[17] = "flechette_impact_stick2.wav",
+	[18] = "flechette_impact_stick3.wav",
+	[19] = "flechette_impact_stick4.wav",
+	[20] = "flechette_impact_stick5.wav",
+	[21] = "flechetteltor01.wav",
+	[22] = "flechetteltor02.wav",
+	[23] = "flechetteltor03.wav",
+	[24] = "flechetteltor04.wav",
+	[25] = "hunter_alert1.wav",
+	[26] = "hunter_alert2.wav",
+	[27] = "hunter_alert3.wav",
+	[28] = "hunter_angry1.wav",
+	[29] = "hunter_angry2.wav",
+	[30] = "hunter_angry3.wav",
+	[31] = "hunter_charge3.wav",
+	[32] = "hunter_charge4.wav",
+	[33] = "hunter_defendstrider1.wav",
+	[34] = "hunter_defendstrider2.wav",
+	[35] = "hunter_defendstrider3.wav",
+	[36] = "hunter_die2.wav",
+	[37] = "hunter_die3.wav",
+	[38] = "hunter_fire_loop3.wav",
+	[39] = "hunter_flank_announce1.wav",
+	[40] = "hunter_flank_announce2.wav",
+	[41] = "hunter_flechette_preexplode1.wav",
+	[42] = "hunter_flechette_preexplode2.wav",
+	[43] = "hunter_flechette_preexplode3.wav",
+	[44] = "hunter_foundenemy1.wav",
+	[45] = "hunter_foundenemy2.wav",
+	[46] = "hunter_foundenemy3.wav",
+	[47] = "hunter_foundenemy_ack1.wav",
+	[48] = "hunter_foundenemy_ack2.wav",
+	[49] = "hunter_foundenemy_ack3.wav",
+	[50] = "hunter_idle1.wav",
+	[51] = "hunter_idle2.wav",
+	[52] = "hunter_idle3.wav",
+	[53] = "hunter_laugh1.wav",
+	[54] = "hunter_laugh2.wav",
+	[55] = "hunter_laugh3.wav",
+	[56] = "hunter_laugh4.wav",
+	[57] = "hunter_laugh5.wav",
+	[58] = "hunter_pain2.wav",
+	[59] = "hunter_pain4.wav",
+	[60] = "hunter_prestrike1.wav",
+	[61] = "hunter_scan1.wav",
+	[62] = "hunter_scan2.wav",
+	[63] = "hunter_scan3.wav",
+	[64] = "hunter_scan4.wav",
+	[65] = "ministrider_fire1.wav",
+	[66] = "ministrider_footstep1.wav",
+	[67] = "ministrider_footstep2.wav",
+	[68] = "ministrider_footstep3.wav",
+	[69] = "ministrider_footstep4.wav",
+	[70] = "ministrider_footstep5.wav",
+	[71] = "ministrider_preflechette.wav",
+	[72] = "ministrider_skewer1.wav",
+}
+
+-- Add all the sounds
+local SOUND_PATH = "sound/npc/ministrider/"
+for _, sound in ipairs(sounds) do
+	resource.AddFile(SOUND_PATH .. "/" .. sound)
 end
