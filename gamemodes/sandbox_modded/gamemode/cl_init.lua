@@ -14,6 +14,7 @@ include("client/cl_hud.lua")
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_gunstore.lua")
 include("shared/sh_spawnmenu.lua")
+include("shared/sh_inventory.lua")
 
 -- MTA Cars
 -- these need to be included in that specific order
