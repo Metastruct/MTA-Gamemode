@@ -18,6 +18,10 @@ local NET_INVENTORY_REQUESTS = "MTA_INVENTORY_REQUESTS"
 inventory.Instances = {}
 inventory.Items = {}
 
+local function can_db()
+    return _G.db and _G.co
+end
+
 function inventory.CallItem(item_class, method, ...)
     local item = inventory.Items[item_class]
     if not item then return end
@@ -74,10 +78,6 @@ end
 if SERVER then
     util.AddNetworkString(NET_INVENTORY_UPDATE)
     util.AddNetworkString(NET_INVENTORY_REQUESTS)
-
-    local function can_db()
-		return _G.db and _G.co
-	end
 
     local function compress_table(tbl)
         if not tbl then return "" end
@@ -366,11 +366,7 @@ if SERVER then
     function inventory.FillInventory(ply, data_rows)
         local inst = {}
         for _ = 1, MAX_HEIGHT do
-            local row = {}
-            for _ = 1, MAX_WIDTH do
-                table.insert(row, {})
-            end
-            table.insert(inst, row)
+            table.insert(inst, {})
         end
 
         for _, data_row in pairs(data_rows) do
