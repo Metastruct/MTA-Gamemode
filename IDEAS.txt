@@ -1,11 +1,6 @@
-- Player classes:
+- Player traits:
 	- Psychopaths -> killing players (point bonuses streaks)
 	- Crafters -> craft items / drugs that give other players advantages / stats (speed bost etc...)
 
-- Daily missions (kill 10 shotgunners etc...)
-
 - Appartments as safe houses that you can buy
 	- Weapon stash etc
-
-- Car dealer (simphys?)
-- Make weapons you buy with the dealer permanent but cost more
