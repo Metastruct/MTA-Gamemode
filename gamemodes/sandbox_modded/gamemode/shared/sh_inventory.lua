@@ -4,11 +4,13 @@ local MAX_WIDTH = 9
 local MAX_HEIGHT = 4
 local REQUEST_RATE_LIMIT = 2
 local MAX_DROP_DISTANCE = 300
+local DEFAULT_STACK_LIMIT = 1
 
 local INCREMENTAL_NETWORK_ADD = 1
 local INCREMENTAL_NETWORK_MODIFY = 2
 local INCREMENTAL_NETWORK_REMOVE = 3
 local INCREMENTAL_NETWORK_DROP = 4
+local INCREMENTAL_NETWORK_USE = 5
 
 local NET_INVENTORY_UPDATE = "MTA_INVENTORY_UPDATE"
 local NET_INVENTORY_REQUESTS = "MTA_INVENTORY_REQUESTS"
@@ -60,6 +62,13 @@ function inventory.GetInventorySlot(ply, pos_x, pos_y)
     if not inst then return end
 
     return inst[pos_y][pos_x]
+end
+
+function inventory.GetStackLimit(item_class)
+    local item = inventory.Items[item_class]
+    if not item then return DEFAULT_STACK_LIMIT end
+    if not isnumber(item.StackLimit) then return DEFAULT_STACK_LIMIT end
+    return item.StackLimit
 end
 
 if SERVER then
@@ -132,41 +141,29 @@ if SERVER then
             local pos_x = net.ReadInt(32)
             local pos_y = net.ReadInt(32)
             local amount = net.ReadInt(32)
+            local target_pos = net.ReadVector()
+            inventory.DropItem(ply, item_class, pos_x, pos_y, amount, target_pos)
+        elseif mode == INCREMENTAL_NETWORK_USE then
+            local item_class = net.ReadString()
+            local pos_x = net.ReadInt(32)
+            local pos_y = net.ReadInt(32)
+            local amount = net.ReadInt(32)
+            inventory.UseItem(ply, item_class, pos_x, pos_y, amount)
         end
     end)
 
-    local function try_get_proper_inventory_pos(instance, item_class, pos_x, pos_y)
-        pos_y = math.Clamp(isnumber(pos_y) or 1, 1, MAX_HEIGHT)
-        pos_x = math.Clamp(isnumber(pos_x) or 1, 1, MAX_WIDTH)
+    function inventory.UseItem(ply, item_class, pos_x, pos_y, amount)
+        local success = inventory.RemoveItem(ply, item_class, pos_x, pos_y, amount)
+        if not success then return false end
 
-        local inv_space = instance[pos_y][pos_x]
-        if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
-        if inv_space.Class == item_class then return true, pos_y, pos_x end
-
-        for y = 1, MAX_HEIGHT do
-            for x = 1, MAX_WIDTH do
-                inv_space = instance[y][x]
-                if not inv_space then return true, y, x end
-                if inv_space.Class == item_class then return true, y, x end
-            end
-        end
-
-        return false, -1, -1
+        inventory.CallItem(item_class, "OnUse", ply, amount)
+        return true
     end
 
-    function inventory.AddItem(ply, item_class, pos_x, pos_y, amount)
-        if not can_db() then return false end
-
-        local inst = inventory.Instances[ply]
-        if not inst then return false end
-
-        local succ, pos_y, pos_x = try_get_proper_inventory_pos(inst, item_class, pos_x, pos_y)
-        if not succ then return false end
-
-        amount = amount or 1
-        local inv_space = inst[pos_y][pos_x]
+    local function add_raw_item(ply, instance, item_class, pos_x, pos_y, amount)
+        local inv_space = instance[pos_y][pos_x]
         if not inv_space then
-            inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
+            instance[pos_y][pos_x] = { Class = item_class, Amount = amount }
         else
             inv_space.Amount = inv_space.Amount + amount
         end
@@ -187,6 +184,41 @@ if SERVER then
         net.Send(ply)
 
         inventory.CallItem(item_class, "OnAdd", ply, amount)
+    end
+
+    local function find_ok_inventory_pos(instance, item_class, stack_limit)
+        for y = 1, MAX_HEIGHT do
+            for x = 1, MAX_WIDTH do
+                local inv_space = instance[y][x]
+                if not inv_space then return true, y, x end
+                if inv_space and inv_space.Class == item_class and inv_space.Amount < stack_limit then
+                    return true, y, x
+                end
+            end
+        end
+
+        return false
+    end
+
+    function inventory.AddItem(ply, item_class, amount)
+        if not can_db() then return false end
+
+        local inst = inventory.Instances[ply]
+        if not inst then return false end
+
+        amount = amount or 1
+
+        local stack_limit = inventory.GetStackLimit(item_class)
+        local n_iter = math.ceil(amount / stack_limit)
+        for _ = 1, n_iter do
+            local succ, pos_y, pos_x = find_ok_inventory_pos(inst, item_class, stack_limit)
+            if not succ then return false end
+
+            local to_add = amount > stack_limit and stack_limit or amount
+            amount = amount - to_add
+
+            add_raw_item(ply, inst, item_class, pos_x, pos_y, to_add)
+        end
 
         return true
     end
@@ -198,6 +230,17 @@ if SERVER then
 
         local limit = is_row and MAX_WIDTH or MAX_HEIGHT
         return pos <= limit
+    end
+
+    local function try_move_item(instance, item_class, pos_x, pos_y)
+        pos_y = math.Clamp(isnumber(pos_y) or 1, 1, MAX_HEIGHT)
+        pos_x = math.Clamp(isnumber(pos_x) or 1, 1, MAX_WIDTH)
+
+        local inv_space = instance[pos_y][pos_x]
+        if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
+        if inv_space.Class == item_class then return true, pos_y, pos_x end
+
+        return false, -1, -1
     end
 
     function inventory.MoveItem(ply, item_class, old_pos_x, old_pos_y, new_pos_x, new_pos_y, amount)
@@ -212,7 +255,11 @@ if SERVER then
         if not old_inv_space then return false end
         if old_inv_space.Class ~= item_class then return false end
 
-        local succ, new_pos_y, new_pos_x = try_get_proper_inventory_pos(inst, item_class, new_pos_x, new_pos_y)
+        local new_inv_space = inst[new_pos_y][new_pos_y]
+        local stack_limit = inventory.GetStackLimit(item_class)
+        if new_inv_space and (new_inv_space.Amount + amount) > stack_limit then return false end
+
+        local succ, new_pos_y, new_pos_x = try_move_item(inst, item_class, new_pos_x, new_pos_y)
         if not succ then return false end
 
         local account_id = ply:AccountID()
@@ -230,7 +277,6 @@ if SERVER then
 
         co(function() db.Query(sql_req) end)
 
-        local new_inv_space = inst[new_pos_y][new_pos_y]
         if not new_inv_space then
             inst[new_pos_y][new_pos_y] = { Class = item_class, Amount = amount }
             sql_req = ("INSERT INTO mta_inventory(id, item_class, pos_x, pos_y, amount) VALUES(%d, '%s', %d, %d, %d);")
@@ -255,6 +301,7 @@ if SERVER then
         net.WriteInt(amount, 32)
         net.Send(ply)
 
+        inventory.CallItem(item_class, "OnMove", ply, amount)
         return true
     end
 
@@ -296,7 +343,6 @@ if SERVER then
         net.Send(ply)
 
         inventory.CallItem(item_class, "OnRemove", ply, amount)
-
         return true
     end
 
@@ -449,6 +495,27 @@ if CLIENT then
     function inventory.RemoveItem(item_class, pos_x, pos_y, amount)
         net.Start(NET_INVENTORY_UPDATE)
         net.WriteInt(INCREMENTAL_NETWORK_REMOVE, 32)
+        net.WriteString(item_class)
+        net.WriteInt(pos_x, 32)
+        net.WriteInt(pos_y, 32)
+        net.WriteInt(amount, 32)
+        net.SendToServer()
+    end
+
+    function inventory.DropItem(item_class, pos_x, pos_y, amount, target_pos)
+        net.Start(NET_INVENTORY_UPDATE)
+        net.WriteInt(INCREMENTAL_NETWORK_DROP, 32)
+        net.WriteString(item_class)
+        net.WriteInt(pos_x, 32)
+        net.WriteInt(pos_y, 32)
+        net.WriteInt(amount, 32)
+        net.WriteVector(target_pos)
+        net.SendToServer()
+    end
+
+    function inventory.UseItem(item_class, pos_x, pos_y, amount)
+        net.Start(NET_INVENTORY_UPDATE)
+        net.WriteInt(INCREMENTAL_NETWORK_USE, 32)
         net.WriteString(item_class)
         net.WriteInt(pos_x, 32)
         net.WriteInt(pos_y, 32)
