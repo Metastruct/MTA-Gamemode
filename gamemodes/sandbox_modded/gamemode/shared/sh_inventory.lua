@@ -46,7 +46,7 @@ function inventory.HasItem(ply, item_class, amount)
     local total = 0
     for y = 1, MAX_HEIGHT do
         for x = 1, MAX_WIDTH do
-            local inv_space = instance[y][x]
+            local inv_space = inst[y][x]
             if inv_space and inv_space.Class == item_class then
                 total = total + inv_space.Amount
                 if total >= amount then return true end
@@ -370,8 +370,8 @@ if SERVER then
         end
 
         for _, data_row in pairs(data_rows) do
-            local row = inst[data.pos_y]
-            row[data.pos_x] = { Class = data_row.item_class, Amount = data_row.amount }
+            local row = inst[data_row.pos_y]
+            row[data_row.pos_x] = { Class = data_row.item_class, Amount = data_row.amount }
             inventory.CallItem(data_row.item_class, "Initialize", ply, data_row.amount)
         end
 
