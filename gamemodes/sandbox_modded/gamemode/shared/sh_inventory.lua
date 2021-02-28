@@ -21,7 +21,8 @@ function inventory.CallItem(item_class, method, ...)
     if not item then return end
     if not item[method] then return end
 
-    return item[method](item, ...)
+    local succ, ret = xpcall(item[method], ErrorNoHalt, item, ...)
+    if succ then return ret end
 end
 
 function inventory.RegisterItem(item_class, item)
@@ -105,7 +106,7 @@ if SERVER then
 
         local inv_space = instance[pos_y][pos_x]
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
-        if inv_space.Class == item_class then return true pos_y, pos_x end
+        if inv_space.Class == item_class then return true, pos_y, pos_x end
 
         for i = 1, MAX_HEIGHT do
             for j = 1, MAX_WIDTH do
@@ -136,7 +137,7 @@ if SERVER then
         end
 
         co(function()
-            db.Query(("INSERT INTO mta_inventory(id, class, pos_x, pos_y, amount) VALUES(%s, '%s', %d, %d, %d);")
+            db.Query(("INSERT INTO mta_inventory(id, item_class, pos_x, pos_y, amount) VALUES(%s, '%s', %d, %d, %d);")
                 :format(ply:AccountID(), item_class, pos_x, pos_y, amount))
         end)
 
@@ -158,7 +159,7 @@ if SERVER then
     -- is_row = true -> checks for row limits, is_row = false -> checks for column limits
     local function is_ok_inventory_pos(pos, is_row)
         if not isnumber(pos) then return false end
-        if pos <= 0 then return false
+        if pos <= 0 then return false end
 
         local limit = is_row and MAX_WIDTH or MAX_HEIGHT
         return pos <= limit
@@ -184,11 +185,11 @@ if SERVER then
         local sql_req
         if remaining <= 0 then
             inst[old_pos_y][old_pos_x] = nil
-            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
                 :format(account_id, item_class, old_pos_x, old_pos_y)
         else
             old_inv_space.Amount = remaining
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
                 :format(remaining, account_id, item_class, old_pos_x, old_pos_y)
         end
 
@@ -197,11 +198,11 @@ if SERVER then
         local new_inv_space = inst[new_pos_y][new_pos_y]
         if not new_inv_space then
             inst[new_pos_y][new_pos_y] = { Class = item_class, Amount = amount }
-            sql_req = ("INSERT INTO mta_inventory(id, class, pos_x, pos_y, amount) VALUES(%d, '%s', %d, %d, %d);")
+            sql_req = ("INSERT INTO mta_inventory(id, item_class, pos_x, pos_y, amount) VALUES(%d, '%s', %d, %d, %d);")
                 :format(account_id, item_class, new_pos_x, new_pos_y, amount)
         else
             new_inv_space.Amount = new_inv_space.Amount + amount
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
                 :format(new_inv_space.Amount, account_id, item_class, new_pos_x, new_pos_y)
         end
 
@@ -239,11 +240,11 @@ if SERVER then
         local sql_req
         if remaining <= 0 then
             inst[pos_y][pos_x] = nil
-            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
                 :format(account_id, item_class, pos_x, pos_y)
         else
             old_inv_space.Amount = remaining
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
                 :format(remaining, account_id, item_class, pos_x, pos_y)
         end
 
@@ -284,7 +285,7 @@ if SERVER then
         local inst = {}
         for _ = 1, MAX_HEIGHT do
             local row = {}
-            for _, = 1, MAX_WIDTH do
+            for _ = 1, MAX_WIDTH do
                 table.insert(row, {})
             end
             table.insert(inst, row)
@@ -292,8 +293,8 @@ if SERVER then
 
         for _, data_row in pairs(data_rows) do
             local row = inst[data.pos_y]
-            row[data.pos_x] = { Class = data_row.class, Amount = data_row.amount }
-            inventory.CallItem(data_row.class, "Initialize", ply, data_row.amount)
+            row[data.pos_x] = { Class = data_row.item_class, Amount = data_row.amount }
+            inventory.CallItem(data_row.item_class, "Initialize", ply, data_row.amount)
         end
 
         inventory.Instances[ply] = inst
@@ -324,7 +325,7 @@ if CLIENT then
     local function decompress_table(compressed_tbl)
         if not compressed_tbl then return {} end
         local json = util.Base64Decode(util.Decompress(compressed_tbl))
-        return json = util.JSONToTable(json)
+        return util.JSONToTable(json)
     end
 
     net.Receive(NET_INVENTORY_UPDATE, function()
