@@ -65,13 +65,15 @@ if SERVER then
 
         local inst = inventory.Instances[requested_ply]
         local compressed_data = compress_table(inst)
+        local len = #compressed_data
 
         timer.Simple(0, function()
             net.Start(NET_INVENTORY_REQUESTS)
             net.WriteInt(id, 32)
             net.WriteBool(true)
             net.WriteEntity(requested_ply)
-            net.WriteData(compressed_data)
+            net.WriteInt(len, 32)
+            net.WriteData(compressed_data, len)
             net.Send(ply)
         end)
     end)
@@ -301,11 +303,13 @@ if SERVER then
 
         -- we do that here, so if it fails it doesnt error out within the net message
         local compressed_data = compress_table(inst)
+        local len = #compressed_data
 
         net.Start(NET_INVENTORY_UPDATE)
         net.WriteBool(false)
         net.WriteEntity(ply)
-        net.WriteData(compressed_data)
+        net.WriteInt(len, 32)
+        net.WriteData(compressed_data, len)
         net.Send(ply)
     end
 
@@ -332,7 +336,8 @@ if CLIENT then
         local is_incremental = net.ReadBool()
         local ply = net.ReadEntity()
         if not is_incremental then
-            local data = net.ReadData()
+            local len = net.ReadInt(32)
+            local data = net.ReadData(len)
             inventory.Instances[ply] = decompress_table(data)
         else
             local mode = net.ReadInt(32)
@@ -425,7 +430,8 @@ if CLIENT then
         if callbacks then
             if success then
                 local ply = net.ReadEntity()
-                local data = net.ReadData()
+                local len = net.ReadInt(32)
+                local data = net.ReadData(len)
                 local inst = decompress_table(data)
                 inventory.Instances[ply] = inst
                 callbacks.Success(inst)
