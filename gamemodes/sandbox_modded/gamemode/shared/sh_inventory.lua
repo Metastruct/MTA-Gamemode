@@ -29,6 +29,39 @@ function inventory.RegisterItem(item_class, item)
     inventory.Items[item_class] = item
 end
 
+function inventory.HasItem(ply, item_class, amount)
+    if SERVER and not can_db() then return false end
+
+    local inst = inventory.Instances[ply]
+    if not inst then return false end
+
+    amount = amount or 1
+
+    local total = 0
+    for y = 1, MAX_HEIGHT do
+        for x = 1, MAX_WIDTH do
+            local inv_space = instance[y][x]
+            if inv_space and inv_space.Class == item_class then
+                total = total + inv_space.Amount
+                if total >= amount then return true end
+            end
+        end
+    end
+
+    return false
+end
+
+function inventory.GetInventory(ply)
+    return inventory.Instances[ply]
+end
+
+function inventory.GetInventorySlot(ply, pos_x, pos_y)
+    local inst = inventory.Instances[ply]
+    if not inst then return end
+
+    return inst[pos_y][pos_x]
+end
+
 if SERVER then
     util.AddNetworkString(NET_INVENTORY_UPDATE)
     util.AddNetworkString(NET_INVENTORY_REQUESTS)
@@ -110,11 +143,11 @@ if SERVER then
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
         if inv_space.Class == item_class then return true, pos_y, pos_x end
 
-        for i = 1, MAX_HEIGHT do
-            for j = 1, MAX_WIDTH do
-                inv_space = instance[i][j]
-                if not inv_space then return true, i, j end
-                if inv_space.Class == item_class then return true, i, j end
+        for y = 1, MAX_HEIGHT do
+            for x = 1, MAX_WIDTH do
+                inv_space = instance[y][x]
+                if not inv_space then return true, y, x end
+                if inv_space.Class == item_class then return true, y, x end
             end
         end
 
@@ -281,6 +314,7 @@ if SERVER then
         end
 
         inventory.CallItem(item_class, "OnDrop", ply, amount, target_pos)
+        return true
     end
 
     function inventory.FillInventory(ply, data_rows)
