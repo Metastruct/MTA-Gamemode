@@ -18,6 +18,7 @@ AddCSLuaFile("shared/sh_daily_challenges.lua")
 AddCSLuaFile("shared/sh_gunstore.lua")
 AddCSLuaFile("shared/sh_car_dealer.lua")
 AddCSLuaFile("shared/sh_spawnmenu.lua")
+AddCSLuaFile("shared/sh_inventory.lua")
 
 include("sh_init.lua")
 
@@ -25,6 +26,7 @@ include("shared/sh_daily_challenges.lua")
 include("shared/sh_gunstore.lua")
 include("shared/sh_car_dealer.lua")
 include("shared/sh_spawnmenu.lua")
+include("shared/sh_inventory.lua")
 
 include("server/sv_hud.lua")
 include("server/sv_zones.lua")
