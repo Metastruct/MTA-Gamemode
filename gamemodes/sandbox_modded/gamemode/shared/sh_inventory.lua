@@ -399,6 +399,7 @@ if SERVER then
     end
 
     hook.Add("PlayerFullyConnected", tag, inventory.Init)
+    hook.Add("PlayerDisconnected", tag, function(ply) inventory.Instances[ply] = nil end)
 end
 
 if CLIENT then
