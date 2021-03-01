@@ -60,7 +60,7 @@ function PANEL:GetGridSpot(x, y)
 	return gridX, gridY
 end
 
--- drop logic 
+-- drop logic
 function PANEL:TileDropped(tile, panel, x, y, mouseCode)
 	if not panel.m_Inventory then
 		if panel:GetClassName() == "CGModBase" then
