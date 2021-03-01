@@ -1,6 +1,7 @@
 - Player traits:
-	- Psychopaths -> killing players (point bonuses streaks)
+	- Psychopaths -> killing players (point bonuses streaks) PVP ORIENTED
 	- Crafters -> craft items / drugs that give other players advantages / stats (speed bost etc...)
+	- Bio-Terrorist -> being able to spawn zombies, gas bombs that turn combines into zombies, make zombies help you
 
 - Appartments as safe houses that you can buy
 	- Weapon stash etc
