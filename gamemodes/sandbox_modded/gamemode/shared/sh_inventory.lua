@@ -370,9 +370,14 @@ if SERVER then
         end
 
         for _, data_row in pairs(data_rows) do
-            local row = inst[data_row.slot_y]
-            row[data_row.slot_x] = { Class = data_row.item_class, Amount = data_row.amount }
-            inventory.CallItem(data_row.item_class, "Initialize", ply, data_row.amount)
+            local pos_x, pos_y, amount =
+                tonumber(data_row.slot_x),
+                tonumber(data_row.slot_y),
+                tonumber(data_row.amount)
+
+            local row = inst[pos_y]
+            row[pos_x] = { Class = data_row.item_class, Amount = amount }
+            inventory.CallItem(data_row.item_class, "Initialize", ply, amount)
         end
 
         inventory.Instances[ply] = inst
