@@ -169,7 +169,7 @@ if SERVER then
         end
 
         co(function()
-            db.Query(("INSERT INTO mta_inventory(id, item_class, pos_x, pos_y, amount) VALUES(%s, '%s', %d, %d, %d);")
+            db.Query(("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
                 :format(ply:AccountID(), item_class, pos_x, pos_y, amount))
         end)
 
@@ -267,11 +267,11 @@ if SERVER then
         local sql_req
         if remaining <= 0 then
             inst[old_pos_y][old_pos_x] = nil
-            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(account_id, item_class, old_pos_x, old_pos_y)
         else
             old_inv_space.Amount = remaining
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(remaining, account_id, item_class, old_pos_x, old_pos_y)
         end
 
@@ -279,11 +279,11 @@ if SERVER then
 
         if not new_inv_space then
             inst[new_pos_y][new_pos_y] = { Class = item_class, Amount = amount }
-            sql_req = ("INSERT INTO mta_inventory(id, item_class, pos_x, pos_y, amount) VALUES(%d, '%s', %d, %d, %d);")
+            sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%d, '%s', %d, %d, %d);")
                 :format(account_id, item_class, new_pos_x, new_pos_y, amount)
         else
             new_inv_space.Amount = new_inv_space.Amount + amount
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(new_inv_space.Amount, account_id, item_class, new_pos_x, new_pos_y)
         end
 
@@ -322,11 +322,11 @@ if SERVER then
         local sql_req
         if remaining <= 0 then
             inst[pos_y][pos_x] = nil
-            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(account_id, item_class, pos_x, pos_y)
         else
             old_inv_space.Amount = remaining
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND pos_x = %d AND pos_y = %d;")
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(remaining, account_id, item_class, pos_x, pos_y)
         end
 
