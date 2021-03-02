@@ -37,8 +37,59 @@ do
 	create_raw_material("gas_can", "Gas Can", "models/props_junk/gascan001a.mdl", 12, 10)
 	create_raw_material("brick", "Brick", "models/props_junk/cinderblock01a.mdl", 32, 30)
 	create_raw_material("old_shoes", "Old Shoes", "models/props_junk/shoe001a.mdl", 2, 30)
-	create_raw_material("empty_create", "Empty Create", "models/props_junk/wood_crate001a.mdl", 1, 10)
+	create_raw_material("empty_crate", "Empty Crate", "models/props_junk/wood_crate001a.mdl", 1, 10)
 	create_raw_material("sawblade", "Sawblade", "models/props_junk/sawblade001a.mdl", 6, 5)
 	create_raw_material("can", "Soda Can", "models/props_junk/popcan01a.mdl", 64, 40)
 	create_raw_material("propane_tank", "Propane", "models/props_junk/propane_tank001a.mdl", 12, 10)
+end
+
+local tag = "raw_materials"
+
+if SERVER then
+	local combine_soldier_drops = { "combine_shell", "combine_core", "biomass" }
+	local combine_manhack_drops = { "mh_debris", "mh_engine", "metal_part" }
+	local combine_helicopter_drops = { "heli_rotor", "heli_metal_plate" }
+	local car_drops = { "wheel", "gear", "muffler", "connector" }
+
+	local function handle_drops(drops, max_drops, origin_pos)
+		if #drops == 0 then return end
+
+		local drop_count = math.random(0, max_drops)
+		for _ = 1, drop_count do
+			local item_class = drops[math.random(#drops)]
+			local item = MTA.Inventory.Items[item_class]
+			if math.random(0, 100) < (item.Rarity or 100) then
+				local item_ent = MTA.Inventory.CreateItemEntity(item_class, origin_pos)
+				local phys = item_ent:GetPhysicsObject()
+				if IsValid(phys) then
+					phys:SetVelocity(VectorRand(-500, 500))
+				end
+			end
+		end
+	end
+
+	hook.Add("OnNPCKilled", tag, function(npc)
+		local drops = {}
+		local max_drops = 5
+		local class = npc:GetClass()
+		if class == "npc_metropolice" or class == "npc_combine_s" then
+			max_drops = 4
+			drops = combine_soldier_drops
+		elseif class == "npc_manhack" then
+			max_drops = 6
+			drops = combine_manhack_drops
+		elseif class == "npc_helicopter" then
+			drops = combine_helicopter_drops
+			max_drops = 3
+		end
+
+		handle_drops(drops, max_drops, npc:WorldSpaceCenter())
+	end)
+
+	hook.Add("OnEntityCreated", tag, function(ent)
+		if ent:GetClass() ~= "gmod_sent_vehicle_fphysics_base" then return end
+		function ent:OnDestroyed()
+			handle_drops(car_drops, 4, ent:WorldSpaceCenter())
+		end
+	end)
 end
