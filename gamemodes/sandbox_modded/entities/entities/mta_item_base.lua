@@ -8,7 +8,7 @@ ENT.PrintName = "Item"
 ENT.Spawnable = false
 
 function ENT:GetItemClass()
-	return self:GetNWString("ItemClass")
+	return self:GetNWString("MTAItemClass")
 end
 
 function ENT:GetItem(input_item_class)
@@ -40,6 +40,7 @@ if SERVER then
 	function ENT:SetItemClass(item_class)
 		local item = self:GetItem(item_class)
 		if item then
+			self:SetNWString("MTAItemClass", item_class)
 			if isstring(item.Model) then self:SetModel(item.Model) end
 			if isstring(item.Material) then self:SetMaterial(item.Material) end
 			if IsColor(item.Color) then self:SetColor(item.Color) end
@@ -56,6 +57,8 @@ if SERVER then
 			local item_class = self:GetItemClass()
 			MTA.Inventory.AddItem(activator, item_class, 1)
 		end
+
+		self:Remove()
 	end
 end
 
