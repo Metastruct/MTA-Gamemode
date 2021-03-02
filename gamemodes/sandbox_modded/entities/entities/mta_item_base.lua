@@ -90,8 +90,16 @@ if CLIENT then
 					item:OnItemEntityPaint(item_base)
 				else
 					local text = ("/// %s %s [%s] ///"):format(verb, item.Name or item.ClassName, bind)
-					MTA.ManagedHighlightEntity(item_base, text, color_white)
+					MTA.ManagedHighlightEntity(item_base, text, color_white, true)
 				end
+			end
+		end
+	end)
+
+	hook.Add("PreDrawOutlines", "mta_item_base", function()
+		for _, item_base in ipairs(ents.FindByClass("mta_item_base")) do
+			if item_base.ShouldHighlight then
+				outline.Add(item_base, color_white, OUTLINE_MODE_BOTH, 3)
 			end
 		end
 	end)
