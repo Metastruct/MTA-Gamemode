@@ -58,11 +58,13 @@ if SERVER then
 		for _ = 1, drop_count do
 			local item_class = drops[math.random(#drops)]
 			local item = MTA.Inventory.Items[item_class]
-			if math.random(0, 100) < (item.Rarity or 100) then
+			if item and math.random(0, 100) < (item.Rarity or 100) then
 				local item_ent = MTA.Inventory.CreateItemEntity(item_class, origin_pos)
-				local phys = item_ent:GetPhysicsObject()
-				if IsValid(phys) then
-					phys:SetVelocity(VectorRand(-500, 500))
+				if IsValid(item_ent) then
+					local phys = item_ent:GetPhysicsObject()
+					if IsValid(phys) then
+						phys:SetVelocity(VectorRand(-500, 500))
+					end
 				end
 			end
 		end

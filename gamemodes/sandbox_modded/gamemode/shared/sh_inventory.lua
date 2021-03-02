@@ -376,7 +376,7 @@ if SERVER then
         item_base:Spawn()
         item_base:SetItemClass(item_class)
 
-        return item
+        return item_base
     end
 
     function inventory.FillInventory(ply, data_rows)
