@@ -35,6 +35,8 @@ if SERVER then
 		end
 
 		self:Activate()
+
+		SafeRemoveEntityDelayed(self, 80)
 	end
 
 	function ENT:SetItemClass(item_class)
