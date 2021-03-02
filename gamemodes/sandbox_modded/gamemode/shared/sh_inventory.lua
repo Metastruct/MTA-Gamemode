@@ -161,34 +161,6 @@ if SERVER then
         return true
     end
 
-    local function add_raw_item(ply, instance, item_class, pos_x, pos_y, amount)
-        local inv_space = instance[pos_y][pos_x]
-        local sql_req
-        if not inv_space then
-            instance[pos_y][pos_x] = { Class = item_class, Amount = amount }
-            sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
-                :format(ply:AccountID(), item_class, pos_x, pos_y, amount)
-        else
-            instance[pos_y][pos_x] = { Class = item_class, Amount = inv_space.Amount + amount }
-            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
-                :format(instance[pos_y][pos_x].Amount, ply:AccountID(), item_class, pos_x, pos_y)
-        end
-
-        co(function() db.Query(sql_req) end)
-
-        net.Start(NET_INVENTORY_UPDATE)
-        net.WriteBool(true)
-        net.WriteEntity(ply)
-        net.WriteInt(INCREMENTAL_NETWORK_ADD, 32)
-        net.WriteString(item_class)
-        net.WriteInt(pos_x, 32)
-        net.WriteInt(pos_y, 32)
-        net.WriteInt(amount, 32)
-        net.Send(ply)
-
-        inventory.CallItem(item_class, "OnAdd", ply, amount)
-    end
-
     local function find_ok_inventory_pos(instance, item_class, stack_limit)
         for y = 1, MAX_HEIGHT do
             for x = 1, MAX_WIDTH do
@@ -216,7 +188,7 @@ if SERVER then
 
         local stack_limit = inventory.GetStackLimit(item_class)
         local n_iter = math.ceil(amount / stack_limit)
-        for _ = 1, n_iter do
+        for i = 1, n_iter do
             if amount <= 0 then break end
 
             local succ, pos_y, pos_x = find_ok_inventory_pos(inst, item_class, stack_limit)
@@ -224,10 +196,36 @@ if SERVER then
 
             local to_add = amount > stack_limit and stack_limit or amount
             local inv_space = inst[pos_y][pos_x]
-            if inv_space then to_add = to_add - inv_space.Amount end
+            if inv_space and inv_space.Amount + to_add > stack_limit then
+            	to_add = stack_limit - inv_space.Amount
+            end
 
             amount = amount - to_add
-            add_raw_item(ply, inst, item_class, pos_x, pos_y, to_add)
+
+            local sql_req
+            if not inv_space then
+                inst[pos_y][pos_x] = { Class = item_class, Amount = to_add }
+                sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
+                    :format(ply:AccountID(), item_class, pos_x, pos_y, amount)
+            else
+                inst[pos_y][pos_x] = { Class = item_class, Amount = inv_space.Amount + to_add }
+                sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
+                    :format(inv_space.Amount + to_add, ply:AccountID(), item_class, pos_x, pos_y)
+            end
+
+            co(function() db.Query(sql_req) end)
+
+            net.Start(NET_INVENTORY_UPDATE)
+            net.WriteBool(true)
+            net.WriteEntity(ply)
+            net.WriteInt(INCREMENTAL_NETWORK_ADD, 32)
+            net.WriteString(item_class)
+            net.WriteInt(pos_x, 32)
+            net.WriteInt(pos_y, 32)
+            net.WriteInt(amount, 32)
+            net.Send(ply)
+
+            inventory.CallItem(item_class, "OnAdd", ply, amount)
         end
 
         return true
@@ -434,7 +432,7 @@ if SERVER then
             inventory.FillInventory(ply, rows)
             hook.Run("MTAInventoryInitialized", ply)
 		end)
-    end
+	end
 
     hook.Add("PlayerFullyConnected", tag, inventory.Init)
     hook.Add("PlayerDisconnected", tag, function(ply) inventory.Instances[ply] = nil end)

@@ -57,9 +57,11 @@ if SERVER then
 		if not activator:IsPlayer() then return end
 		if MTA and MTA.Inventory then
 			local item_class = self:GetItemClass()
-			MTA.Inventory.AddItem(activator, item_class, 1)
+			local success = MTA.Inventory.AddItem(activator, item_class, 1)
+			if not success then return end
 		end
 
+		activator:EmitSound("ui/buttonclick.wav", 100)
 		self:Remove()
 	end
 end
