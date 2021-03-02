@@ -363,7 +363,7 @@ if SERVER then
         local is_handled = inventory.CallItem(item_class, "OnDrop", ply, amount, target_pos)
         if not is_handled then
             for _ = 1, amount do
-                linventory.CreateItemEntity(item_class, target_pos)
+                inventory.CreateItemEntity(item_class, target_pos)
             end
         end
 
