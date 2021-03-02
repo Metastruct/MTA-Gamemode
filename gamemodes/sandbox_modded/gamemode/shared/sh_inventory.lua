@@ -206,14 +206,19 @@ if SERVER then
     function inventory.AddItem(ply, item_class, amount)
         if not can_db() then return false end
 
+        amount = amount or 1
+        if not isnumber(amount) then return false end
+
         local inst = inventory.Instances[ply]
         if not inst then return false end
 
-        amount = amount or 1
+        amount = math.max(amount, 1)
 
         local stack_limit = inventory.GetStackLimit(item_class)
         local n_iter = math.ceil(amount / stack_limit)
         for _ = 1, n_iter do
+            if amount <= 0 then break end
+
             local succ, pos_y, pos_x = find_ok_inventory_pos(inst, item_class, stack_limit)
             if not succ then return false end
 
@@ -243,14 +248,19 @@ if SERVER then
 
         local inv_space = instance[pos_y][pos_x]
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
-        if inv_space.Class == item_class then return true, pos_y, pos_x end
+        if inv_space.Class == item_class then
+            local stack_limit = inventory.GetStackLimit(item_class)
+            if inv_space.Amount < stack_limit then return true, pos_y, pos_x end
+        end
 
         return false, -1, -1
     end
 
     function inventory.MoveItem(ply, item_class, old_pos_x, old_pos_y, new_pos_x, new_pos_y, amount)
         if not can_db() then return false end
-        if not amount then return false end
+        if not isnumber(amount) then return false end
+
+        amount = math.max(amount, 1)
 
         local inst = inventory.Instances[ply]
         if not inst then return  false end
@@ -259,6 +269,7 @@ if SERVER then
         local old_inv_space = inst[old_pos_y][old_pos_x]
         if not old_inv_space then return false end
         if old_inv_space.Class ~= item_class then return false end
+        if old_inv_space.Amount < amount then return end
 
         local new_inv_space = inst[new_pos_y][new_pos_y]
         local stack_limit = inventory.GetStackLimit(item_class)
@@ -312,7 +323,9 @@ if SERVER then
 
     function inventory.RemoveItem(ply, item_class, pos_x, pos_y, amount)
         if not can_db() then return false end
-        if not amount then return false end
+        if not isnumber(amount) then return false end
+
+        amount = math.max(amount, 1)
 
         local inst = inventory.Instances[ply]
         if not inst then return false end

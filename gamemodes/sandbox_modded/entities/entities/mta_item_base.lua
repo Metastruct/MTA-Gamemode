@@ -26,15 +26,13 @@ if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:SetUseType(SIMPLE_USE)
-		self:SetCollisionGroup(COLLISION_GROUP_NONE)
+		self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		self:SetNotSolid(false)
 
 		local phys = self:GetPhysicsObject()
 		if IsValid(phys) then
 			phys:Wake()
 		end
-
-		self:Activate()
 
 		SafeRemoveEntityDelayed(self, 80)
 	end
@@ -50,6 +48,8 @@ if SERVER then
 			if item.OnItemEntitySet then
 				item:OnItemEntitySet(self)
 			end
+
+			self:Activate()
 		end
 	end
 
