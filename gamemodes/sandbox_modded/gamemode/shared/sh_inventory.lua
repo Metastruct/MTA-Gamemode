@@ -163,16 +163,18 @@ if SERVER then
 
     local function add_raw_item(ply, instance, item_class, pos_x, pos_y, amount)
         local inv_space = instance[pos_y][pos_x]
+        local sql_req
         if not inv_space then
             instance[pos_y][pos_x] = { Class = item_class, Amount = amount }
+            sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
+                :format(ply:AccountID(), item_class, pos_x, pos_y, amount)
         else
             inv_space.Amount = inv_space.Amount + amount
+            sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
+                :format(inv_space.Amount, ply:AccountID(), item_class, pos_x, pos_y)
         end
 
-        co(function()
-            db.Query(("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
-                :format(ply:AccountID(), item_class, pos_x, pos_y, amount))
-        end)
+        co(function() db.Query(sql_req) end)
 
         net.Start(NET_INVENTORY_UPDATE)
         net.WriteBool(true)
@@ -216,8 +218,10 @@ if SERVER then
             if not succ then return false end
 
             local to_add = amount > stack_limit and stack_limit or amount
-            amount = amount - to_add
+            local inv_space = inst[pos_y][pos_x]
+            if inv_space then to_add = to_add - inv_space.Amount end
 
+            amount = amount - to_add
             add_raw_item(ply, inst, item_class, pos_x, pos_y, to_add)
         end
 
