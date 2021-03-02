@@ -169,9 +169,9 @@ if SERVER then
             sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
                 :format(ply:AccountID(), item_class, pos_x, pos_y, amount)
         else
-            inv_space.Amount = inv_space.Amount + amount
+            instance[pos_y][pos_x] = { Class = item_class, Amount = inv_space.Amount + amount }
             sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
-                :format(inv_space.Amount, ply:AccountID(), item_class, pos_x, pos_y)
+                :format(instance[pos_y][pos_x].Amount, ply:AccountID(), item_class, pos_x, pos_y)
         end
 
         co(function() db.Query(sql_req) end)
@@ -271,7 +271,7 @@ if SERVER then
         if old_inv_space.Class ~= item_class then return false end
         if old_inv_space.Amount < amount then return end
 
-        local new_inv_space = inst[new_pos_y][new_pos_y]
+        local new_inv_space = inst[new_pos_y][new_pos_x]
         local stack_limit = inventory.GetStackLimit(item_class)
         if new_inv_space and (new_inv_space.Amount + amount) > stack_limit then return false end
 
@@ -286,7 +286,7 @@ if SERVER then
             sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(account_id, item_class, old_pos_x, old_pos_y)
         else
-            old_inv_space.Amount = remaining
+            inst[old_pos_y][old_pos_x].Amount = remaining
             sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(remaining, account_id, item_class, old_pos_x, old_pos_y)
         end
@@ -294,13 +294,13 @@ if SERVER then
         co(function() db.Query(sql_req) end)
 
         if not new_inv_space then
-            inst[new_pos_y][new_pos_y] = { Class = item_class, Amount = amount }
+            inst[new_pos_y][new_pos_x] = { Class = item_class, Amount = amount }
             sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%d, '%s', %d, %d, %d);")
                 :format(account_id, item_class, new_pos_x, new_pos_y, amount)
         else
-            new_inv_space.Amount = new_inv_space.Amount + amount
+            inst[new_pos_y][new_pos_x] = { Class = item_class, Amount = new_inv_space.Amount + amount }
             sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
-                :format(new_inv_space.Amount, account_id, item_class, new_pos_x, new_pos_y)
+                :format(new_inv_space.Amount + amount, account_id, item_class, new_pos_x, new_pos_y)
         end
 
         co(function() db.Query(sql_req) end)
@@ -343,7 +343,7 @@ if SERVER then
             sql_req = ("DELETE FROM mta_inventory WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(account_id, item_class, pos_x, pos_y)
         else
-            old_inv_space.Amount = remaining
+            inst[pos_y][pos_x] = { Class = item_class, Amount = remaining }
             sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
                 :format(remaining, account_id, item_class, pos_x, pos_y)
         end
@@ -465,7 +465,11 @@ if CLIENT then
                 local inst = inventory.Instances[ply]
                 if not inst then return end
 
-                inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
+                local inv_space = inst[pos_y][pos_x]
+                inst[pos_y][pos_x] = {
+                    Class = item_class,
+                    Amount = inv_space and inv_space.Amount + amount or amount
+                }
             elseif mode == INCREMENTAL_NETWORK_MODIFY then
                 local item_class = net.ReadString()
                 local old_pos_x = net.ReadInt(32)
@@ -477,20 +481,18 @@ if CLIENT then
                 local inst = inventory.Instances[ply]
                 if not inst then return end
 
-                local old_inv_space = inst[old_pos_y][old_pos_x]
-                local remaining = old_inv_space.Amount - amount
+                local remaining = inst[old_pos_y][old_pos_x].Amount - amount
                 if remaining <= 0 then
                     inst[old_pos_y][old_pos_x] = nil
                 else
-                    old_inv_space.Amount = remaining
+                    inst[old_pos_y][old_pos_x] = { Class = item_class, Amount = remaining }
                 end
 
-                local new_inv_space = inst[new_pos_y][new_pos_y]
-                if not new_inv_space then
-                    inst[new_pos_y][new_pos_y] = { Class = item_class, Amount = amount }
-                else
-                    new_inv_space.Amount = new_inv_space.Amount + amount
-                end
+                local new_inv_space = inst[new_pos_y][new_pos_x]
+                inst[new_pos_y][new_pos_x] = {
+                    Class = item_class,
+                    Amount = new_inv_space and new_inv_space.Amount + amount or amount
+                }
             elseif mode == INCREMENTAL_NETWORK_REMOVE then
                 local item_class = net.ReadString()
                 local pos_x = net.ReadInt(32)
@@ -505,7 +507,7 @@ if CLIENT then
                 if remaining <= 0 then
                     inst[pos_y][pos_x] = nil
                 else
-                    inv_space.Amount = remaining
+                    inst[pos_y][pos_x] = { Class = item_class, Amount = remaining }
                 end
             else
                 ErrorNoHalt("Unknown inventory message mode?!!")
