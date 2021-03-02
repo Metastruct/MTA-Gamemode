@@ -173,7 +173,9 @@ local highlightColor = Color(255, 255, 255)
 local isKeyDown = false
 
 local function CanBuy(weapon)
-	return not MTA.Weapons[weapon] and MTA.GetPlayerStat("points") >= MTA_CONFIG.upgrades.WeaponCosts[weapon]
+	local points = MTA.GetPlayerStat("points") or 0
+	local cost = MTA_CONFIG.upgrades.WeaponCosts[weapon] or math.huge
+	return not MTA.Weapons[weapon] and points >= cost
 end
 
 local function CallBuyServer(weapon)
