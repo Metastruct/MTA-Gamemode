@@ -32,6 +32,7 @@ function inventory.CallItem(item_class, method, ...)
 end
 
 function inventory.RegisterItem(item_class, item)
+    item.ClassName = item_class
     inventory.Items[item_class] = item
 end
 
@@ -359,8 +360,23 @@ if SERVER then
             target_pos = dir * MAX_DROP_DISTANCE
         end
 
-        inventory.CallItem(item_class, "OnDrop", ply, amount, target_pos)
+        local is_handled = inventory.CallItem(item_class, "OnDrop", ply, amount, target_pos)
+        if not is_handled then
+            for _ = 1, amount do
+                linventory.CreateItemEntity(item_class, target_pos)
+            end
+        end
+
         return true
+    end
+
+    function inventory.CreateItemEntity(item_class, world_pos)
+        local item_base = ents.Create("mta_item_base")
+        item_base:SetPos(world_pos)
+        item_base:Spawn()
+        item_base:SetItemClass(item_class)
+
+        return item
     end
 
     function inventory.FillInventory(ply, data_rows)
