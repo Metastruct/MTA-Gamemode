@@ -11,8 +11,8 @@ function ENT:GetItemClass()
 	return self:GetNWString("ItemClass")
 end
 
-function ENT:GetItem()
-	local item_class = self:GetItemClass()
+function ENT:GetItem(input_item_class)
+	local item_class = input_item_class or self:GetItemClass()
 	if MTA and MTA.Inventory then
 		return MTA.Inventory.Items[item_class]
 	end
@@ -38,7 +38,7 @@ if SERVER then
 	end
 
 	function ENT:SetItemClass(item_class)
-		local item = self:GetItem()
+		local item = self:GetItem(item_class)
 		if item then
 			if isstring(item.Model) then self:SetModel(item.Model) end
 			if isstring(item.Material) then self:SetMaterial(item.Material) end
