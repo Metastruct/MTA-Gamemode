@@ -241,8 +241,8 @@ if SERVER then
     end
 
     local function try_move_item(instance, item_class, pos_x, pos_y)
-        pos_y = math.Clamp(isnumber(pos_y) or 1, 1, MAX_HEIGHT)
-        pos_x = math.Clamp(isnumber(pos_x) or 1, 1, MAX_WIDTH)
+        pos_y = math.Clamp(isnumber(pos_y) and pos_y or 1, 1, MAX_HEIGHT)
+        pos_x = math.Clamp(isnumber(pos_x) and pos_x or 1, 1, MAX_WIDTH)
 
         local inv_space = instance[pos_y][pos_x]
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
