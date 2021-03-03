@@ -468,6 +468,8 @@ if CLIENT then
                     Class = item_class,
                     Amount = inv_space and inv_space.Amount + amount or amount
                 }
+
+                hook.Run("MTAInventoryItemAdded", ply, item_class, amount, pos_x, pos_y)
             elseif mode == INCREMENTAL_NETWORK_MODIFY then
                 local item_class = net.ReadString()
                 local old_pos_x = net.ReadInt(32)
@@ -491,6 +493,8 @@ if CLIENT then
                     Class = item_class,
                     Amount = new_inv_space and new_inv_space.Amount + amount or amount
                 }
+
+                hook.Run("MTAInventoryModified", ply, item_class, amount, old_pos_x, old_pos_y, new_pos_x, new_pos_y)
             elseif mode == INCREMENTAL_NETWORK_REMOVE then
                 local item_class = net.ReadString()
                 local pos_x = net.ReadInt(32)
@@ -507,6 +511,8 @@ if CLIENT then
                 else
                     inst[pos_y][pos_x] = { Class = item_class, Amount = remaining }
                 end
+
+                hook.Run("MTAInventoryItemRemoved", ply, item_class, amount, pos_x, pos_y)
             else
                 ErrorNoHalt("Unknown inventory message mode?!!")
             end
