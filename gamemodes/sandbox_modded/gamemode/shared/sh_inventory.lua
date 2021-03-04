@@ -637,7 +637,7 @@ if CLIENT then
 
     function inventory.SwapItems(old_pos_x, old_pos_y, new_pos_x, new_pos_y)
         net.Start(NET_INVENTORY_UPDATE)
-        net.WriteInt(INCREMENTAL_NETWORK_MODIFY, 32)
+        net.WriteInt(INCREMENTAL_NETWORK_SWAP, 32)
         net.WriteInt(old_pos_x, 32)
         net.WriteInt(old_pos_y, 32)
         net.WriteInt(new_pos_x, 32)
