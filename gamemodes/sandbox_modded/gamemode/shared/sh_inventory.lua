@@ -11,6 +11,7 @@ local INCREMENTAL_NETWORK_MODIFY = 2
 local INCREMENTAL_NETWORK_REMOVE = 3
 local INCREMENTAL_NETWORK_DROP = 4
 local INCREMENTAL_NETWORK_USE = 5
+local INCREMENTAL_NETWORK_SWAP = 6
 
 local NET_INVENTORY_UPDATE = "MTA_INVENTORY_UPDATE"
 local NET_INVENTORY_REQUESTS = "MTA_INVENTORY_REQUESTS"
@@ -150,6 +151,12 @@ if SERVER then
             local pos_y = net.ReadInt(32)
             local amount = net.ReadInt(32)
             inventory.UseItem(ply, item_class, pos_x, pos_y, amount)
+        elseif mode == INCREMENTAL_NETWORK_SWAP then
+            local old_pos_x = net.ReadInt(32)
+            local old_pos_y = net.ReadInt(32)
+            local new_pos_x = net.ReadInt(32)
+            local new_pos_y = net.ReadInt(32)
+            inventory.SwapItems(ply, old_pos_x, old_pos_y, new_pos_x, new_pos_y)
         end
     end)
 
@@ -263,6 +270,7 @@ if SERVER then
         local inst = inventory.Instances[ply]
         if not inst then return  false end
         if not is_ok_inventory_pos(old_pos_x, true) or not is_ok_inventory_pos(old_pos_y, false) then return false end
+        if not is_ok_inventory_pos(new_pos_x, true) or not is_ok_inventory_pos(new_pos_y, false) then return false end
 
         local old_inv_space = inst[old_pos_y][old_pos_x]
         if not old_inv_space then return false end
@@ -386,6 +394,65 @@ if SERVER then
         return true
     end
 
+    function inventory.SwapItems(ply, old_pos_x, old_pos_y, new_pos_x, new_pos_y)
+        local inst = inventory.Instances[ply]
+        if not inst then return false end
+
+        if not is_ok_inventory_pos(old_pos_x, true) or not is_ok_inventory_pos(old_pos_y, false) then return false end
+        if not is_ok_inventory_pos(new_pos_x, true) or not is_ok_inventory_pos(new_pos_y, false) then return false end
+
+        local source_inv_space = inst[old_pos_y][old_pos_x]
+        local target_inv_space = inst[new_pos_y][new_pos_x]
+        if source_inv_space == target_inv_space then return false end
+
+        local account_id = ply:AccountID()
+        inst[old_pos_y][old_pos_x] = target_inv_space
+        inst[new_pos_y][new_pos_x] = source_inv_space
+
+        if target_inv_space and source_inv_space then
+            co(function()
+                db.Query(("UPDATE mta_inventory SET amount = %d, item_class = %s WHERE id = %d AND slot_x = %d AND slot_y = %d;")
+                    :format(target_inv_space.Amount, target_inv_space.Class, account_id, old_pos_x, old_pos_y))
+                db.Query(("UPDATE mta_inventory SET amount = %d, item_class = %s WHERE id = %d AND slot_x = %d AND slot_y = %d;")
+                    :format(source_inv_space.Amount, source_inv_space.Class, account_id, new_pos_x, new_pos_y))
+            end)
+        elseif not target_inv_space and source_inv_space then
+            co(function()
+                db.Query(("DELETE FROM mta_inventory WHERE id = %d AND slot_x = %d AND slot_y = %d;")
+                    :format(account_id, old_pos_x, old_pos_y))
+                db.Query(("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%d, '%s', %d, %d, %d);")
+                    :format(account_id, source_inv_space.Class, new_pos_x, new_pos_y, source_inv_space.Amount))
+            end)
+        elseif not source_inv_space and target_inv_space then
+            co(function()
+                db.Query(("DELETE FROM mta_inventory WHERE id = %d AND slot_x = %d AND slot_y = %d;")
+                    :format(account_id, new_pos_x, new_pos_y))
+                db.Query(("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%d, '%s', %d, %d, %d);")
+                    :format(account_id, target_inv_space.Class, old_pos_x, old_pos_y, target_inv_space.Amount))
+            end)
+        end
+
+        if target_inv_space then
+            inventory.CallItem(target_inv_space.Class, "OnMove", ply, target_inv_space.Amount)
+        end
+
+        if source_inv_space then
+            inventory.CallItem(source_inv_space.Class, "OnMove", ply, source_inv_space.Amount)
+        end
+
+        net.Start(NET_INVENTORY_UPDATE)
+        net.WriteBool(true)
+        net.WriteEntity(ply)
+        net.WriteInt(INCREMENTAL_NETWORK_SWAP, 32)
+        net.WriteInt(old_pos_x, 32)
+        net.WriteInt(old_pos_y, 32)
+        net.WriteInt(new_pos_x, 32)
+        net.WriteInt(new_pos_y, 32)
+        net.Send(ply)
+
+        return true
+    end
+
     function inventory.CreateItemEntity(item_class, world_pos)
         local item_base = ents.Create("mta_item_base")
         item_base:SetPos(world_pos)
@@ -502,6 +569,21 @@ if CLIENT then
                 end
 
                 hook.Run("MTAInventoryItemRemoved", ply, item_class, amount, pos_x, pos_y)
+            elseif mode == INCREMENTAL_NETWORK_SWAP then
+                local old_pos_x = net.ReadInt(32)
+                local old_pos_y = net.ReadInt(32)
+                local new_pos_x = net.ReadInt(32)
+                local new_pos_y = net.ReadInt(32)
+
+                local inst = inventory.Instances[ply]
+                if not inst then return end
+
+                local old_inv_space = inst[old_pos_y][old_pos_x]
+                local new_inv_space = inst[new_pos_y][new_pos_x]
+
+                inst[old_pos_y][old_pos_x] = new_inv_space
+                inst[new_pos_y][new_pos_x] = old_inv_space
+                hook.Run("MTAInventoryItemSwapped", ply, old_pos_x, old_pos_y, new_pos_x, new_pos_y)
             else
                 ErrorNoHalt("Unknown inventory message mode?!!")
             end
@@ -550,6 +632,16 @@ if CLIENT then
         net.WriteInt(pos_x, 32)
         net.WriteInt(pos_y, 32)
         net.WriteInt(amount, 32)
+        net.SendToServer()
+    end
+
+    function inventory.SwapItems(old_pos_x, old_pos_y, new_pos_x, new_pos_y)
+        net.Start(NET_INVENTORY_UPDATE)
+        net.WriteInt(INCREMENTAL_NETWORK_MODIFY, 32)
+        net.WriteInt(old_pos_x, 32)
+        net.WriteInt(old_pos_y, 32)
+        net.WriteInt(new_pos_x, 32)
+        net.WriteInt(new_pos_y, 32)
         net.SendToServer()
     end
 
