@@ -51,10 +51,10 @@ if SERVER then
 	local combine_helicopter_drops = { "heli_rotor", "heli_metal_plate" }
 	local car_drops = { "wheel", "gear", "muffler", "connector" }
 
-	local function handle_drops(drops, max_drops, origin_pos)
+	local function handle_drops(drops, min_drops, max_drops, origin_pos)
 		if #drops == 0 then return end
 
-		local drop_count = math.random(0, max_drops)
+		local drop_count = math.random(min_drops, max_drops)
 		for _ = 1, drop_count do
 			local item_class = drops[math.random(#drops)]
 			local item = MTA.Inventory.Items[item_class]
@@ -73,25 +73,28 @@ if SERVER then
 	hook.Add("OnNPCKilled", tag, function(npc)
 		local drops = {}
 		local max_drops = 5
+		local min_drops = 0
 		local class = npc:GetClass()
 		if class == "npc_metropolice" or class == "npc_combine_s" then
 			max_drops = 4
 			drops = combine_soldier_drops
 		elseif class == "npc_manhack" then
 			max_drops = 6
+			min_drops = 1
 			drops = combine_manhack_drops
 		elseif class == "npc_helicopter" then
 			drops = combine_helicopter_drops
 			max_drops = 3
+			min_drops = 1
 		end
 
-		handle_drops(drops, max_drops, npc:WorldSpaceCenter())
+		handle_drops(drops, min_drops, max_drops, npc:WorldSpaceCenter())
 	end)
 
 	hook.Add("OnEntityCreated", tag, function(ent)
 		if ent:GetClass() ~= "gmod_sent_vehicle_fphysics_base" then return end
 		function ent:OnDestroyed()
-			handle_drops(car_drops, 4, ent:WorldSpaceCenter())
+			handle_drops(car_drops, 2, 5, ent:WorldSpaceCenter())
 		end
 	end)
 end
