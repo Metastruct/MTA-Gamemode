@@ -28,6 +28,7 @@ if SERVER then
 		self:SetUseType(SIMPLE_USE)
 		self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		self:SetNotSolid(false)
+		self:SetTrigger(true)
 
 		local phys = self:GetPhysicsObject()
 		if IsValid(phys) then
@@ -63,6 +64,10 @@ if SERVER then
 
 		activator:EmitSound("ui/buttonclick.wav", 100)
 		self:Remove()
+	end
+
+	function ENT:StartTouch(ent)
+		self:Use(ent)
 	end
 end
 
