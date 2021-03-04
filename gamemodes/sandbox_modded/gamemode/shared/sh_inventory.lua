@@ -267,7 +267,7 @@ if SERVER then
         local old_inv_space = inst[old_pos_y][old_pos_x]
         if not old_inv_space then return false end
         if old_inv_space.Class ~= item_class then return false end
-        if old_inv_space.Amount < amount then return end
+        if old_inv_space.Amount < amount then return false end
 
         local new_inv_space = inst[new_pos_y][new_pos_x]
         local stack_limit = inventory.GetStackLimit(item_class)
