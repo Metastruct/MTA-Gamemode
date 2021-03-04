@@ -63,6 +63,10 @@ if SERVER then
 		return true
 	end
 
+	function GM:CanDrive(ply, ent)
+		if not ply:IsAdmin() then return false end
+	end
+
 	function GM:EntityTakeDamage(target, dmg)
 		if target:GetClass() == "lua_npc" then return true end
 	end

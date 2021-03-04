@@ -241,8 +241,8 @@ if SERVER then
     end
 
     local function try_move_item(instance, item_class, pos_x, pos_y)
-        pos_y = math.Clamp(isnumber(pos_y) or 1, 1, MAX_HEIGHT)
-        pos_x = math.Clamp(isnumber(pos_x) or 1, 1, MAX_WIDTH)
+        pos_y = math.Clamp(isnumber(pos_y) and pos_y or 1, 1, MAX_HEIGHT)
+        pos_x = math.Clamp(isnumber(pos_x) and pos_x or 1, 1, MAX_WIDTH)
 
         local inv_space = instance[pos_y][pos_x]
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
@@ -465,6 +465,7 @@ if CLIENT then
                 if not inst then return end
 
                 inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
+                hook.Run("MTAInventoryItemAdded", ply, item_class, amount, pos_x, pos_y)
             elseif mode == INCREMENTAL_NETWORK_MODIFY then
                 local item_class = net.ReadString()
                 local old_pos_x = net.ReadInt(32)
@@ -484,6 +485,7 @@ if CLIENT then
                 end
 
                 inst[new_pos_y][new_pos_x] = { Class = item_class, Amount = amount }
+                hook.Run("MTAInventoryModified", ply, item_class, amount, old_pos_x, old_pos_y, new_pos_x, new_pos_y)
             elseif mode == INCREMENTAL_NETWORK_REMOVE then
                 local item_class = net.ReadString()
                 local pos_x = net.ReadInt(32)
@@ -498,6 +500,8 @@ if CLIENT then
                 else
                     inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
                 end
+
+                hook.Run("MTAInventoryItemRemoved", ply, item_class, amount, pos_x, pos_y)
             else
                 ErrorNoHalt("Unknown inventory message mode?!!")
             end
