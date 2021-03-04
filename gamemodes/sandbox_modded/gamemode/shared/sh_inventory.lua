@@ -222,7 +222,7 @@ if SERVER then
             net.WriteString(item_class)
             net.WriteInt(pos_x, 32)
             net.WriteInt(pos_y, 32)
-            net.WriteInt(amount, 32)
+            net.WriteInt(inst[pos_y][pos_x].Amount, 32)
             net.Send(ply)
 
             inventory.CallItem(item_class, "OnAdd", ply, amount)
@@ -310,9 +310,10 @@ if SERVER then
         net.WriteString(item_class)
         net.WriteInt(old_pos_x, 32)
         net.WriteInt(old_pos_y, 32)
+        net.WriteInt(inst[old_pos_y][old_pos_x] and nst[old_pos_y][old_pos_x].Amount or 0, 32)
         net.WriteInt(new_pos_x, 32)
         net.WriteInt(new_pos_y, 32)
-        net.WriteInt(amount, 32)
+        net.WriteInt(inst[new_pos_y][new_pos_x].Amount, 32)
         net.Send(ply)
 
         inventory.CallItem(item_class, "OnMove", ply, amount)
@@ -355,7 +356,7 @@ if SERVER then
         net.WriteString(item_class)
         net.WriteInt(pos_x, 32)
         net.WriteInt(pos_y, 32)
-        net.WriteInt(amount, 32)
+        net.WriteInt(inst[pos_y][pos_x] and inst[pos_y][pos_x].Amount or 0, 32)
         net.Send(ply)
 
         inventory.CallItem(item_class, "OnRemove", ply, amount)
@@ -463,15 +464,12 @@ if CLIENT then
                 local inst = inventory.Instances[ply]
                 if not inst then return end
 
-                local inv_space = inst[pos_y][pos_x]
-                inst[pos_y][pos_x] = {
-                    Class = item_class,
-                    Amount = inv_space and inv_space.Amount + amount or amount
-                }
+                inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
             elseif mode == INCREMENTAL_NETWORK_MODIFY then
                 local item_class = net.ReadString()
                 local old_pos_x = net.ReadInt(32)
                 local old_pos_y = net.ReadInt(32)
+                local old_amount = net.ReadInt(32)
                 local new_pos_x = net.ReadInt(32)
                 local new_pos_y = net.ReadInt(32)
                 local amount = net.ReadInt(32)
@@ -479,18 +477,13 @@ if CLIENT then
                 local inst = inventory.Instances[ply]
                 if not inst then return end
 
-                local remaining = inst[old_pos_y][old_pos_x].Amount - amount
-                if remaining <= 0 then
+                if old_amount <= 0 then
                     inst[old_pos_y][old_pos_x] = nil
                 else
-                    inst[old_pos_y][old_pos_x] = { Class = item_class, Amount = remaining }
+                    inst[old_pos_y][old_pos_x] = { Class = item_class, Amount = old_amount }
                 end
 
-                local new_inv_space = inst[new_pos_y][new_pos_x]
-                inst[new_pos_y][new_pos_x] = {
-                    Class = item_class,
-                    Amount = new_inv_space and new_inv_space.Amount + amount or amount
-                }
+                inst[new_pos_y][new_pos_x] = { Class = item_class, Amount = amount }
             elseif mode == INCREMENTAL_NETWORK_REMOVE then
                 local item_class = net.ReadString()
                 local pos_x = net.ReadInt(32)
@@ -500,12 +493,10 @@ if CLIENT then
                 local inst = inventory.Instances[ply]
                 if not inst then return end
 
-                local inv_space = inst[pos_y][pos_x]
-                local remaining = inv_space.Amount - amount
-                if remaining <= 0 then
+                if amount <= 0 then
                     inst[pos_y][pos_x] = nil
                 else
-                    inst[pos_y][pos_x] = { Class = item_class, Amount = remaining }
+                    inst[pos_y][pos_x] = { Class = item_class, Amount = amount }
                 end
             else
                 ErrorNoHalt("Unknown inventory message mode?!!")
