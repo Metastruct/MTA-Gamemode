@@ -310,7 +310,7 @@ if SERVER then
         net.WriteString(item_class)
         net.WriteInt(old_pos_x, 32)
         net.WriteInt(old_pos_y, 32)
-        net.WriteInt(inst[old_pos_y][old_pos_x] and nst[old_pos_y][old_pos_x].Amount or 0, 32)
+        net.WriteInt(inst[old_pos_y][old_pos_x] and inst[old_pos_y][old_pos_x].Amount or 0, 32)
         net.WriteInt(new_pos_x, 32)
         net.WriteInt(new_pos_y, 32)
         net.WriteInt(inst[new_pos_y][new_pos_x].Amount, 32)
