@@ -241,6 +241,8 @@ local function init_intro()
 	if is_playing then return end
 	is_playing = true
 
+	if ctp and ctp.Disable then ctp:Disable() end
+
 	surface.CreateFont("MTAIntroFont", {
 		font = "Alte Haas Grotesk",
 		size = 32 * MTA.HUD.Config.ScrRatio,
