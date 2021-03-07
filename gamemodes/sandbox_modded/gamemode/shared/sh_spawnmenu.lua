@@ -81,7 +81,6 @@ if CLIENT then
 	local black_color = Color(0, 0, 0, 150)
 	local orange_color = Color(244, 135, 2)
 	local white_color = Color(255, 255, 255)
-	local ratio_w, ratio_h = ScrW() / 2560, ScrH() / 1440
 
 	local DealerIcon = Material("vgui/mta_hud/dealer_icon.png")
 	local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
@@ -349,7 +348,7 @@ if CLIENT then
 		do
 			local ply_panel = self:Add("DPanel")
 			ply_panel:Dock(LEFT)
-			ply_panel:SetWide(250 * ratio_w)
+			ply_panel:SetWide(165)
 			function ply_panel:Paint(w, h)
 				surface.SetDrawColor(orange_color)
 				surface.DrawRect(w - 2, 0, w, h)
@@ -357,8 +356,8 @@ if CLIENT then
 
 			local av = ply_panel:Add("AvatarImage")
 			av:Dock(TOP)
-			av:DockMargin(10 * ratio_w, 10 * ratio_h, 10 * ratio_w, 10 * ratio_h)
-			av:SetSize(ply_panel:GetWide() - 20 * ratio_w, ply_panel:GetWide() - 20 * ratio_h)
+			av:DockMargin(2, 2, 2, 2)
+			av:SetSize(ply_panel:GetWide(), ply_panel:GetWide())
 			av:SetPlayer(LocalPlayer(), 512)
 
 			local function add_sep(margin_top)
@@ -379,7 +378,7 @@ if CLIENT then
 			local function add_ply_info(text, font)
 				local lbl = ply_panel:Add("DLabel")
 				lbl:Dock(TOP)
-				lbl:DockMargin(10 * ratio_w, 5, 10 * ratio_w, 0 * ratio_h)
+				lbl:DockMargin(10, 5, 10, 0)
 				lbl:SetTall(20)
 				lbl:SetFont(font)
 				lbl:SetTextColor(white_color)
@@ -389,7 +388,7 @@ if CLIENT then
 			add_sep()
 
 			local nick = EasyChat and EasyChat.GetProperNick(LocalPlayer()) or LocalPlayer():Nick()
-			add_ply_info(("%s (PRESTIGE %d)"):format(nick, MTA.GetPlayerStat("prestige_level")), "MTAMenuPlayerFont2")
+			add_ply_info(("%s / PRTG  %d"):format(nick, MTA.GetPlayerStat("prestige_level")), "MTAMenuPlayerFont2")
 
 			local wealth = ("%d CPs"):format(MTA.GetPlayerStat("points"))
 			add_ply_info(wealth, "MTAMenuPlayerFont")
@@ -449,19 +448,19 @@ if CLIENT then
 				local base_x = map:GetWide()
 				surface.SetDrawColor(white_color)
 				surface.SetMaterial(icon)
-				surface.DrawTexturedRect(base_x + (10 * ratio_w), y * ratio_h, IconSize, IconSize)
+				surface.DrawTexturedRect(base_x + 10, y, IconSize, IconSize)
 
 				surface.SetFont("MTALegendFont")
 				local _, th = surface.GetTextSize(text)
 
 				surface.SetTextColor(white_color)
-				surface.SetTextPos(base_x + IconSize + 20 * ratio_w, (y * ratio_h) + (IconSize / 2 - th / 2))
+				surface.SetTextPos(base_x + IconSize + 20, y + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
 
 			function map_panel:DrawArrowLegend(text, color, y)
 				local base_x = map:GetWide()
-				local tri = map:TranslatePoly(PlayerTriangle, base_x + (25 * ratio_w), (y * ratio_h))
+				local tri = map:TranslatePoly(PlayerTriangle, base_x + 25, y)
 
 				surface.SetDrawColor(color)
 				draw.NoTexture()
@@ -471,18 +470,18 @@ if CLIENT then
 				local _, th = surface.GetTextSize(text)
 
 				surface.SetTextColor(white_color)
-				surface.SetTextPos(base_x + IconSize + 20 * ratio_w, y * ratio_h + (IconSize / 2 - th / 2))
+				surface.SetTextPos(base_x + IconSize + 20, y + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
 
 			function map_panel:PaintOver(w, h)
 				self:DrawArrowLegend("You", white_color, 0)
-				self:DrawArrowLegend("Other Players", orange_color, 60)
-				self:DrawLegend(DealerIcon, "Gun Dealer", 120)
-				self:DrawLegend(CarDealerIcon, "Car Dealer", 180)
-				self:DrawLegend(VehicleIcon, "Your Vehicle", 240)
-				self:DrawLegend(VaultIcon, "Vault", 300)
-				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 360)
+				self:DrawArrowLegend("Other Players", orange_color, 40)
+				self:DrawLegend(DealerIcon, "Gun Dealer", 80)
+				self:DrawLegend(CarDealerIcon, "Car Dealer", 120)
+				self:DrawLegend(VehicleIcon, "Your Vehicle", 160)
+				self:DrawLegend(VaultIcon, "Vault", 200)
+				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 240)
 			end
 
 			function map_panel:Think()
@@ -527,7 +526,6 @@ if CLIENT then
 		surface.DrawOutlinedRect(0, 0, w, h, 2)
 
 		local header_text = GetHostName()
-		local ply_info_panel_width = 250 * ratio_w
 		surface.SetFont("MTAMenuHeaderFont")
 		surface.SetTextColor(255, 255, 255, 255)
 		local tw, th = surface.GetTextSize(header_text)
