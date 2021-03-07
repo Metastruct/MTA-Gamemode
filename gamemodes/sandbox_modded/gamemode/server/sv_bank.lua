@@ -30,7 +30,7 @@ hook.Add("MTADrillStart", tag, function(_, vault)
 	end
 end)
 
-hook.Add("MTADrillFailed", tag, function(_, vault)
+local function check_alarm(_, vault)
 	if not alarm_state then return end
 
 	local btn = get_alarm_btn()
@@ -46,4 +46,7 @@ hook.Add("MTADrillFailed", tag, function(_, vault)
 			alarm_state = false
 		end
 	end
-end)
+end
+
+hook.Add("MTADrillFailed", tag, check_alarm)
+hook.Add("MTADrillSuccess", tag, check_alarm)
