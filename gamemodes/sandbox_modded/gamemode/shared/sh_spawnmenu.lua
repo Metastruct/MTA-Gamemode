@@ -89,7 +89,7 @@ if CLIENT then
 	local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
 	local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
 
-	local IconSize = 30 * ratio_h
+	local IconSize = 30
 	local IconOffset = IconSize * 0.5
 
 	-- Scale it up a bit since it looks smaller then the other icons
@@ -103,17 +103,25 @@ if CLIENT then
 	}
 
 	surface.CreateFont("MTAMenuPlayerFont", {
+		font = "Open Sans",
+		size = 20,
+		weight = 500,
+		shadow = false,
+		extended = true,
+	})
+
+	surface.CreateFont("MTAMenuPlayerFont2", {
 		font = "Alte Haas Grotesk",
-		size = 40 * ratio_h,
-		weight = 600,
+		size = 20,
+		weight = 500,
 		shadow = false,
 		extended = true,
 	})
 
 	surface.CreateFont("MTALegendFont", {
-		font = "Alte Haas Grotesk",
-		size = 25 * ratio_h,
-		weight = 600,
+		font = "Open Sans",
+		size = 15,
+		weight = 500,
 		shadow = false,
 		extended = true,
 	})
@@ -128,7 +136,7 @@ if CLIENT then
 
 	surface.CreateFont("MTAMenuHeaderFont", {
 		font = "Orbitron",
-		size = 40 * ratio_h,
+		size = 40,
 		weight = 600,
 		shadow = false,
 		extended = true,
@@ -139,7 +147,7 @@ if CLIENT then
 		local MAP_TAB = {}
 		function MAP_TAB:Init() end
 
-		local MapZoom = 400 * ratio_h
+		local MapZoom = 200
 		local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
 		function MAP_TAB:GetMapTexturePos(pos)
 			local pxD = 1024 / 2
@@ -333,8 +341,9 @@ if CLIENT then
 
 	local PANEL = {}
 	function PANEL:Init()
-		self:SetSize(ScrW() - 200 * ratio_w, ScrH() - 200 * ratio_h)
-		self:SetPos(100 * ratio_w, 100 * ratio_h)
+		local width, height = 900, 600
+		self:SetSize(width, height)
+		self:SetPos(ScrW() / 2 - width / 2, ScrH() / 2 - height / 2)
 
 		-- ply stuff
 		do
@@ -352,36 +361,69 @@ if CLIENT then
 			av:SetSize(ply_panel:GetWide() - 20 * ratio_w, ply_panel:GetWide() - 20 * ratio_h)
 			av:SetPlayer(LocalPlayer(), 512)
 
-			local sep = ply_panel:Add("DPanel")
-			sep:Dock(TOP)
-			sep:SetTall(2)
-			function sep:Paint(w, h)
-				surface.SetDrawColor(orange_color)
-				surface.DrawRect(0, 0, w, h)
+			local function add_sep(margin_top)
+				local sep = ply_panel:Add("DPanel")
+				sep:Dock(TOP)
+				sep:SetTall(2)
+
+				if margin_top then
+					sep:DockMargin(0, margin_top, 0, 0)
+				end
+
+				function sep:Paint(w, h)
+					surface.SetDrawColor(orange_color)
+					surface.DrawRect(0, 0, w, h)
+				end
 			end
 
-			local function add_ply_info(text)
+			local function add_ply_info(text, font)
 				local lbl = ply_panel:Add("DLabel")
 				lbl:Dock(TOP)
-				lbl:DockMargin(10 * ratio_w, 10 * ratio_h, 10 * ratio_w, 0 * ratio_h)
-				lbl:SetTall(35 * ratio_h)
-				lbl:SetFont("MTAMenuPlayerFont")
+				lbl:DockMargin(10 * ratio_w, 5, 10 * ratio_w, 0 * ratio_h)
+				lbl:SetTall(20)
+				lbl:SetFont(font)
 				lbl:SetTextColor(white_color)
 				lbl:SetText(text)
 			end
 
-			add_ply_info(EasyChat and EasyChat.GetProperNick(LocalPlayer()) or LocalPlayer():Nick())
-			add_ply_info(("Prestige %d"):format(MTA.GetPlayerStat("prestige_level")))
-			add_ply_info(("%d CPs"):format(MTA.GetPlayerStat("points")))
+			add_sep()
+
+			local nick = EasyChat and EasyChat.GetProperNick(LocalPlayer()) or LocalPlayer():Nick()
+			add_ply_info(("%s (PRESTIGE %d)"):format(nick, MTA.GetPlayerStat("prestige_level")), "MTAMenuPlayerFont2")
+
+			local wealth = ("%d CPs"):format(MTA.GetPlayerStat("points"))
+			add_ply_info(wealth, "MTAMenuPlayerFont")
 
 			if LocalPlayer().GetCoins then
-				add_ply_info(("%s c"):format(string.NiceNumber(LocalPlayer():GetCoins())))
+				wealth = ("%s coins"):format(string.NiceNumber(LocalPlayer():GetCoins()))
+				add_ply_info(wealth, "MTAMenuPlayerFont")
 			end
+
+			add_sep(10)
+
+			add_ply_info("DAMAGE", "MTAMenuPlayerFont2")
+			local multiplier = MTA.GetPlayerStat("damage_multiplier")
+			add_ply_info(("lvl. %d"):format(multiplier), "MTAMenuPlayerFont")
+			add_ply_info(("%d%%"):format((100 + multiplier) * 2), "MTAMenuPlayerFont")
+
+			add_sep(10)
+
+			add_ply_info("RESISTANCE", "MTAMenuPlayerFont2")
+			multiplier = MTA.GetPlayerStat("defense_multiplier")
+			add_ply_info(("lvl. %d"):format(multiplier), "MTAMenuPlayerFont")
+			add_ply_info(("%.2f%%"):format(multiplier * 0.75), "MTAMenuPlayerFont")
+
+			add_sep(10)
+
+			add_ply_info("HEALING", "MTAMenuPlayerFont2")
+			multiplier = MTA.GetPlayerStat("healing_multiplier")
+			add_ply_info(("lvl. %d"):format(multiplier), "MTAMenuPlayerFont")
+			add_ply_info(("%dHPs / 10s"):format(math.ceil((multiplier * 1.6) / 2)), "MTAMenuPlayerFont")
 		end
 
 		local sheet = self:Add("DPropertySheet")
 		sheet:Dock(FILL)
-		sheet:DockMargin(0, 50 * ratio_h, 5 * ratio_w, 5 * ratio_h)
+		sheet:DockMargin(0, 0, 0, 0)
 		function sheet:Paint(w) end
 
 		local function tab_paint(self, w, h)
@@ -390,7 +432,7 @@ if CLIENT then
 			surface.SetDrawColor(0, 0, 0, 150)
 			surface.DrawRect(0, 0, w, h)
 
-			surface.SetDrawColor(orange_color)
+			surface.SetDrawColor(white_color)
 			surface.DrawLine(0, 0, w, 0)
 			surface.DrawLine(0, 1, w, 1)
 		end
@@ -444,18 +486,28 @@ if CLIENT then
 			end
 
 			function map_panel:Think()
-				map:SetWide(self:GetWide() / 2)
-				map:SetTall(self:GetTall())
+				map:SetWide(565)
+				map:SetTall(564)
 				map:SetPos(0, 0)
 			end
 
 			local sheet_data = sheet:AddSheet("Map", map_panel)
 			sheet_data.Tab.Paint = tab_paint
+			sheet_data.Panel.Paint = function() end
 			sheet_data.Panel:SetWide(sheet:GetWide())
 		end
 
-		--sheet:AddSheet("Inventory", vgui.Create("DPanel"))
-		local tab = sheet:AddSheet("Leaderboard", vgui.Create("mta_leaderboard"))
+		local inv_panel = vgui.Create("DPanel")
+		local gl = inv_panel:Add("DLabel")
+		gl:SetWide(100)
+		gl:SetPos(10, 10)
+		gl:SetText("Good luck Henke!")
+		gl:SetTextColor(white_color)
+
+		local tab = sheet:AddSheet("Inventory", inv_panel)
+		tab.Tab.Paint = tab_paint
+
+		tab = sheet:AddSheet("Leaderboard", vgui.Create("mta_leaderboard"))
 		tab.Tab.Paint = tab_paint
 	end
 
@@ -479,8 +531,11 @@ if CLIENT then
 		surface.SetFont("MTAMenuHeaderFont")
 		surface.SetTextColor(255, 255, 255, 255)
 		local tw, th = surface.GetTextSize(header_text)
-		surface.SetTextPos(ply_info_panel_width + ((self:GetWide() - ply_info_panel_width) / 2 - tw / 2), 15 * ratio_h)
+		surface.SetTextPos(self:GetWide() / 2 - tw / 2, -50)
+
+		surface.DisableClipping(true)
 		surface.DrawText(header_text)
+		surface.DisableClipping(false)
 	end
 
 	vgui.Register("mta_menu", PANEL, "DPanel")
