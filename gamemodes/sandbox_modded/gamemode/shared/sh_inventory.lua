@@ -248,8 +248,8 @@ if SERVER then
     end
 
     local function try_move_item(instance, item_class, pos_x, pos_y)
-        pos_y = math.Clamp(isnumber(pos_y) and pos_y or 1, 1, MAX_HEIGHT)
         pos_x = math.Clamp(isnumber(pos_x) and pos_x or 1, 1, MAX_WIDTH)
+        pos_y = math.Clamp(isnumber(pos_y) and pos_y or 1, 1, MAX_HEIGHT)
 
         local inv_space = instance[pos_y][pos_x]
         if not inv_space then return true, pos_y, pos_x end -- space not occupied, this is ok to use
@@ -269,6 +269,7 @@ if SERVER then
 
         local inst = inventory.Instances[ply]
         if not inst then return  false end
+        if old_pos_x == new_pos_x and old_pos_y == new_pos_y then return end
         if not is_ok_inventory_pos(old_pos_x, true) or not is_ok_inventory_pos(old_pos_y, false) then return false end
         if not is_ok_inventory_pos(new_pos_x, true) or not is_ok_inventory_pos(new_pos_y, false) then return false end
 
@@ -398,6 +399,7 @@ if SERVER then
         local inst = inventory.Instances[ply]
         if not inst then return false end
 
+        if old_pos_x == new_pos_x and old_pos_y == new_pos_y then return end
         if not is_ok_inventory_pos(old_pos_x, true) or not is_ok_inventory_pos(old_pos_y, false) then return false end
         if not is_ok_inventory_pos(new_pos_x, true) or not is_ok_inventory_pos(new_pos_y, false) then return false end
 
