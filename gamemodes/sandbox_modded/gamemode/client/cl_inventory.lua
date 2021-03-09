@@ -100,21 +100,24 @@ Right click drag an item to split the stack.]]
 		end
 	end
 
-	hook.Add("MTAInventoryItemAdded", tag, function(ply, class, amount, x, y)
+	local GM = gmod.GetGamemode() or GAMEMODE or GM
+	function GM.MTAInventoryItemAdded(_, ply, class, amount, x, y)
 		if IsValid(self) then
 			self:ItemAdded(ply, class, amount, x, y)
 		end
-	end)
-	hook.Add("MTAInventoryItemRemoved", tag, function(ply, class, amount, x, y)
+	end
+
+	function GM.MTAInventoryItemRemoved(_, ply, class, amount, x, y)
 		if IsValid(self) then
 			self:ItemRemove(ply, class, amount, x, y)
 		end
-	end)
-	hook.Add("MTAInventoryModified", tag, function(ply, class, amount, oldX, oldY, x, y)
+	end
+
+	function GM.MTAInventoryModified(_, ply, class, amount, oldX, oldY, x, y)
 		if IsValid(self) then
 			self:ItemModified(ply, class, amount, oldX, oldY, x, y)
 		end
-	end)
+	end
 end
 
 function PANEL:UseActiveItem(amount)
