@@ -10,6 +10,8 @@ include("client/cl_outlines.lua")
 include("client/cl_targetid.lua")
 include("client/cl_intro.lua")
 include("client/cl_hud.lua")
+include("client/dinventory.lua")
+include("client/cl_inventory.lua")
 
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_gunstore.lua")

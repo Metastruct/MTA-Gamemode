@@ -1,80 +1,327 @@
---[[
-local inv_queue = {
-	pos = {},
-}
+local tag = "MTA_Inventory_UI"
+local inventory = MTA_TABLE("Inventory")
+local TILE_SIZE = 64
 
-for queue, data in inv_queue do
-	if not table.IsEmpty(data) then
-		inventory.MoveItem(item_class, old_pos_x, old_pos_y, new_pos_x, new_pos_y, amount)
+local function GetItemData(class)
+	return inventory.Items[class]
+end
+
+local PANEL = {}
+function PANEL:Init()
+	self:SetTileSize(TILE_SIZE)
+	self:SetGridSize(9, 4)
+
+	self.TrashCan = self:Add("DInventory")
+	self.TrashCan:SetTileSize(TILE_SIZE / 1.5)
+	self.TrashCan:SetGridSize(1, 1)
+	self.TrashCan.isTrash = true
+
+	local trashMat = Material("icon16/bin_empty.png")
+	function self.TrashCan:Paint(w, h)
+		surface.SetDrawColor(255, 255, 255)
+		if self:IsHovered() then
+			surface.SetDrawColor(255, 0, 0)
+		end
+
+		surface.SetMaterial(trashMat)
+		surface.DrawTexturedRect(w / 4, h / 2, w / 2, h / 2)
+		surface.DrawOutlinedRect(0, 0, w, h, 1)
+
+		local tx = "Trash"
+		surface.SetFont("Default")
+		local tW, tH = surface.GetTextSize(tx)
+		surface.SetTextColor(255, 255, 255)
+		surface.SetTextPos(w / 2 - tW / 2, 0)
+		surface.DrawText(tx)
+	end
+
+	self.ItemView = self:Add("DPanel")
+	self.ItemView:SetSize(self:GetSize())
+
+	self.ViewDocker = self.ItemView:Add("Panel")
+	self.ViewDocker:SetPos(128 + 16)
+	self.ViewDocker:SetSize(self:GetWide() / 3, self:GetTall())
+
+	self.ItemViewHeader = self.ViewDocker:Add("DLabel")
+	self.ItemViewHeader:Dock(TOP)
+	self.ItemViewHeader:SetColor(Color(100, 255, 100))
+	self.ItemViewHeader:SetText("BASE_ITEM")
+	self.ItemViewHeader:SetFont("ScoreboardDefault")
+	self.ItemViewHeader:DockMargin(2, 4, 0, 4)
+	self.ItemViewHeader:SetPos(0, 128)
+	self.ItemViewHeader:SetSize(128, 32)
+
+	self.HelpText = self.ViewDocker:Add("DLabel")
+	self.HelpText:Dock(BOTTOM)
+	self.HelpText:SetTall(64)
+	local helpText = [[Drag an item outside the inventory to drop it.
+The trashcan will remove any item you drop in it.
+Right click drag an item to split the stack.]]
+	self.HelpText:SetText(helpText)
+
+	self.ItemViewInfo = self.ViewDocker:Add("RichText")
+	self.ItemViewInfo:Dock(FILL)
+	function self.ItemViewInfo:PerformLayout()
+		self:SetFontInternal("CreditsText")
+		self:SetFGColor(255, 255, 255, 255)
+	end
+	--self.ItemView.ItemIcon = self.ItemView:Add("")
+
+	self.ItemViewIcon = self.ItemView:Add("DModelPanel")
+	self.ItemViewIcon:SetSize(128, 128)
+	self.ItemViewIcon:SetMouseInputEnabled(false)
+	self.ItemViewIcon:SetKeyboardInputEnabled(false)
+
+	self.ItemViewButton = self.ItemView:Add("DButton")
+	self.ItemViewButton:SetSize(128, 24)
+	self.ItemViewButton:SetPos(8, self:GetTall() - 32)
+	self.ItemViewButton:SetText("Use Item")
+
+	function self.ItemViewButton.DoClick(this)
+		if IsValid(self) then
+			self:UseActiveItem(1)
+		end
+	end
+
+	-- populate
+	local selected
+	for slotX, slotData in pairs(inventory.GetInventory(LocalPlayer())) do
+		for slotY, item in pairs(slotData) do
+
+			local x = slotY
+			local y = slotX
+
+			local tile = self:AddItem(item.Class, item.Amount, x, y)
+
+			if not selected then
+				self:SelectTile(tile)
+				selected = true
+			end
+		end
+	end
+
+	hook.Add("MTAInventoryItemAdded", tag, function(ply, class, amount, x, y)
+		if IsValid(self) then
+			self:ItemAdded(ply, class, amount, x, y)
+		end
+	end)
+	hook.Add("MTAInventoryItemRemoved", tag, function(ply, class, amount, x, y)
+		if IsValid(self) then
+			self:ItemRemove(ply, class, amount, x, y)
+		end
+	end)
+	hook.Add("MTAInventoryModified", tag, function(ply, class, amount, oldX, oldY, x, y)
+		if IsValid(self) then
+			self:ItemModified(ply, class, amount, oldX, oldY, x, y)
+		end
+	end)
+end
+
+function PANEL:UseActiveItem(amount)
+	if IsValid(self.ActiveItem) then
+		local x, y = self.ActiveItem:GetSlotPos()
+		local class = self.ActiveItem:GetItemClass()
+		inventory.UseItem(class, x, y, amount)
 	end
 end
 
-local function AddItem(pnl, item_class, count)
-	local tile = pnl:AddTile()
-	--tile:SetItemMaxCount(inventory.GetStackLimit(item_class))
-	--tile:SetItemClass(item_class)
-	--tike:SetItemCount(count)
+function PANEL:ItemAmountPopup(amount, callback)
+	local WIDTH, HEIGHT = ScrW(), ScrH()
+	local FRAME_WIDTH, FRAME_HEIGHT = 256, 64
+
+	local Frame = vgui.Create("DMenu")
+
+	local Panel
+	local Label
+	local Button
+	local NumSlider
+
+	Panel = vgui.Create("DPanel")
+	Panel:SetSize(FRAME_WIDTH, FRAME_HEIGHT)
+
+	Label = Panel:Add("DLabel")
+	Label:SetSize(128, 32)
+	Label:SetText("Amount to drop: ")
+	Label:SetPos(8,0)
+
+	Button = Panel:Add("DButton")
+	Button:Dock(RIGHT)
+	Button:SetText("Drop")
+	Button:DockMargin(8, 8, 8, 8)
+	function Button:DoClick()
+		CloseDermaMenus()
+		if not callback then return end
+		callback(math.round(NumSlider:GetValue(), 0))
+	end
+	NumSlider = Panel:Add("DNumSlider")
+	NumSlider:Dock(BOTTOM)
+
+	NumSlider:DockMargin(-Panel:GetWide() / 2 + 16, 0, 0, 10) --wang and scratch fucks up the docking
+	NumSlider.Wang:Hide()
+	NumSlider.Scratch:Hide()
+	NumSlider.TextArea:SetTextColor(Color(255, 255, 255))
+	NumSlider:SetMinMax(1, amount)
+	NumSlider:SetDefaultValue(1)
+	NumSlider:SetDecimals(0)
+	NumSlider:SetValue(1)
+
+	local notches = math.Clamp(amount, 1, 15)
+	function NumSlider.Slider:Paint(w, h)
+
+		surface.SetDrawColor(255, 255, 255)
+		for i = 1, notches do
+			local x = i * (w / notches) + 1
+			local y = h / 2 + h / 10
+
+			surface.DrawRect(x, y, 1, h / 2)
+		end
+	end
+
+	Frame:AddPanel(Panel)
+	Frame:Open()
 end
-]]
 
-local FRAME
-local INV
-local TILE_SIZE = 64
-local WIDTH, HEIGHT = ScrW(), ScrH()
-FRAME = vgui.Create("DFrame")
-FRAME:SetSize(WIDTH, HEIGHT)
-FRAME:MakePopup()
-FRAME:Center()
-FRAME:SetTitle("Vininator :0")
+local function drop(x, y, class, amount)
+	local pos = LocalPlayer():GetShootPos()
+	local ang = LocalPlayer():EyeAngles()
+	ang.p = 0
+	pos = pos + ang:Forward() * 42
 
-INV = FRAME:Add("DInventory")
-INV:SetTileSize(TILE_SIZE)
-INV:SetGridSize(9, 4)
-INV:SetPos(WIDTH / 2 - 9 * TILE_SIZE / 2, HEIGHT / 2)
+	inventory.DropItem(class, x, y, amount, pos)
+end
 
---[[
-function INV:OnTileMoved(tile, oldX, oldY, newX, newY, oldPanel)
-	local item = tile:GetItemClass()
+function PANEL:DropItem(tile, amount)
+	local x, y = tile:GetSlotPos()
+	local class = tile:GetItemClass()
+
+	if amount > 1 then
+		self:ItemAmountPopup(amount, function(amnt)
+			drop(x, y, class, amnt)
+		end)
+	else
+		drop(x, y, class, amount)
+	end
+end
+
+function PANEL:UpdateItemView(tile)
+	self.ItemViewHeader:SetText(tile:GetItemName())
+	self.ItemViewInfo:SetText(tile:GetItemDescription())
+	self.ItemViewIcon:SetModel(tile:GetModelIcon())
+	-- ty gmod for this usefulness
+	local icon = self.ItemViewIcon
+	local ent = self.ItemViewIcon:GetEntity()
+	local pos = ent:GetPos()
+	local ang = ent:GetAngles()
+	local tab = PositionSpawnIcon(ent, pos, true)
+
+	ent:SetAngles(ang)
+	if tab then
+		icon:SetCamPos(tab.origin)
+		icon:SetFOV(tab.fov)
+		icon:SetLookAng(tab.angles)
+	end
+end
+
+function PANEL:SelectTile(tile)
+	if IsValid(self.ActiveItem) then
+		self.ActiveItem.isActive = false
+	end
+	tile.isActive = true
+	self.ActiveItem = tile
+	self:UpdateItemView(tile)
+end
+
+function PANEL:AddItem(class, amount, x, y)
+	local t = self:AddTileInSlot(x, y)
+	if not t then return end -- ILLEGAL or bug?!
+
+	t:SetItemClass(class)
+	t:SetItemCount(amount)
+	t:SetItemMaxCount(inventory.GetStackLimit(class))
+	t:SetItemName(GetItemData(class).Name)
+	t:SetModelIcon(GetItemData(class).Model)
+	return t
+end
+
+function PANEL:OnTileDroppedInWorld(tile)
+	local amount = math.Clamp(tile:GetItemCount(), 1, 16)
+	self:DropItem(tile, amount)
+end
+
+function PANEL:OnTileSlotChanged(tile, oldSlotX, oldSlotY, slotX, slotY, swapOrder)
+	if slotX == oldSlotX and slotY == oldSlotY then
+		return
+	end
+	local class = tile:GetItemClass()
 	local amount = tile:GetItemCount()
-	inv_queue.pos[tile] = {oldX, oldY}
-end
-]]
 
-function INV:OnTileDroppedOutsideGrid(tile)
-	print("tile dropped out of inventory")
-end
+	if swapOrder == 1 then
+		inventory.SwapItems(oldSlotX, oldSlotY, slotX, slotY)
+		return
+	elseif swapOrder == 2 then
+		--we swapped it already
+		return
+	end
 
-function INV:OnTileClicked(tile)
-	print(tile)
-end
-
-for i = 1, 5 do
-	local t = INV:AddTile()
-	if not t then print("A")  return end
-	local c = ColorRand()
-	c.a = 80
-	t.clr = c
-	t:SetItemCount(20)
+	print("old " .. oldSlotX .. ", " .. oldSlotY .. " -> " .. slotX .. ", " .. slotY)
+	inventory.MoveItem(class, oldSlotX, oldSlotY, slotX, slotY, amount)
 end
 
---no support
---[[
-local HOT
-HOT = FRAME:Add("DInventory")
-HOT:SetTileSize(TILE_SIZE)
-HOT:SetGridSize(5, 1)
-HOT:SetPos(WIDTH / 2 - 5 * TILE_SIZE / 2, HEIGHT - TILE_SIZE)
+function PANEL:OnTileChangedPanel(tile, toPanel, x, y)
+	if toPanel.isTrash then
+		local class = tile:GetItemClass()
+		local amount = tile:GetItemCount()
 
-function HOT:TileDroppedInWorld(tile)
-	print(tile, "Dropped in world")
+		inventory.RemoveItem(class, x, y, amount)
+
+		tile:Remove()
+		self:RemoveTile(tile)
+	end
 end
 
-for i = 1,5 do
-	local t = HOT:AddTile()
-	t:SetText("b" .. i)
+function PANEL:OnTileClick(tile, code)
+	self:SelectTile(tile)
+
+	if code == MOUSE_RIGHT then
+		local menu = DermaMenu()
+		menu.noDrop = true
+		menu:AddOption("Use", function()
+			self:UseActiveItem(1)
+		end)
+		menu:AddOption("Drop 1 item", function()
+			self:DropItem(tile, 1)
+		end)
+		menu:Open()
+	end
 end
 
-local PAN = FRAME:Add("DPanel")
-PAN:Dock(LEFT)
+function PANEL:ItemAdded(ply, class, amount, x, y)
+	local tile = self:GetTileInSlot(x, y)
+	if IsValid(tile) then
+		tile:SetItemCount(amount)
+	else
+		self:AddItem(class, amount, x, y)
+	end
+end
 
-]]
+function PANEL:ItemRemove(ply, class, amount, x, y)
+	local tile = self:GetTileInSlot(x, y)
+	if IsValid(tile) and tile:GetItemClass() == class then
+		if amount <= 0 then
+			tile:Remove()
+			self:RemoveTile(tile)
+			return
+		end
+
+		tile:SetItemCount(amount)
+	end
+end
+
+function PANEL:ItemModified(ply, class, amount, oldX, oldY, x, y)
+	local tile = self:GetTileInSlot(x, y)
+	if IsValid(tile) and tile:GetItemClass() == class then
+		tile:SetItemCount(amount)
+	end
+end
+
+vgui.Register("mta_inventory", PANEL, "DInventory")
