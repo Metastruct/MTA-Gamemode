@@ -497,11 +497,16 @@ if CLIENT then
 		end
 
 		local inv_panel = vgui.Create("DPanel")
-		local gl = inv_panel:Add("DLabel")
-		gl:SetWide(100)
-		gl:SetPos(10, 10)
-		gl:SetText("Good luck Henke!")
-		gl:SetTextColor(white_color)
+		local inv = inv_panel:Add("mta_inventory")
+		inv:SetPos(64 + 8, 300)
+
+		local trash = inv.TrashCan
+		trash:SetParent(inv_panel)
+		trash:SetPos(664, 508)
+
+		local item_view = inv.ItemView
+		item_view:SetParent(inv_panel)
+		item_view:SetPos(64 + 8, 32)
 
 		local tab = sheet:AddSheet("Inventory", inv_panel)
 		tab.Tab.Paint = tab_paint
