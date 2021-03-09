@@ -424,6 +424,7 @@ if CLIENT then
 		sheet:Dock(FILL)
 		sheet:DockMargin(0, 0, 0, 0)
 		function sheet:Paint(w) end
+		self.Sheets = sheet
 
 		local function tab_paint(self, w, h)
 			if sheet:GetActiveTab() ~= self then return end
@@ -546,20 +547,36 @@ if CLIENT then
 	local menu
 	function GM:OnSpawnMenuOpen()
 		if IsValid(menu) then
-			menu:Remove()
-			menu = nil
+			menu:Show()
+			return false
 		end
+
 		menu = vgui.Create("mta_menu")
+		menu:Show()
 		return false
 	end
 
 	function GM:OnSpawnMenuClose()
 		gui.EnableScreenClicker(false)
 		if IsValid(menu) then
-			menu:Remove()
-			menu = nil
+			menu:Hide()
 		end
+
 		return false
+	end
+
+	function GM:PlayerBindPress(_, bind, pressed)
+		if not IsValid(menu) then return end
+		if bind:match("gm_showspare1") and pressed then
+			if menu:IsVisible() then
+				menu:Hide()
+				gui.EnableScreenClicker(false)
+			else
+				menu:Show()
+				menu.Sheets:SwitchToName("Inventory")
+				gui.EnableScreenClicker(true)
+			end
+		end
 	end
 
 	function GM:MTAHUDShouldDraw(element)
