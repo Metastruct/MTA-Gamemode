@@ -580,6 +580,6 @@ if CLIENT then
 	end
 
 	function GM:MTAHUDShouldDraw(element)
-		if menu then return false end
+		if IsValid(menu) and menu:IsVisible() then return false end
 	end
 end
