@@ -8,7 +8,7 @@ if SERVER then
 		if not ent:IsPlayer() then return end
 
 		ent.DeathRecap = ent.DeathRecap or {}
-		if #ent.DeathRecap > 5 then
+		if #ent.DeathRecap > 6 then
 			table.remove(ent.DeathRecap, 1)
 		end
 
@@ -19,8 +19,8 @@ if SERVER then
 		end
 
 		table.insert(ent.DeathRecap, {
-			Inflictor = IsValid(atck) and atck:GetClass() or "???",
-			Attacker = IsValid(inflictor) and inflictor:GetClass() or "Nothing",
+			Inflictor = IsValid(atck) and atck:GetClass() or "nothing",
+			Attacker = IsValid(inflictor) and inflictor:GetClass() or "Unknown",
 			Damage = math.Round(dmg_info:GetDamage()),
 		})
 
