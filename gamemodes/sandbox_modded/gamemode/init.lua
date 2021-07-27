@@ -17,6 +17,7 @@ AddCSLuaFile("client/dinventory.lua")
 AddCSLuaFile("client/cl_inventory.lua")
 
 AddCSLuaFile("shared/sh_daily_challenges.lua")
+AddCSLuaFile("shared/sh_death_recap.lua")
 AddCSLuaFile("shared/sh_gunstore.lua")
 AddCSLuaFile("shared/sh_car_dealer.lua")
 AddCSLuaFile("shared/sh_inventory.lua")
