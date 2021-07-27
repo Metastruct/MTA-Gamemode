@@ -14,6 +14,7 @@ include("client/dinventory.lua")
 include("client/cl_inventory.lua")
 
 include("shared/sh_daily_challenges.lua")
+include("shared/sh_death_recap.lua")
 include("shared/sh_gunstore.lua")
 include("shared/sh_inventory.lua")
 include("shared/sh_spawnmenu.lua")
