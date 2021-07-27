@@ -68,10 +68,12 @@ if CLIENT then
 		extended = true,
 	})
 
+	local displayed_recap = false
 	local recap = {}
 	net.Receive(tag, function()
 		recap = net.ReadTable()
 		recap = table.Reverse(recap)
+		displayed_recap = false
 	end)
 
 	hook.Add("HUDShouldDraw", tag, function(name)
@@ -84,8 +86,12 @@ if CLIENT then
 	local white_color = Color(255, 255, 255)
 	local red_color = Color(255, 0, 0)
 	hook.Add("HUDPaint", tag, function()
-		if LocalPlayer():Alive() then return end
+		if LocalPlayer():Alive() and displayed_recap then
+			recap = {}
+			return
+		end
 
+		displayed_recap = true
 		Derma_DrawBackgroundBlur(vgui.GetWorldPanel(), 0)
 		if #recap == 0 then return end
 
