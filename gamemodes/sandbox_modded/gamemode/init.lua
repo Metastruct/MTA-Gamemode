@@ -25,6 +25,7 @@ AddCSLuaFile("shared/sh_spawnmenu.lua")
 include("sh_init.lua")
 
 include("shared/sh_daily_challenges.lua")
+include("shared/sh_death_recap.lua")
 include("shared/sh_gunstore.lua")
 include("shared/sh_car_dealer.lua")
 include("shared/sh_inventory.lua")
