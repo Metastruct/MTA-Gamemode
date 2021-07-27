@@ -215,6 +215,21 @@ if SERVER then
 		ply.noleap = true
 	end
 
+	local JAIL_SPOTS = {
+		Vector(1870, -974, 5416),
+		Vector(2124, -985, 5416),
+		Vector(2112, -1329, 5416),
+		Vector(1999, -1317, 5416),
+		Vector(1888, -1331, 5416)
+	}
+	function GM:PlayerSpawn(ply)
+		self.BaseClass.PlayerSpawn(self, ply)
+		if ply.MTACaught then
+			ply.MTACaught = nil
+			ply:SetPos(JAIL_SPOTS[math.random(#JAIL_SPOTS)])
+		end
+	end
+
 	local HOSTNAMES = {
 		"Almost like DarkRP",
 		"PayDay 3",
@@ -327,20 +342,9 @@ if SERVER then
 		return true, true
 	end
 
-	local JAIL_SPOTS = {
-		Vector(1870, -974, 5416),
-		Vector(2124, -985, 5416),
-		Vector(2112, -1329, 5416),
-		Vector(1999, -1317, 5416),
-		Vector(1888, -1331, 5416)
-	}
+
 	function GM:MTAPlayerFailed(ply, max_factor, old_factor, is_death)
-		local spot = JAIL_SPOTS[math.random(#JAIL_SPOTS)]
-		timer.Simple(0.5, function()
-			if not IsValid(ply) then return end
-			ply:Spawn()
-			ply:SetPos(spot)
-		end)
+		ply.MTACaught = true
 	end
 
 	local function handle_mta_team(ply, state, mta_id)
