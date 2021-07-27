@@ -19,8 +19,8 @@ if SERVER then
 		end
 
 		table.insert(ent.DeathRecap, {
-			Attacker = IsValid(atck) and atck:GetClass() or "???",
-			Inflictor = IsValid(inflictor) and inflictor:GetClass() or "???",
+			Inflictor = IsValid(atck) and atck:GetClass() or "???",
+			Attacker = IsValid(inflictor) and inflictor:GetClass() or "Nothing",
 			Damage = math.Round(dmg_info:GetDamage()),
 		})
 
@@ -75,7 +75,7 @@ if CLIENT then
 	end)
 
 	hook.Add("HUDShouldDraw", tag, function(name)
-		if not LocalPlayer():Alive() and name == "CHudDamageIndicator" then
+		if name == "CHudDamageIndicator" then
 		   return false
 		end
 	end)
