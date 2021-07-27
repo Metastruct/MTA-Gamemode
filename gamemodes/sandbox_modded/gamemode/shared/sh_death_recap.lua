@@ -14,10 +14,14 @@ if SERVER then
 
 		local atck = dmg_info:GetAttacker()
 		local inflictor = dmg_info:GetInflictor()
+		if IsValid(atck) and (atck:IsPlayer() or atck:IsNPC()) then
+			atck = atck:GetActiveWeapon()
+		end
+
 		table.insert(ent.DeathRecap, {
 			Attacker = IsValid(atck) and atck:GetClass() or "???",
 			Inflictor = IsValid(inflictor) and inflictor:GetClass() or "???",
-			Damage = dmg_info:GetDamage(),
+			Damage = math.Round(dmg_info:GetDamage()),
 		})
 
 		if not ent:Alive() then
@@ -68,6 +72,12 @@ if CLIENT then
 	net.Receive(tag, function()
 		recap = net.ReadTable()
 		recap = table.Reverse(recap)
+	end)
+
+	hook.Add("HUDShouldDraw", tag, function(name)
+		if not LocalPlayer():Alive() and name == "CHudDamageIndicator" then
+		   return false
+		end
 	end)
 
 	local orange_color = Color(244, 135, 2)
