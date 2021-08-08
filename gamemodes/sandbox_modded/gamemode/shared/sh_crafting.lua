@@ -159,6 +159,8 @@ if CLIENT then
 		for _, blueprint in pairs(blueprints) do
 			craft.Blueprints[blueprint] = true
 		end
+
+		hook.Run("MTABlueprintsUpdated")
 	end)
 
 	function craft.CraftItem(item_class, amount)
