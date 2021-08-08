@@ -12,6 +12,7 @@ include("client/cl_intro.lua")
 include("client/cl_hud.lua")
 include("client/dinventory.lua")
 include("client/cl_inventory.lua")
+include("client/cl_crafting.lua")
 
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_death_recap.lua")
