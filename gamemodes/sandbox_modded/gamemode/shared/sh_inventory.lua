@@ -59,6 +59,22 @@ function inventory.HasItem(ply, item_class, amount)
 	return false
 end
 
+function inventory.FindItemSlot(ply, item_class)
+	local inst = inventory.Instances[ply]
+	if not inst then return false end
+
+	for y = 1, MAX_HEIGHT do
+		for x = 1, MAX_WIDTH do
+			local inv_space = inst[y][x]
+			if inv_space and inv_space.Class == item_class then
+				return true, x, y
+			end
+		end
+	end
+
+	return false
+end
+
 function inventory.GetInventory(ply)
 	return inventory.Instances[ply]
 end
