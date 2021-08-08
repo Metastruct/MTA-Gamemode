@@ -313,7 +313,7 @@ if CLIENT then
 				surface.DrawLine(0, 59, w, 59)
 				surface.DrawLine(0, 60, w, 60)
 				surface.DrawLine(w / 3 * 2, 25, w / 3 * 2, h)
-				surface.DrawLine(w / 3 * 2 + 1, 25, w / 3 * 2 +1, h)
+				surface.DrawLine(w / 3 * 2 + 1, 25, w / 3 * 2 + 1, h)
 
 				surface.SetFont("MTALeaderboardFont")
 
@@ -518,9 +518,9 @@ if CLIENT then
 
 		local craft_button = vgui.Create("DButton")
 		craft_button:SetParent(inv_panel)
-		craft_button:SetSize(128, 32)
-		craft_button:SetText("Crafting >>")
-		craft_button:SetPos(0,0)
+		craft_button:SetSize(40, 520)
+		craft_button:SetPos(15, 32)
+		craft_button:SetText("")
 		function craft_button:DoClick()
 			self.isToggled = not self.isToggled
 
@@ -530,18 +530,39 @@ if CLIENT then
 				trash:Hide()
 
 				crafting:Show()
-
-				self:SetText("<< Inventory")
 			else
 				crafting:Hide()
 
 				inv:Show()
 				item_view:Show()
 				trash:Show()
+			end
+		end
 
-				self:SetText("Crafting >>")
+		function craft_button:Paint(w, h)
+			local col = self:IsHovered() and white_color or orange_color
+
+			surface.SetDrawColor(col)
+			surface.DrawOutlinedRect(0, 0, w, h)
+
+			surface.SetFont("DermaLarge")
+			surface.SetTextColor(col)
+
+			local arrow = self.isToggled and "<<" or ">>"
+			surface.SetTextPos(5, 10)
+			surface.DrawText(arrow)
+
+			local str = self.isToggled and "INVENTORY" or "CRAFTING"
+			local total_height = draw.GetFontHeight("DermaLarge") * #str
+			for i = 1, #str do
+				local char = str[i]
+				local cw, _ = surface.GetTextSize(char)
+				surface.SetTextPos(w / 2 - cw / 2, h / 2 - total_height / 2 + (i - 1) * 30)
+				surface.DrawText(char)
 			end
 
+			surface.SetTextPos(5, h - 45)
+			surface.DrawText(arrow)
 		end
 
 		local tab = sheet:AddSheet("Inventory", inv_panel)
@@ -569,7 +590,7 @@ if CLIENT then
 		local header_text = GetHostName()
 		surface.SetFont("MTAMenuHeaderFont")
 		surface.SetTextColor(255, 255, 255, 255)
-		local tw, th = surface.GetTextSize(header_text)
+		local tw, _ = surface.GetTextSize(header_text)
 		surface.SetTextPos(self:GetWide() / 2 - tw / 2, -50)
 
 		surface.DisableClipping(true)
