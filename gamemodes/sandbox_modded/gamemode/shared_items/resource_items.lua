@@ -51,6 +51,8 @@ if SERVER then
 	local combine_helicopter_drops = { "heli_rotor", "heli_metal_plate" }
 	local car_drops = { "wheel", "gear", "muffler", "connector" }
 
+	local MAX_DROPPED_RESOURCES = 20
+	local dropped_resources = {}
 	local function handle_drops(drops, min_drops, max_drops, origin_pos)
 		if #drops == 0 then return end
 
@@ -64,6 +66,13 @@ if SERVER then
 					local phys = item_ent:GetPhysicsObject()
 					if IsValid(phys) then
 						phys:SetVelocity(VectorRand(-500, 500))
+					end
+
+					table.insert(dropped_resources, item_ent)
+					if #dropped_resources >= MAX_DROPPED_RESOURCES then
+						local oldest_item = dropped_resources[1]
+						SafeRemoveEntity(oldest_item)
+						table.remove(dropped_resources, 1)
 					end
 				end
 			end
