@@ -239,7 +239,7 @@ local function SetupClientData()
 			})
 		end
 
-		table.insert({
+		table.insert(clWeaponData, {
 			class = "drill",
 			cost = DRILL_BP_COST,
 			pos = Vector(598, 7183, 5513),
@@ -267,7 +267,7 @@ hook.Add("HUDPaint", tag, function()
 			local cost = data.cost
 			local text
 
-			if MTA.Weapons[data.class] == true then
+			if MTA.Weapons[data.class] == true or MTA.Crafting.Blueprints[data.class] == true then
 				text = "You own this weapon"
 				highlightColor = noBuyColor
 			elseif MTA.GetPlayerStat("points") < cost then
