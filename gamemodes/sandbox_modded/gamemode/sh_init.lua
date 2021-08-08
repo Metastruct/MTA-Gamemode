@@ -311,7 +311,7 @@ if SERVER then
 					end
 
 					if CurTime() >= next_door_check then
-						for _, ent in ipairs(ents.FindInSphere(wander:GetPos(), 150)) do
+						for _, ent in ipairs(ents.FindInSphere(wander:GetPos(), 75)) do
 							if ent:GetClass():match("door") and not ent.wander_toggle then
 								ent:Fire("open")
 
