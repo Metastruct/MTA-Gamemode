@@ -545,15 +545,15 @@ if CLIENT then
 			surface.SetDrawColor(col)
 			surface.DrawOutlinedRect(0, 0, w, h)
 
-			surface.SetFont("DermaLarge")
+			surface.SetFont("MTAMenuHeaderFont")
 			surface.SetTextColor(col)
 
 			local arrow = self.isToggled and "<<" or ">>"
-			surface.SetTextPos(5, 10)
+			surface.SetTextPos(5, -5)
 			surface.DrawText(arrow)
 
 			local str = self.isToggled and "INVENTORY" or "CRAFTING"
-			local total_height = draw.GetFontHeight("DermaLarge") * #str
+			local total_height = draw.GetFontHeight("MTAMenuHeaderFont") * #str - 40
 			for i = 1, #str do
 				local char = str[i]
 				local cw, _ = surface.GetTextSize(char)
