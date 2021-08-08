@@ -58,6 +58,7 @@ local phases = {
 		lines = {
 			"Among all the methods to get points, the most common one is breaking into safes.",
 			"Safes are scattered around the map, and successfully breaking them will get you a whole lot of points.",
+			"To break into safes, craft drills! The drill blueprint is available at the gun dealer."
 		},
 		start = function()
 			local vaults = ents.FindByClass("mta_vault")
