@@ -497,9 +497,10 @@ if CLIENT then
 			sheet_data.Panel:SetWide(sheet:GetWide())
 		end
 
+		local margin = 8
 		local inv_panel = vgui.Create("DPanel")
 		local inv = inv_panel:Add("mta_inventory")
-		inv:SetPos(64 + 8, 300)
+		inv:SetPos(64 + margin, 300)
 
 		local trash = inv.TrashCan
 		trash:SetParent(inv_panel)
@@ -507,7 +508,41 @@ if CLIENT then
 
 		local item_view = inv.ItemView
 		item_view:SetParent(inv_panel)
-		item_view:SetPos(64 + 8, 32)
+		item_view:SetPos(64 + margin, 32)
+
+		-- Crafting panel
+		local crafting = inv_panel:Add("mta_crafting")
+		crafting:SetPos(64 + margin, 32)
+		crafting:SetSize(inv:GetWide(), inv:GetTall() * 2 + margin)
+		crafting:Hide()
+
+		local craft_button = vgui.Create("DButton")
+		craft_button:SetParent(inv_panel)
+		craft_button:SetSize(128, 32)
+		craft_button:SetText("Crafting >>")
+		craft_button:SetPos(0,0)
+		function craft_button:DoClick()
+			self.isToggled = not self.isToggled
+
+			if self.isToggled then
+				inv:Hide()
+				item_view:Hide()
+				trash:Hide()
+
+				crafting:Show()
+
+				self:SetText("<< Inventory")
+			else
+				crafting:Hide()
+
+				inv:Show()
+				item_view:Show()
+				trash:Show()
+
+				self:SetText("Crafting >>")
+			end
+
+		end
 
 		local tab = sheet:AddSheet("Inventory", inv_panel)
 		tab.Tab.Paint = tab_paint

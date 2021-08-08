@@ -40,7 +40,7 @@ function PANEL:Init()
 
 	self.ViewDocker = self.ItemView:Add("Panel")
 	self.ViewDocker:SetPos(128 + 16)
-	self.ViewDocker:SetSize(self:GetWide() / 3, self:GetTall())
+	self.ViewDocker:SetSize(self:GetWide(), self:GetTall())
 
 	self.ItemViewHeader = self.ViewDocker:Add("DLabel")
 	self.ItemViewHeader:Dock(TOP)
@@ -51,6 +51,7 @@ function PANEL:Init()
 	self.ItemViewHeader:SetPos(0, 128)
 	self.ItemViewHeader:SetSize(128, 32)
 
+	--[=[
 	self.HelpText = self.ViewDocker:Add("DLabel")
 	self.HelpText:Dock(BOTTOM)
 	self.HelpText:SetTall(64)
@@ -58,6 +59,7 @@ function PANEL:Init()
 The trashcan will remove any item you drop in it.
 Right click drag an item to split the stack.]]
 	self.HelpText:SetText(helpText)
+	]=]
 
 	self.ItemViewInfo = self.ViewDocker:Add("RichText")
 	self.ItemViewInfo:Dock(FILL)
@@ -65,7 +67,6 @@ Right click drag an item to split the stack.]]
 		self:SetFontInternal("CreditsText")
 		self:SetFGColor(255, 255, 255, 255)
 	end
-	--self.ItemView.ItemIcon = self.ItemView:Add("")
 
 	self.ItemViewIcon = self.ItemView:Add("DModelPanel")
 	self.ItemViewIcon:SetSize(128, 128)
