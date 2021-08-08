@@ -1,5 +1,6 @@
 local tag = "MTA_Gunstore"
 
+local DRILL_BP_COST = 5
 local deskHeight = 5550
 local weaponData = {
 	--model is the world prop model
@@ -101,6 +102,7 @@ local weaponData = {
 }
 
 if SERVER then
+	util.AddNetworkString("MTA_BUY_DRILL_BP")
 
 	local doorLocations = {
 		[1] = Vector(560, 7086.5, 5592),
@@ -139,7 +141,28 @@ if SERVER then
 			function hitBox:CanTool() return false end
 		end
 
-		for _,pos in ipairs(doorLocations) do
+		do
+			local bp = ents.Create("prop_physics")
+			bp:SetModel("models/props_combine/combine_mine01.mdl")
+			bp:SetPos(Vector(598, 7183, 5513))
+			bp:SetAngles(Angle(-27, -44, 30))
+			bp:Spawn()
+
+			bp:SetUnFreezable(true)
+			bp.PhysgunDisabled = true
+			bp:SetNWBool(tag, true)
+			bp:SetNWString(tag, "drill")
+
+			local phys = bp:GetPhysicsObject()
+			if IsValid(phys) then
+				phys:EnableMotion(false)
+			end
+
+			function bp:CanProperty() return false end
+			function bp:CanTool() return false end
+		end
+
+		for _, pos in ipairs(doorLocations) do
 			for k, door in ipairs(ents.FindInSphere(pos, 5)) do
 
 				if IsValid(door) and door:GetClass() == "func_door" then
@@ -161,6 +184,11 @@ if SERVER then
 		SetupStore()
 	end)
 
+	net.Receive("MTA_BUY_DRILL_BP", function(_, ply)
+		if not MTA.PayPoints(ply, DRILL_BP_COST) then return end
+		MTA.Crafting.GiveBlueprint(ply, "drill")
+	end)
+
 	return
 end
 
@@ -174,6 +202,8 @@ local isKeyDown = false
 
 local function CanBuy(weapon)
 	local points = MTA.GetPlayerStat("points") or 0
+	if weapon == "drill" then return points >= DRILL_BP_COST end
+
 	local cost = MTA_CONFIG.upgrades.WeaponCosts[weapon] or math.huge
 	return not MTA.Weapons[weapon] and points >= cost
 end
@@ -181,9 +211,14 @@ end
 local function CallBuyServer(weapon)
 	if not CanBuy(weapon) then surface.PlaySound("npc/scanner/combat_scan5.wav") return end
 
-	net.Start("MTA_GIVE_WEAPON")
-		net.WriteString(weapon)
-	net.SendToServer()
+	if weapon ~= "drill" then
+		net.Start("MTA_GIVE_WEAPON")
+			net.WriteString(weapon)
+		net.SendToServer()
+	else
+		net.Start("MTA_BUY_DRILL_BP")
+		net.SendToServer()
+	end
 
 	surface.PlaySound("npc/scanner/combat_scan2.wav")
 end
@@ -203,6 +238,13 @@ local function SetupClientData()
 				name = weaponInfo.PrintName,
 			})
 		end
+
+		table.insert({
+			class = "drill",
+			cost = DRILL_BP_COST,
+			pos = Vector(598, 7183, 5513),
+			name = "Drill Blueprint",
+		})
 	end
 end
 
