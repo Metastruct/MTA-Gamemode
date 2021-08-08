@@ -62,9 +62,9 @@ if SERVER then
 		net.WriteString(str_blueprints)
 		net.Send(ply)
 
-		MTA.Blueprints.Instances[ply] = {}
-		for _, blueprint in pairs(ret.blueprints:Split(";")) do
-			MTA.Blueprints.Instances[blueprint] = true
+		craft.Blueprints.Instances[ply] = {}
+		for _, blueprint in pairs(blueprints) do
+			craft.Blueprints.Instances[ply][blueprint] = true
 		end
 
 		if not can_db() then return end
@@ -79,9 +79,9 @@ if SERVER then
 		co(function()
 			local ret = db.Query(("SELECT * FROM mta_user_blueprints WHERE id = %d;"):format(ply:AccountID()))[1]
 			if ret and ret.blueprints then
-				MTA.Blueprints.Instances[ply] = {}
+				craft.Blueprints.Instances[ply] = {}
 				for _, blueprint in pairs(ret.blueprints:Split(";")) do
-					MTA.Blueprints.Instances[blueprint] = true
+					craft.Blueprints.Instances[ply][blueprint] = true
 				end
 
 				net.Start(NET_BLUEPRINTS_TRANSMIT)
@@ -120,11 +120,11 @@ if SERVER then
 		return false
 	end
 
-	function craft.GiveBlueprint(ply, blueprint)
-		if blueprint:Trim() == "" then return end
+	function craft.GiveBlueprint(ply, item_class)
+		if item_class:Trim() == "" then return end
 
 		local cur_blueprints = craft.Blueprints.Get(ply)
-		cur_blueprints[blueprint] = true
+		cur_blueprints[item_class] = true
 		craft.Blueprints.Save(ply, table.GetKeys(cur_blueprints))
 	end
 
