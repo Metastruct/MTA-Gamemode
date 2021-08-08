@@ -18,9 +18,18 @@ if SERVER then
 			atck = atck:GetActiveWeapon()
 		end
 
+		local attcker_name = "Unknown"
+		if IsValid(atck) then
+			if atck:IsPlayer() then
+				attcker_name = UndecorateNick(atck:Nick())
+			else
+				attcker_name = inflictor:GetClass()
+			end
+		end
+
 		table.insert(ent.DeathRecap, {
 			Inflictor = IsValid(atck) and atck:GetClass() or "nothing",
-			Attacker = IsValid(inflictor) and inflictor:GetClass() or "Unknown",
+			Attacker = attcker_name,
 			Damage = math.Round(dmg_info:GetDamage()),
 		})
 
