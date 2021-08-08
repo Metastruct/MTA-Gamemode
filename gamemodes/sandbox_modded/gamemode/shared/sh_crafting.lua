@@ -28,7 +28,7 @@ local function clear_empty_blueprints(tbl)
 end
 
 function craft.CanCraft(ply, item_class, amount)
-	if SERVER and not can_db() then return fals end
+	if SERVER and not can_db() then return false end
 	if not IsValid(ply) then return false end
 
 	local item = inventory.Items[item_class]
