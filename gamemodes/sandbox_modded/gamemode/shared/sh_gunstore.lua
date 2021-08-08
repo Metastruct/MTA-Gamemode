@@ -267,8 +267,11 @@ hook.Add("HUDPaint", tag, function()
 			local cost = data.cost
 			local text
 
-			if MTA.Weapons[data.class] == true or MTA.Crafting.Blueprints[data.class] == true then
+			if MTA.Weapons[data.class] == true then
 				text = "You own this weapon"
+				highlightColor = noBuyColor
+			elseif MTA.Crafting.Blueprints[data.class] == true then
+				text = "You own this blueprint"
 				highlightColor = noBuyColor
 			elseif MTA.GetPlayerStat("points") < cost then
 				text = "You can't afford this - " .. cost .. " points"
