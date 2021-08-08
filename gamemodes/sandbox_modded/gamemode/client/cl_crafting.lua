@@ -28,16 +28,8 @@ function PANEL:Init()
 	self.BlueprintList:SetWide(200)
 	self.BlueprintList:Dock(LEFT)
 	self.BlueprintList.OnRowSelected = function(list, index, row)
-		local canCraft = crafting.CanCraft(LocalPlayer(), row.class, 1)
-		if not canCraft then
-			self.CraftButton:SetDisabled(true)
-			self.SelectedBlueprint = nil
-		else
-			self.CraftButton:SetEnabled(true)
-			self.SelectedBlueprint = row.class
-		end
-
-		self:UpdateCraftingInfo(row.class, canCraft)
+		self.SelectedBlueprint = row.class
+		self:UpdateCraftingInfo()
 
 		self.ItemViewIcon:SetModel(GetItemModel(row.class))
 		self:UpdateItemView()
@@ -60,9 +52,23 @@ function PANEL:Init()
 		end
 	end)
 
-	self.ItemViewIcon = self:Add("DModelPanel")
-	self.ItemViewIcon:Dock(TOP)
-	self.ItemViewIcon:SetHeight(300)
+	local function InventoryUpdate()
+		self:UpdateCraftingInfo()
+	end
+
+	hook.Add("MTAInventoryItemAdded", tag, InventoryUpdate)
+	hook.Add("MTAInventoryItemRemoved", tag, InventoryUpdate)
+
+	local panel = self:Add("DPanel")
+	panel:Dock(TOP)
+	panel:SetHeight(300)
+	local mat = Material("gui/dupe_bg.png")
+	function panel:Paint(w, h)
+		surface.SetMaterial(mat)
+		surface.DrawTexturedRect(0, 0, w, h)
+	end
+	self.ItemViewIcon = panel:Add("DModelPanel")
+	self.ItemViewIcon:Dock(FILL)
 	self.ItemViewIcon:SetMouseInputEnabled(false)
 	self.ItemViewIcon:SetKeyboardInputEnabled(false)
 
@@ -76,19 +82,31 @@ function PANEL:Init()
 	end
 end
 
-function PANEL:UpdateCraftingInfo(item_class, canCraft)
+function PANEL:UpdateCraftingInfo()
+	local item_class = self.SelectedBlueprint
+	if not item_class then return end
+
+	local canCraft = crafting.CanCraft(LocalPlayer(), item_class, 1)
+	if not canCraft then
+		self.CraftButton:SetDisabled(true)
+	else
+		self.CraftButton:SetEnabled(true)
+	end
+
 	local item = inventory.Items[item_class]
 
 	self.CraftInfo:SetText(GetItemName(item_class) .. "\n")
-	if not canCraft then
-		self.CraftInfo:InsertColorChange(255, 50, 50, 255)
-		self.CraftInfo:AppendText("You don't have the resources to craft this item\n")
-	end
-
 	if not item.Craft then return end
 
 	for _, craft_data in ipairs(item.Craft) do
-		self.CraftInfo:AppendText(craft_data.Amount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
+
+		if not canCraft and not inventory.HasItem(LocalPlayer(), craft_data.Resource, craft_data.Amount) then
+			self.CraftInfo:InsertColorChange(255, 50, 50, 255)
+			self.CraftInfo:AppendText("Missing: " .. craft_data.Amount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
+		else
+			self.CraftInfo:InsertColorChange(255, 255, 255, 255)
+			self.CraftInfo:AppendText(craft_data.Amount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
+		end
 	end
 end
 
