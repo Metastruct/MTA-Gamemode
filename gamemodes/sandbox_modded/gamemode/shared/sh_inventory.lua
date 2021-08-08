@@ -229,7 +229,7 @@ if SERVER then
 			if not inv_space then
 				inst[pos_y][pos_x] = { Class = item_class, Amount = to_add }
 				sql_req = ("INSERT INTO mta_inventory(id, item_class, slot_x, slot_y, amount) VALUES(%s, '%s', %d, %d, %d);")
-					:format(ply:AccountID(), item_class, pos_x, pos_y, amount)
+					:format(ply:AccountID(), item_class, pos_x, pos_y, to_add)
 			else
 				inst[pos_y][pos_x] = { Class = item_class, Amount = inv_space.Amount + to_add }
 				sql_req = ("UPDATE mta_inventory SET amount = %d WHERE id = %d AND item_class = '%s' AND slot_x = %d AND slot_y = %d;")
