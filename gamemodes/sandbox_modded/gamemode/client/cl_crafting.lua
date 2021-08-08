@@ -21,6 +21,7 @@ function PANEL:Init()
 		if not self.SelectedBlueprint then return end
 
 		crafting.CraftItem(self.SelectedBlueprint, 1)
+		notification.AddLegacy("Crafted " .. self.SelectedBlueprint, NOTIFY_HINT, 2)
 	end
 
 	self.BlueprintList = self:Add("DListView")
