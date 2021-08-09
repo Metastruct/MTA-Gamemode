@@ -1,4 +1,6 @@
 DeriveGamemode("sandbox")
+DEFINE_BASECLASS("gamemode_sandbox")
+GM.Sandbox = BaseClass
 
 IS_MTA_GMA = true
 
