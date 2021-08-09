@@ -1,3 +1,5 @@
+DeriveGamemode("sandbox")
+
 IS_MTA_GMA = true
 
 function MTA_TABLE(name)
