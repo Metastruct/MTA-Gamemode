@@ -1,10 +1,19 @@
 "mta"
 {
-	"base"		"sandbox"
-	"title"		"MTA"
-	"maps"		"rp_unioncity"
-	"menusystem"	"0"
-	"category"      "pve"
+    "base"          "sandbox"
+    "title"         "MTA"
+	"maps"       "rp_unioncity"
+    "version"       "1.0.0"
+    "category"      "pve"
+    "menusystem"    "0"
+
+    "author_name"   "Earu"
+    "author_email"  ""
+    "author_url"    "https://gitlab.com/metastruct/internal/mta_projects/mta_gm"
+
+    "icon"  ""
+    "info"  ""
+    "hide"  "1"
 
 	"settings"
 	{

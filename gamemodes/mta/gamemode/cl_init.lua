@@ -1,4 +1,6 @@
 DeriveGamemode("sandbox")
+DEFINE_BASECLASS("gamemode_sandbox")
+GM.Sandbox = BaseClass
 
 function MTA_TABLE(name)
 	_G.MTA = _G.MTA or {}
