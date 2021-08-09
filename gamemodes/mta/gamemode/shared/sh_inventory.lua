@@ -715,7 +715,7 @@ if CLIENT then
 end
 
 -- initialize items
-local path = "sandbox_modded/gamemode/shared_items"
+local path = "mta/gamemode/shared_items"
 for _, f in pairs(file.Find(path .. "/*.lua", "LUA")) do
 	local file_path = ("%s/%s"):format(path, f)
 	if SERVER then
