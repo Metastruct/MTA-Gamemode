@@ -1,3 +1,5 @@
+DeriveGamemode("sandbox")
+
 function MTA_TABLE(name)
 	_G.MTA = _G.MTA or {}
 	_G.MTA[name] = _G.MTA[name] or {}
