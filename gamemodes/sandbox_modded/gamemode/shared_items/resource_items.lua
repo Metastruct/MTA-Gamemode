@@ -102,8 +102,11 @@ if SERVER then
 
 	hook.Add("OnEntityCreated", tag, function(ent)
 		if ent:GetClass() ~= "gmod_sent_vehicle_fphysics_base" then return end
+
+		local old_OnDestroyed = ent.OnDestroyed
 		function ent:OnDestroyed()
 			handle_drops(car_drops, 2, 5, ent:WorldSpaceCenter())
+			old_OnDestroyed(self)
 		end
 	end)
 end

@@ -184,6 +184,131 @@ hook.Add("PostCleanupMap", tag, function()
 	SetupGarage()
 end)
 
+local parking_spots = {
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(5103, 4709, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(5119, 5001, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(5122, 5250, 5447),
+	},
+	{
+		ang = Angle(0, 0, 0),
+		pos = Vector(4999, 5920, 5447),
+	},
+	{
+		ang = Angle(0, 0, 0),
+		pos = Vector(5289, 5922, 5447),
+	},
+	{
+		ang = Angle(0, 0, 0),
+		pos = Vector(5543, 5931, 5447),
+	},
+	{
+		ang = Angle(0, 90, 0),
+		pos = Vector(5572, 5259, 5447),
+	},
+	{
+		ang = Angle(0, 90, 0),
+		pos = Vector(5534, 4981, 5447),
+	},
+	{
+		ang = Angle(0, 90, 0),
+		pos = Vector(5557, 4712, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(6225, 5125, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(6240, 4867, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(6240, 4591, 5447),
+	},
+	{
+		ang = Angle(0, -90, 0),
+		pos = Vector(6228, 4335, 5447),
+	},
+}
+
+local function respawnCar(ply)
+	if not _G.co or not _G.db then return end
+	co(function()
+		local ret = db.Query("SELECT * FROM mta_user_cars WHERE id = ?", ply:AccountID())
+		if ret and ret[1] then
+			local data = ret[1]
+
+			local parking_slot = parking_spots[math.random(#parking_spots)]
+			local vehicleList = list.Get("simfphys_vehicles")
+			local vehicle = vehicleList[data.name]
+
+			local car = simfphys.SpawnVehicle(ply, parking_slot.pos, parking_slot.ang, data.model, data.class, data.name, vehicle, true)
+			if not IsValid(car) then return end
+
+			function car:CanProperty() return false end
+			function car:CanTool() return false end
+			function car:UpdateTransmitState() return TRANSMIT_ALWAYS end
+
+			local old_OnDestroyed = ent.OnDestroyed
+			function ent:OnDestroyed()
+				timer.Simple(10, function()
+					if not IsValid(ply) then return end
+					respawnCar(ply)
+				end)
+				old_OnDestroyed(self)
+			end
+
+			car.PhysgunDisabled = true
+			do
+				local chunks = data.color:Split(" ")
+				car:SetColor(Color(
+					tonumber(chunks[1]) or 255,
+					tonumber(chunks[2]) or 255,
+					tonumber(chunks[3]) or 255,
+					tonumber(chunks[4]) or 255
+				))
+			end
+
+			car:SetSkin(tonumber(data.skin) or 0)
+
+			local modParts = util.JSONToTable(data.bodygroups)
+			for _, group in pairs(modParts) do
+				car:SetBodygroup(group.id, group.num)
+			end
+
+			for _, wheel in ipairs(car.Wheels) do
+				if IsValid(wheel) then
+					wheel.doorexploding = true
+				end
+			end
+
+			car.doorexploding = true
+			car.IsMTACar = true
+			car.Renter = ply
+
+			--Add delay to make sure it's spawned
+			timer.Simple(0.5, function()
+				net.Start(tag)
+					net.WriteBool(false)
+					net.WriteEntity(car)
+				net.Send(ply)
+			end)
+
+			MTACars.CurrentVehicles[ply] = car
+		end
+	end)
+end
+
+hook.Add("PlayerInitialSpawn", tag, respawnCar)
+
 local vSpawnPos, vSpawnAng = Vector(-1735, 4888, 5417), Angle(0, -90, 0)
 
 local function BuyVehicle(ply, cost, sim, color, skin, modParts)
@@ -233,6 +358,23 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 	car.doorexploding = true
 	car.IsMTACar = true
 	car.Renter = ply
+
+	if _G.co and _G.db then
+		co(function()
+			local bodygroups = {}
+			for _, group in pairs(car:GetBodyGroups()) do
+				table.insert(bodygroups, { id = group.id, num = group.num })
+			end
+			bodygroups = util.TableToJSON(bodygroups)
+
+			local rows_updated = db.Query("UPDATE mta_user_cars SET model = ?, class = ?, name = ?, color = ?, bodygroups = ?, skin = ? WHERE id = ?",
+				vehicle.Model, vehicle.Class, tostring(color), bodygroups, skin, ply:AccountID())
+			if rows_updated == 0 then
+				db.Query("INSERT INTO mta_user_cars(id, model, class, name, color, bodygroups, skin) VALUES(?, ?, ?, ?, ?, ?, ?)",
+					ply:AccountID(), vehicle.Model, vehicle.Class, tostring(color), bodygroups, skin, ply:AccountID())
+			end
+		end)
+	end
 
 	--Add delay to make sure it's spawned
 	timer.Simple(0.5, function()
