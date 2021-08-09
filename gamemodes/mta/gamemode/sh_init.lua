@@ -199,7 +199,7 @@ if SERVER then
 		sv_allowcslua = "0",
 		sbox_maxnpcs = "1000",
 		sbox_godmode = "0",
-		sv_loadingurl = "http://3kv.in/~earu/loading_screen/mta.html"
+		sv_loadingurl = "\"http://3kv.in/~earu/loading_screen/mta.html\""
 	}
 	local function set_cvars()
 		for cvar_name, value in pairs(cvars_to_set) do
