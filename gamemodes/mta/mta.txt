@@ -1,9 +1,10 @@
-"gamemode"
+"mta"
 {
 	"base"		"sandbox"
 	"title"		"MTA"
 	"maps"		"rp_unioncity"
 	"menusystem"	"0"
+	"category"      "pve"
 
 	"settings"
 	{
