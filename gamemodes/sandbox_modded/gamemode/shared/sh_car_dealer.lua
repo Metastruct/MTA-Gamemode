@@ -257,8 +257,8 @@ local function respawnCar(ply)
 			function car:CanTool() return false end
 			function car:UpdateTransmitState() return TRANSMIT_ALWAYS end
 
-			local old_OnDestroyed = ent.OnDestroyed
-			function ent:OnDestroyed()
+			local old_OnDestroyed = car.OnDestroyed
+			function car:OnDestroyed()
 				timer.Simple(10, function()
 					if not IsValid(ply) then return end
 					respawnCar(ply)
@@ -322,6 +322,15 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 
 	--checks say it's good! let's take those points
 	MTA.IncreasePlayerStat(ply, "points", -cost, true)
+
+	local old_OnDestroyed = car.OnDestroyed
+	function car:OnDestroyed()
+		timer.Simple(10, function()
+			if not IsValid(ply) then return end
+			respawnCar(ply)
+		end)
+		old_OnDestroyed(self)
+	end
 
 	function car:CanProperty()
 		return false
