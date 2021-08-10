@@ -66,7 +66,7 @@ return function()
 				local diff = math.max(status_data.expire_time - CurTime(), 0)
 				local s, ms = math.floor(diff), math.Round(math.fmod(diff, 1) * 1000)
 				time_left = ("%d:%d"):format(s, ms)
-				if ms == 0 then
+				if ms == 0 and s == 0 then
 					statuses.Current[status_name] = nil
 					continue
 				end
