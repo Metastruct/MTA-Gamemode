@@ -65,15 +65,18 @@ hook.Add("Think", tag, function()
 	light:SetLocalPos(light_pos - Vector(0, 0, 400))
 end)
 
-hook.Add("InitPostEntity", tag, function()
-	local function skyboxize(ent)
-		local phys = combine_vault:GetPhysicsObject()
-		if IsValid(phys) then
-			phys:EnableCollisions(false)
-			phys:EnableMotion(false)
-		end
+local function skyboxize(ent)
+	local phys = combine_vault:GetPhysicsObject()
+	if IsValid(phys) then
+		phys:EnableCollisions(false)
+		phys:EnableMotion(false)
 	end
+end
 
+local COMBINE_VAULT_POS = Vector (1380, 3994, -277)
+local COMBINE_VAULT_LIGHT_POS = Vector (1380, 4044, -277)
+local COMBINE_VAULT_LIGHT_REV_POS = Vector (1380, 4044, -900)
+local function populate_skybox()
 	local combine_vault = ents.Create("prop_physics")
 	combine_vault:SetModel("models/plcombine/combine_vault.mdl")
 	combine_vault:SetPos(COMBINE_VAULT_POS)
@@ -118,4 +121,7 @@ hook.Add("InitPostEntity", tag, function()
 		if not IsValid(combine_vault) then return end
 		combine_vault:SetPos(combine_vault:GetPos() + Vector(0, 0, math.sin(CurTime()) * 0.1))
 	end)
-end)
+end
+
+hook.Add("PostCleanupMap", tag, populate_skybox)
+hook.Add("InitPostEntity", tag, populate_skybox)
