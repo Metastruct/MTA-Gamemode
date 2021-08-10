@@ -12,6 +12,8 @@ end
 
 local PANEL = {}
 function PANEL:Init()
+	self.CraftAmount = 1
+
 	self.CraftButton = self:Add("DButton")
 	self.CraftButton:SetSize(96, 48)
 	self.CraftButton:SetText("Craft Item")
@@ -20,8 +22,51 @@ function PANEL:Init()
 	self.CraftButton.DoClick = function(button)
 		if not self.SelectedBlueprint then return end
 
-		crafting.CraftItem(self.SelectedBlueprint, 1)
-		notification.AddLegacy("Crafted " .. self.SelectedBlueprint, NOTIFY_HINT, 2)
+		crafting.CraftItem(self.SelectedBlueprint, self.CraftAmount)
+		notification.AddLegacy("Crafted " .. self.CraftAmount .. "x " .. self.SelectedBlueprint, NOTIFY_HINT, 2)
+	end
+
+	local Panel
+	local Label
+	local NumSlider
+
+	Panel = self:Add("DPanel")
+	Panel:SetSize(256, 64)
+	Panel:SetPos(200, 455)
+
+	Label = Panel:Add("DLabel")
+	Label:SetSize(128, 32)
+	Label:SetText("Amount to craft: ")
+	Label:SetPos(8,0)
+
+	NumSlider = Panel:Add("DNumSlider")
+	NumSlider:Dock(BOTTOM)
+
+	NumSlider:DockMargin(-Panel:GetWide() / 2 + 16, 0, 0, 10) --wang and scratch fucks up the docking
+	NumSlider.Wang:Hide()
+	NumSlider.Scratch:Hide()
+	NumSlider.TextArea:SetTextColor(Color(255, 255, 255))
+	NumSlider:SetMinMax(1, 10)
+	NumSlider:SetDefaultValue(1)
+	NumSlider:SetDecimals(0)
+	NumSlider:SetValue(1)
+
+	function NumSlider.OnValueChanged(slider, val)
+		self.CraftAmount = math.round(val, 0)
+		slider:SetValue(self.CraftAmount) --makes it snap to numbers instead of decimals
+		self:UpdateCraftingInfo()
+	end
+
+	local notches = 10
+	function NumSlider.Slider:Paint(w, h)
+
+		surface.SetDrawColor(255, 255, 255)
+		for i = 1, notches do
+			local x = i * (w / notches) + 1
+			local y = h / 2 + h / 10
+
+			surface.DrawRect(x, y, 1, h / 2)
+		end
 	end
 
 	self.BlueprintList = self:Add("DListView")
@@ -86,7 +131,7 @@ function PANEL:UpdateCraftingInfo()
 	local item_class = self.SelectedBlueprint
 	if not item_class then return end
 
-	local canCraft = crafting.CanCraft(LocalPlayer(), item_class, 1)
+	local canCraft = crafting.CanCraft(LocalPlayer(), item_class, self.CraftAmount)
 	if not canCraft then
 		self.CraftButton:SetDisabled(true)
 	else
@@ -99,13 +144,13 @@ function PANEL:UpdateCraftingInfo()
 	if not item.Craft then return end
 
 	for _, craft_data in ipairs(item.Craft) do
-
-		if not canCraft and not inventory.HasItem(LocalPlayer(), craft_data.Resource, craft_data.Amount) then
+		local resourceAmount = craft_data.Amount * self.CraftAmount
+		if not canCraft and not inventory.HasItem(LocalPlayer(), craft_data.Resource, resourceAmount) then
 			self.CraftInfo:InsertColorChange(255, 50, 50, 255)
-			self.CraftInfo:AppendText("Missing: " .. craft_data.Amount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
+			self.CraftInfo:AppendText("Missing: " .. resourceAmount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
 		else
 			self.CraftInfo:InsertColorChange(255, 255, 255, 255)
-			self.CraftInfo:AppendText(craft_data.Amount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
+			self.CraftInfo:AppendText(resourceAmount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
 		end
 	end
 end

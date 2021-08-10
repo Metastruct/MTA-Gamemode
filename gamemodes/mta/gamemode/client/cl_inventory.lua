@@ -244,6 +244,8 @@ function PANEL:AddItem(class, amount, x, y)
 	t:SetItemMaxCount(inventory.GetStackLimit(class))
 	t:SetItemName(GetItemData(class).Name)
 	t:SetModelIcon(GetItemData(class).Model)
+	t:SetItemDescription(GetItemData(class).Description)
+
 	return t
 end
 
