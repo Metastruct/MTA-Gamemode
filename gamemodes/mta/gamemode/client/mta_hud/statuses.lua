@@ -48,8 +48,6 @@ local base_x, base_y = ScrW() / 4, ScrH() / 3
 local padding = 15
 local margin = 5
 return function()
-	mat:SetField(2, 1, 0.10)
-
 	mat_vec.x = (-25 * MTA.HUD.Config.ScrRatio) + (MTA.HUD.Vars.LastTranslateY * 2)
 	mat_vec.y = (-25 * MTA.HUD.Config.ScrRatio) + (MTA.HUD.Vars.LastTranslateP * 3)
 
