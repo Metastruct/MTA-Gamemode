@@ -278,3 +278,9 @@ for k, v in pairs(trans) do
 	v = v and v:gsub("_", " ")
 	language.Add("mat_" .. k, v and (v:sub(1, 1):upper() .. v:sub(2, -1)) or "A Prop")
 end
+
+concommand.Add("+sb_spawnmenu", function()
+	for k,v in ipairs(vgui.GetWorldPanel():GetChildren()) do
+		if v.ClassName == "SpawnMenu" then v:Open() break end
+	end
+end)
