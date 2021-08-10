@@ -1,6 +1,7 @@
 local ITEM = {}
 
 ITEM.Name = "Drill"
+ITEM.Description = "A drill, allows you to break into vaults."
 ITEM.Model = "models/props_combine/combine_mine01.mdl"
 ITEM.StackLimit = 12
 ITEM.Craft = {
