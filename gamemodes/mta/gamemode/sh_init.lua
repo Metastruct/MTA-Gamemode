@@ -211,11 +211,13 @@ if SERVER then
 			vol_light:SetPos(COMBINE_VAULT_LIGHT_POS)
 			vol_light:SetColor(Color(255, 0, 0))
 			vol_light:Spawn()
+			vol_light:SetParent(combine_vault)
 			skyboxize(vol_light)
 
 			local light_source = ents.Create("gmod_lamp")
 			light_source:SetPos(COMBINE_VAULT_LIGHT_POS)
 			light_source:Spawn()
+			light_source:SetParent(combine_vault)
 
 			light_source:SetFlashlightTexture("effects/flashlight001")
 			light_source:SetOn(true)
@@ -228,6 +230,7 @@ if SERVER then
 			local light_source_rev = ents.Create("gmod_lamp")
 			light_source_rev:SetPos(COMBINE_VAULT_LIGHT_REV_POS)
 			light_source_rev:Spawn()
+			light_source_rev:SetParent(combine_vault)
 
 			light_source_rev:SetAngles(Angle(-90,0,0))
 			light_source_rev:SetFlashlightTexture("effects/flashlight001")
@@ -237,6 +240,11 @@ if SERVER then
 			light_source_rev:SetBrightness(200)
 			light_source_rev:SetLightFOV(9999)
 			skyboxize(light_source)
+
+			hook.Add("Think", "MTACombineVaultHover", function()
+				if not IsValid(combine_vault) then return end
+				combine_vault:SetPos(combine_vault:GetPos() + Vector(0, 0, math.sin(CurTime()) * 0.1))
+			end)
 		end
 	end
 
