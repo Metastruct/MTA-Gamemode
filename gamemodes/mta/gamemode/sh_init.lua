@@ -163,7 +163,9 @@ if SERVER then
 		}
 	}
 
-	local COMBINE_VAULT_POS = Vector(1281, 1334, -353)
+	local COMBINE_VAULT_POS = Vector (1380, 3994, -277)
+	local COMBINE_VAULT_LIGHT_POS = Vector (1380, 4044, -277)
+	local COMBINE_VAULT_LIGHT_REV_POS = Vector (1380, 4044, -900)
 	local function spawn_ents()
 		if not game.GetMap():match("^rp%_unioncity") then return end
 
@@ -191,16 +193,50 @@ if SERVER then
 		end
 
 		do -- combine vault skybox
+			local function skyboxize(ent)
+				local phys = combine_vault:GetPhysicsObject()
+				if IsValid(phys) then
+					phys:EnableCollisions(false)
+					phys:EnableMotion(false)
+				end
+			end
+
 			local combine_vault = ents.Create("prop_physics")
 			combine_vault:SetModel("models/plcombine/combine_vault.mdl")
 			combine_vault:SetPos(COMBINE_VAULT_POS)
 			combine_vault:Spawn()
+			skyboxize(combine_vault)
 
-			local phys = combine_vault:GetPhysicsObject()
-			if IsValid(phys) then
-				phys:EnableCollisions(false)
-				phys:EnableMotion(false)
-			end
+			local vol_light = ents.Create("models/effects/vol_light128x512.mdl")
+			vol_light:SetPos(COMBINE_VAULT_LIGHT_POS)
+			vol_light:SetColor(Color(255, 0, 0))
+			vol_light:Spawn()
+			skyboxize(vol_light)
+
+			local light_source = ents.Create("gmod_lamp")
+			light_source:SetPos(COMBINE_VAULT_LIGHT_POS)
+			light_source:Spawn()
+
+			light_source:SetFlashlightTexture("effects/flashlight001")
+			light_source:SetOn(true)
+			light_source:SetColor(Color(255, 0, 0))
+			light_source:SetDistance(200)
+			light_source:SetBrightness(99999)
+			light_source:SetLightFOV(9999)
+			skyboxize(light_source)
+
+			local light_source_rev = ents.Create("gmod_lamp")
+			light_source_rev:SetPos(COMBINE_VAULT_LIGHT_REV_POS)
+			light_source_rev:Spawn()
+
+			light_source_rev:SetAngles(Angle(-90,0,0))
+			light_source_rev:SetFlashlightTexture("effects/flashlight001")
+			light_source_rev:SetOn(true)
+			light_source_rev:SetColor(Color(255, 255, 255))
+			light_source_rev:SetDistance(99999)
+			light_source_rev:SetBrightness(200)
+			light_source_rev:SetLightFOV(9999)
+			skyboxize(light_source)
 		end
 	end
 
