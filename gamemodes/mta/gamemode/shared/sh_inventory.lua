@@ -75,6 +75,23 @@ function inventory.FindItemSlot(ply, item_class)
 	return false
 end
 
+function inventory.GetTotalItemCount(ply, item_class)
+	local inst = inventory.Instances[ply]
+	if not inst then return 0 end
+
+	local total = 0
+	for y = 1, MAX_HEIGHT do
+		for x = 1, MAX_WIDTH do
+			local inv_space = inst[y][x]
+			if inv_space and inv_space.Class == item_class then
+				total = total + inv_space.Amount
+			end
+		end
+	end
+
+	return total
+end
+
 function inventory.GetInventory(ply)
 	return inventory.Instances[ply]
 end
