@@ -377,10 +377,10 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 			bodygroups = util.TableToJSON(bodygroups)
 
 			local rows_updated = db.Query("UPDATE mta_user_cars SET model = ?, class = ?, name = ?, color = ?, bodygroups = ?, skin = ? WHERE id = ?",
-				vehicle.Model, vehicle.Class, tostring(color), bodygroups, skin, ply:AccountID())
+				vehicle.Model, vehicle.Class, sim, tostring(color), bodygroups, skin, ply:AccountID())
 			if rows_updated == 0 then
 				db.Query("INSERT INTO mta_user_cars(id, model, class, name, color, bodygroups, skin) VALUES(?, ?, ?, ?, ?, ?, ?)",
-					ply:AccountID(), vehicle.Model, vehicle.Class, tostring(color), bodygroups, skin, ply:AccountID())
+					ply:AccountID(), vehicle.Model, vehicle.Class, sim, tostring(color), bodygroups, skin, ply:AccountID())
 			end
 		end)
 	end
