@@ -151,7 +151,7 @@ function PANEL:UpdateCraftingInfo()
 		local item_class = craft_data.Resource
 		local itemCount = inventory.GetTotalItemCount(LocalPlayer(), item_class)
 
-		local text = resourceAmount .. " / " .. itemCount .. " " .. GetItemName(item_class) .. "\n"
+		local text = itemCount .. " / " .. resourceAmount .. " " .. GetItemName(item_class) .. "\n"
 
 		if not canCraft and not inventory.HasItem(LocalPlayer(), item_class, resourceAmount) then
 			self.CraftInfo:InsertColorChange(255, 50, 50, 255)
