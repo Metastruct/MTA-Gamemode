@@ -280,7 +280,5 @@ for k, v in pairs(trans) do
 end
 
 concommand.Add("+sb_spawnmenu", function()
-	for k,v in ipairs(vgui.GetWorldPanel():GetChildren()) do
-		if v.ClassName == "SpawnMenu" then v:Open() break end
-	end
+	g_SpawnMenu:Open()
 end)
