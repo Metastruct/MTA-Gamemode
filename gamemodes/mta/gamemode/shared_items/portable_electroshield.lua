@@ -2,7 +2,7 @@ local EFFECT_DURATION = 20
 local ITEM = {}
 
 ITEM.Name = "Portable Electro-Shield"
-ITEM.Description = ("A portable electro-shield. Reduces damages by 50% for %d seconds."):format(EFFECT_DURATION)
+ITEM.Description = ("A portable electro-shield. Halves the damages received for %d seconds."):format(EFFECT_DURATION)
 ITEM.Model = "models/roller_spikes.mdl"
 ITEM.StackLimit = 4
 ITEM.Craft = {
