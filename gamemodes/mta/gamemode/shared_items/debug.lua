@@ -1,6 +1,7 @@
 local ITEM = {}
 
 ITEM.Name = "Debug"
+ITEM.Description = "For debugging purposes only."
 ITEM.Model = "models/Gibs/HGIBS.mdl"
 ITEM.StackLimit = 12
 
