@@ -39,6 +39,7 @@ include("shared/sh_inventory.lua")
 include("shared/sh_crafting.lua")
 include("shared/sh_spawnmenu.lua")
 
+include("server/sv_statuses.lua")
 include("server/sv_hud.lua")
 include("server/sv_zones.lua")
 include("server/sv_misc_map_ents.lua")

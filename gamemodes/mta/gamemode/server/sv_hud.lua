@@ -3,6 +3,7 @@ AddCSLuaFile("mta/gamemode/client/mta_hud/hud.lua")
 AddCSLuaFile("mta/gamemode/client/mta_hud/map.lua")
 AddCSLuaFile("mta/gamemode/client/mta_hud/daily_challenges.lua")
 AddCSLuaFile("mta/gamemode/client/mta_hud/vault.lua")
+AddCSLuaFile("mta/gamemode/client/mta_hud/statuses.lua")
 
 resource.AddFile("materials/vgui/mta_hud/maps/rp_unioncity.vmt")
 resource.AddFile("materials/vgui/mta_hud/hpicon.vmt")
