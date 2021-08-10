@@ -53,10 +53,10 @@ function PANEL:Init()
 
 	function NumSlider.OnValueChanged(slider, val)
 		val = math.round(val, 0)
+		slider:SetValue(val) --makes it snap to numbers instead of decimals
 		if self.CraftAmount == val then return end -- Don't update if the value is same as last
 
 		self.CraftAmount = val
-		slider:SetValue(self.CraftAmount) --makes it snap to numbers instead of decimals
 		self:UpdateCraftingInfo()
 	end
 
@@ -64,11 +64,11 @@ function PANEL:Init()
 	function NumSlider.Slider:Paint(w, h)
 
 		surface.SetDrawColor(255, 255, 255)
-		for i = 1, notches do
-			local x = i * (w / notches) + 1
+		for i = 0, notches do
+			local x = ((w / notches) * i) + 7.5
 			local y = h / 2 + h / 10
 
-			surface.DrawRect(x, y, 1, h / 2)
+			surface.DrawRect(x, y, 2, h / 2)
 		end
 	end
 
