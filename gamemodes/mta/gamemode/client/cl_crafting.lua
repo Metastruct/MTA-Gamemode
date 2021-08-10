@@ -52,7 +52,10 @@ function PANEL:Init()
 	NumSlider:SetValue(1)
 
 	function NumSlider.OnValueChanged(slider, val)
-		self.CraftAmount = math.round(val, 0)
+		val = math.round(val, 0)
+		if self.CraftAmount == val then return end -- Don't update if the value is same as last
+
+		self.CraftAmount = val
 		slider:SetValue(self.CraftAmount) --makes it snap to numbers instead of decimals
 		self:UpdateCraftingInfo()
 	end
@@ -145,13 +148,18 @@ function PANEL:UpdateCraftingInfo()
 
 	for _, craft_data in ipairs(item.Craft) do
 		local resourceAmount = craft_data.Amount * self.CraftAmount
-		if not canCraft and not inventory.HasItem(LocalPlayer(), craft_data.Resource, resourceAmount) then
+		local item_class = craft_data.Resource
+		local itemCount = inventory.GetTotalItemCount(LocalPlayer(), item_class)
+
+		local text = resourceAmount .. " / " .. itemCount .. " " .. GetItemName(item_class) .. "\n"
+
+		if not canCraft and not inventory.HasItem(LocalPlayer(), item_class, resourceAmount) then
 			self.CraftInfo:InsertColorChange(255, 50, 50, 255)
-			self.CraftInfo:AppendText("Missing: " .. resourceAmount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
 		else
 			self.CraftInfo:InsertColorChange(255, 255, 255, 255)
-			self.CraftInfo:AppendText(resourceAmount .. "x " .. GetItemName(craft_data.Resource) .. "\n")
 		end
+
+		self.CraftInfo:AppendText(text)
 	end
 end
 
