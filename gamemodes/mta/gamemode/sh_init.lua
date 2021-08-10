@@ -12,6 +12,7 @@ GM["PlayerNoClip"] = function(gm, ply) return ply:IsAdmin() end
 
 if SERVER then
 	resource.AddWorkshop("372740052") -- synthetik health bars
+	resource.AddWorkshop("2061960116") -- vault model
 
 	function GM:pac_Initialized()
 		game.ConsoleCommand("pac_modifier_size 0\n")
@@ -162,6 +163,7 @@ if SERVER then
 		}
 	}
 
+	local COMBINE_VAULT_POS = Vector(1281, 1334, -353)
 	local function spawn_ents()
 		if not game.GetMap():match("^rp%_unioncity") then return end
 
@@ -186,6 +188,19 @@ if SERVER then
 				ent:SetNWString("npc_role", data.role)
 			end
 			--ent:DropToFloor()
+		end
+
+		do -- combine vault skybox
+			local combine_vault = ents.Create("prop_physics")
+			combine_vault:SetModel("models/plcombine/combine_vault.mdl")
+			combine_vault:SetPos(COMBINE_VAULT_POS)
+			combine_vault:Spawn()
+
+			local phys = combine_vault:GetPhysicsObject()
+			if IsValid(phys) then
+				phys:EnableCollisions(false)
+				phys:EnableMotion(false)
+			end
 		end
 	end
 
