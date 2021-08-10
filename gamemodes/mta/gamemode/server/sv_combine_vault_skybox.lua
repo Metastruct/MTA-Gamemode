@@ -66,7 +66,7 @@ hook.Add("Think", tag, function()
 end)
 
 local function skyboxize(ent)
-	local phys = combine_vault:GetPhysicsObject()
+	local phys = ent:GetPhysicsObject()
 	if IsValid(phys) then
 		phys:EnableCollisions(false)
 		phys:EnableMotion(false)
