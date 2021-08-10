@@ -242,7 +242,7 @@ local parking_spots = {
 local function respawnCar(ply)
 	if not _G.co or not _G.db then return end
 	co(function()
-		local ret = db.Query("SELECT * FROM mta_user_cars WHERE id = ?", ply:AccountID())
+		local ret = db.Query("SELECT * FROM mta_user_cars WHERE id = $1", ply:AccountID())
 		if ret and ret[1] then
 			local data = ret[1]
 
@@ -297,6 +297,7 @@ local function respawnCar(ply)
 			--Add delay to make sure it's spawned
 			timer.Simple(0.5, function()
 				net.Start(tag)
+					net.WriteBool(false)
 					net.WriteBool(false)
 					net.WriteEntity(car)
 				net.Send(ply)
@@ -369,19 +370,21 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 	car.Renter = ply
 
 	if _G.co and _G.db then
-		co(function()
-			local bodygroups = {}
-			for _, group in pairs(car:GetBodyGroups()) do
-				table.insert(bodygroups, { id = group.id, num = group.num })
-			end
-			bodygroups = util.TableToJSON(bodygroups)
+		local bodygroups = {}
+		for _, group in pairs(car:GetBodyGroups()) do
+			table.insert(bodygroups, { id = group.id, num = group.num })
+		end
+		bodygroups = util.TableToJSON(bodygroups)
 
-			local rows_updated = db.Query("UPDATE mta_user_cars SET model = ?, class = ?, name = ?, color = ?, bodygroups = ?, skin = ? WHERE id = ?",
+		co(function()
+			local rows_updated, db_err = db.Query("UPDATE mta_user_cars SET model = $1, class = $2, name = $3, color = $4, bodygroups = $5, skin = $6 WHERE id = $7",
 				vehicle.Model, vehicle.Class, sim, tostring(color), bodygroups, skin, ply:AccountID())
-			if rows_updated == 0 then
-				db.Query("INSERT INTO mta_user_cars(id, model, class, name, color, bodygroups, skin) VALUES(?, ?, ?, ?, ?, ?, ?)",
+			if rows_updated and rows_updated == 0 then
+				rows_updated, db_err = db.Query("INSERT INTO mta_user_cars(id, model, class, name, color, bodygroups, skin) VALUES($1, $2, $3, $4, $5, $6, $7)",
 					ply:AccountID(), vehicle.Model, vehicle.Class, sim, tostring(color), bodygroups, skin, ply:AccountID())
 			end
+
+			if not rows_updated then error(db_err) end
 		end)
 	end
 
@@ -389,6 +392,7 @@ local function BuyVehicle(ply, cost, sim, color, skin, modParts)
 	timer.Simple(0.5, function()
 		net.Start(tag)
 			net.WriteBool(false)
+			net.WriteBool(true)
 			net.WriteEntity(car)
 		net.Send(ply)
 	end)

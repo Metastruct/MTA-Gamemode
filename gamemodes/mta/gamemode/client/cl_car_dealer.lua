@@ -3,8 +3,6 @@ if not MTA.Cars then return end
 
 local tag = "MTA_Car_Dealer"
 
-local carAmount     = #MTA.Cars.Config.CarList
-local curCarCost    = MTA.Cars.GetCarPrice(1)
 local selectedCar   = 1
 local selectedColor = Color(255, 255, 255)
 local selectedBodygroups = {}
@@ -172,7 +170,7 @@ local function CreateCarDealerUI()
 		DESCRIPTION:InsertColorChange(255, 255, 224, 255)
 		DESCRIPTION:AppendText(MTA.Cars.GetCarDescription(selectedCar))
 		DESCRIPTION:InsertColorChange(200, 100, 100, 255)
-		DESCRIPTION:AppendText("\nNOTE: Currently cars do not save.")
+		DESCRIPTION:AppendText("\nNOTE: Cars are permanent.")
 	end
 
 	CAR_VIEW = MIDDLE_DOCK:Add("DModelPanel")
@@ -477,11 +475,12 @@ end)
 
 net.Receive(tag, function()
 	local isUi = net.ReadBool()
+	local should_notice = net.ReadBool()
 	if isUi then
 		CreateCarDealerUI()
 	else
 		local veh = net.ReadEntity()
 		MTA.Cars.CurrentVehicle = veh
-		DoNotice()
+		if should_notice then DoNotice() end
 	end
 end)
