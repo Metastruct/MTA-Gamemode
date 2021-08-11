@@ -47,7 +47,11 @@ hook.Add("Think", tag, function()
 	end
 
 	local ply = get_most_wanted()
-	if not IsValid(ply) then return end
+	local valid = IsValid(ply)
+	vol_light:SetNoDraw(valid)
+	light:SetOn(not valid)
+
+	if not valid  then return end
 
 	local tr = util.TraceLine({
 		start = ply:GetPos(),
