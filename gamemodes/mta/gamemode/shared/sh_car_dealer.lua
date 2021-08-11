@@ -308,7 +308,7 @@ local function respawnCar(ply)
 	end)
 end
 
-hook.Add("PlayerInitialSpawn", tag, respawnCar)
+hook.Add("PlayerFullyConnected", tag, respawnCar)
 
 local vSpawnPos, vSpawnAng = Vector(-1735, 4888, 5417), Angle(0, -90, 0)
 
