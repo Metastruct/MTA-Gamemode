@@ -79,7 +79,7 @@ end
 
 local COMBINE_VAULT_POS = Vector (1380, 3994, -277)
 local COMBINE_VAULT_LIGHT_POS = Vector (1380, 4044, -277)
-local COMBINE_VAULT_LIGHT_REV_POS = Vector (1380, 4044, -900)
+local COMBINE_VAULT_LIGHT_REV_POS = Vector (1380, 4044, -800)
 local function populate_skybox()
 	local combine_vault = ents.Create("prop_physics")
 	combine_vault:SetModel("models/plcombine/combine_vault.mdl")
