@@ -3,6 +3,117 @@ local tag = "mta_death_recap"
 if SERVER then
 	util.AddNetworkString(tag)
 
+	local function try_with_weapon(original_atck, original_inflictor)
+		local wep
+		if original_atck:IsWeapon() then
+			wep = original_atck
+		elseif original_inflictor:IsWeapon() then
+			wep = original_inflictor
+		elseif original_atck:IsPlayer() or original_atck:IsNPC() then
+			wep = original_atck:GetActiveWeapon()
+		elseif original_inflictor:IsPlayer() or original_inflictor:IsNPC() then
+			wep = original_inflictor:GetActiveWeapon()
+		end
+
+		if IsValid(wep) then
+			-- if we have a weapon great we know how to deal with it
+			local owner = wep:GetOwner()
+			if not IsValid(owner) then
+				owner = wep:GetPhysicsAttacker(5)
+			end
+
+			return true, IsValid(owner) and owner or "Unknown", wep
+		end
+
+		return false
+	end
+
+	local function get_first_passenger(veh)
+		if veh.GetPassengerSeats then
+			for _, seat in pairs(veh:GetPassengerSeats()) do
+				local passenger = seat:GetDriver()
+				if IsValid(passenger) then return passenger end
+			end
+		elseif veh.GetPassenger then
+			for i = 1, 10 do
+				local passenger = veh:GetPassenger(i)
+				if IsValid(passenger) then return passenger end
+			end
+		end
+
+		return nil
+	end
+
+	local function try_with_vehicle(original_atck, original_inflictor)
+		local veh
+		if original_atck:IsVehicle() then
+			veh = original_atck
+		elseif original_inflictor:IsVehicle() then
+			veh = original_inflictor
+		elseif original_atck:IsPlayer() and original_atck:InVehicle() then
+			veh = original_atck:GetVehicle()
+		elseif original_inflictor:IsPlayer() and original_inflictor:InVehicle() then
+			veh = original_inflictor:GetVehicle()
+		end
+
+		if IsValid(veh) then
+			local driver = veh:GetDriver()
+			if not IsValid(driver) then
+				local owner = veh.CPPIGetOwner and veh:CPPIGetOwner()
+				if not IsValid(owner) then
+					owner = get_first_passenger(veh)
+				end
+
+				return true, IsValid(owner) and owner or "Unknown", veh
+			end
+		end
+
+		return false
+	end
+
+	local owner_methods = { "GetOwner", "GetCreator", "CPPIGetOwner" }
+	local function try_with_entity(original_atck, original_inflictor)
+		if original_atck:CreatedByMap() then return true, "Unknown", original_atck end
+		if original_inflictor:CreatedByMap() then return true, "Unknown", original_inflictor end
+
+		local ent
+		local owner
+		for _, method in ipairs(owner_methods) do
+			if original_atck[method] then
+				local tmp_owner = original_atck[method](original_atck)
+				if IsValid(tmp_owner) then
+					owner = tmp_owner
+					ent = original_atck
+					break
+				end
+			end
+		end
+
+		if not IsValid(owner) then
+			for _, method in ipairs(owner_methods) do
+				if original_inflictor[method] then
+					local tmp_owner = original_inflictor[method](original_atck)
+					if IsValid(tmp_owner) then
+						owner = tmp_owner
+						ent = original_inflictor
+						break
+					end
+				end
+			end
+		end
+
+		if not IsValid(owner) then
+			owner = original_atck:GetPhysicsAttacker(5)
+			ent = original_atck
+			if not IsValid(owner) then
+				owner = original_inflictor:GetPhysicsAttacker(5)
+				ent = original_inflictor
+			end
+		end
+
+		return true, IsValid(owner) and owner or "Unknown", ent
+	end
+
 	hook.Add("PostEntityTakeDamage", tag, function(ent, dmg_info, dmg_applied)
 		if not dmg_applied then return end
 		if not ent:IsPlayer() then return end
@@ -14,22 +125,40 @@ if SERVER then
 
 		local atck = dmg_info:GetAttacker()
 		local inflictor = dmg_info:GetInflictor()
-		if IsValid(atck) and (atck:IsPlayer() or atck:IsNPC()) then
-			atck = atck:GetActiveWeapon()
-		end
 
-		local attcker_name = "Unknown"
-		if IsValid(atck) then
-			if atck:IsPlayer() then
-				attcker_name = UndecorateNick(atck:Nick())
+		-- attacker and inflictor are unreliable in this hook
+		-- lets try figuring out whats happening ourselves
+		local succ, owner, wep = try_with_weapon(atck, inflictor)
+		if succ then
+			atck = owner
+			inflictor = wep
+		else
+			local succ, owner, veh = try_with_vehicle(atck, inflictor)
+			if succ then
+				atck = owner
+				inflictor = veh
 			else
-				attcker_name = inflictor:GetClass()
+				local succ, owner, entity = try_with_entity(atck, inflictor)
+				if succ then
+					atck = owner
+					inflictor = entity
+				end
 			end
 		end
 
+		if isentity(atck) then
+			if atck:IsPlayer() then
+				atck = UndecorateNick(atck:Nick())
+			else
+				atck = atck:GetClass()
+			end
+		end
+
+		inflictor = isentity(inflictor) and inflictor:GetClass() or inflictor
+
 		table.insert(ent.DeathRecap, {
-			Inflictor = IsValid(atck) and atck:GetClass() or "nothing",
-			Attacker = attcker_name,
+			Inflictor = inflictor,
+			Attacker = atck,
 			Damage = math.Round(dmg_info:GetDamage()),
 		})
 
@@ -82,6 +211,20 @@ if CLIENT then
 	net.Receive(tag, function()
 		recap = net.ReadTable()
 		recap = table.Reverse(recap)
+
+		local total_dmg = 0
+		for _, recap_data in ipairs(recap) do
+			total_dmg = total_dmg + recap_data.Damage
+		end
+
+		if total_dmg < 100 then
+			table.insert(recap, {
+				Inflictor = "Others",
+				Attacker = "Others",
+				Damage = 100 - total_dmg,
+			})
+		end
+
 		displayed_recap = false
 	end)
 
