@@ -4,7 +4,8 @@ local function create_resource_item(item_class, item_name, item_mdl, item_stack_
 		Description = ("Just a %s, nothing special about it."):format(item_name),
 		Model = item_mdl,
 		StackLimit = item_stack_limit,
-		Rarity = item_rarity
+		Rarity = item_rarity,
+		Usable = false,
 	})
 end
 

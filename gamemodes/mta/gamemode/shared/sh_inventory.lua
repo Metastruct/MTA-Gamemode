@@ -23,6 +23,13 @@ local function can_db()
 	return _G.db and _G.co
 end
 
+function inventory.IsUsable(item_class)
+	local item = inventory.Items[item_class]
+	if not item then return false end
+
+	return item.Usable == true or item.Usable == nil
+end
+
 function inventory.CallItem(item_class, method, ...)
 	local item = inventory.Items[item_class]
 	if not item then return end
@@ -194,6 +201,8 @@ if SERVER then
 	end)
 
 	function inventory.UseItem(ply, item_class, pos_x, pos_y, amount)
+		if not inventory.IsUsable(item_class) then return false end
+
 		local success = inventory.RemoveItem(ply, item_class, pos_x, pos_y, amount)
 		if not success then return false end
 

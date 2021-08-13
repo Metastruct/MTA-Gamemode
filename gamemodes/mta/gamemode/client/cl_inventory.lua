@@ -124,6 +124,8 @@ function PANEL:UseActiveItem(amount)
 	if IsValid(self.ActiveItem) then
 		local x, y = self.ActiveItem:GetSlotPos()
 		local class = self.ActiveItem:GetItemClass()
+		if not inventory.IsUsable(class) then return end
+
 		inventory.UseItem(class, x, y, amount)
 	end
 end
@@ -289,12 +291,20 @@ function PANEL:OnTileClick(tile, code)
 	if code == MOUSE_RIGHT then
 		local menu = DermaMenu()
 		menu.noDrop = true
-		menu:AddOption("Use", function()
-			self:UseActiveItem(1)
-		end)
-		menu:AddOption("Drop 1 item", function()
-			self:DropItem(tile, 1)
-		end)
+
+		if IsValid(self.ActiveItem) then
+			local class = self.ActiveItem:GetItemClass()
+			if inventory.IsUsable(class) then
+				menu:AddOption("Use", function()
+					self:UseActiveItem(1)
+				end)
+			end
+
+			menu:AddOption("Drop 1 item", function()
+				self:DropItem(tile, 1)
+			end)
+		end
+
 		menu:Open()
 	end
 end
