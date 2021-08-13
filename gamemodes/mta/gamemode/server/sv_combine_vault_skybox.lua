@@ -48,8 +48,8 @@ hook.Add("Think", tag, function()
 
 	local ply = get_most_wanted()
 	local valid = IsValid(ply)
-	vol_light:SetNoDraw(valid)
-	light:SetOn(not valid)
+	vol_light:SetNoDraw(not valid)
+	light:SetOn(valid)
 
 	if not valid  then return end
 
