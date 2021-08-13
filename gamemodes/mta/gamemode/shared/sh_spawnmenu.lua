@@ -622,7 +622,10 @@ if CLIENT then
 	end
 
 	function GM:PlayerBindPress(_, bind, pressed)
-		if not IsValid(menu) then return end
+		if not IsValid(menu) then
+			menu = vgui.Create("mta_menu")
+		end
+
 		if bind:match("gm_showspare1") and pressed then
 			if menu:IsVisible() then
 				menu:Hide()

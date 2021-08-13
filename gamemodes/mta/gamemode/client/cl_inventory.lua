@@ -1,4 +1,3 @@
-local tag = "MTA_Inventory_UI"
 local inventory = MTA_TABLE("Inventory")
 local TILE_SIZE = 64
 
@@ -29,7 +28,7 @@ function PANEL:Init()
 
 		local tx = "Trash"
 		surface.SetFont("Default")
-		local tW, tH = surface.GetTextSize(tx)
+		local tW, _ = surface.GetTextSize(tx)
 		surface.SetTextColor(255, 255, 255)
 		surface.SetTextPos(w / 2 - tW / 2, 0)
 		surface.DrawText(tx)
@@ -130,7 +129,6 @@ function PANEL:UseActiveItem(amount)
 end
 
 function PANEL:ItemAmountPopup(amount, callback)
-	local WIDTH, HEIGHT = ScrW(), ScrH()
 	local FRAME_WIDTH, FRAME_HEIGHT = 256, 64
 
 	local Frame = vgui.Create("DMenu")
