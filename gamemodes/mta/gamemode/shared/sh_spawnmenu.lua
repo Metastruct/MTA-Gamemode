@@ -622,11 +622,15 @@ if CLIENT then
 	end
 
 	function GM:PlayerBindPress(_, bind, pressed)
-		if not IsValid(menu) then
-			menu = vgui.Create("mta_menu")
-		end
-
 		if bind:match("gm_showspare1") and pressed then
+			if not IsValid(menu) then
+				menu = vgui.Create("mta_menu")
+				menu = pressed and menu:Show() or menu:Hide()
+				gui.EnableScreenClicker(pressed)
+
+				return
+			end
+
 			if menu:IsVisible() then
 				menu:Hide()
 				gui.EnableScreenClicker(false)
