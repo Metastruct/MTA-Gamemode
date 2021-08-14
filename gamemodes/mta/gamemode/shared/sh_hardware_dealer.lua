@@ -4,6 +4,7 @@ local blueprints = {
 	portable_electroshield = 20,
 	air_boots = 20,
 	hacked_turret = 40,
+	eye_implant = 10,
 }
 
 if SERVER then
@@ -77,6 +78,7 @@ if CLIENT then
 				net.Start(tag)
 				net.WriteString(item.ClassName)
 				net.SendToServer()
+				surface.PlaySound("ui/buttonclick.wav")
 			end
 			btn.Description = label
 
