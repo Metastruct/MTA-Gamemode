@@ -80,8 +80,8 @@ if SERVER then
 			["role"] = "dealer",
 		},
 		{
-			["ang"] = Angle(),
-			["pos"] = Vector(),
+			["ang"] = Angle(0, -180, 0),
+			["pos"] = Vector (5942, -390, 5508),
 			["class"] = "lua_npc",
 			["role"] = "hardware_dealer"
 		},
