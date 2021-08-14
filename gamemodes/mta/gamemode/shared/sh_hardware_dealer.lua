@@ -39,48 +39,10 @@ end
 
 if CLIENT then
 	local function open_gui(npc)
-		local frame = vgui.Create("DFrame")
-		frame:SetSize(600, 500)
-		frame:SetPos(ScrW() / 2 - 300, ScrH() / 2 - 250)
-		frame:SetTitle("Blueprints")
-		frame:MakePopup()
-
-		do -- header
-			local header = frame:Add("DPanel")
-			header:Dock(TOP)
-			header:SetTall(50)
-
-			local dealer_av = header:Add("DModelPanel")
-			dealer_av:Dock(LEFT)
-			dealer_av:SetModel(npc:GetModel())
-
-			local bone_number = dealer_av.Entity:LookupBone("ValveBiped.Bip01_Head1")
-			if bone_number then
-				local head_pos = dealer_av.Entity:GetBonePosition(bone_number)
-				if head_pos then
-					dealer_av:SetLookAt(head_pos)
-					dealer_av:SetCamPos(head_pos - Vector(-13, 0, 0))
-				end
-			end
-
-			function dealer_av:LayoutEntity(ent)
-				ent:SetSequence(ent:LookupSequence("idle_subtle"))
-				self:RunAnimation()
-			end
-
-			local intro = header:Add("DLabel")
-			intro:Dock(FILL)
-			intro:SetText([[Hey there! I'm selling some blueprints here, check if anything catches your attention]])
-			intro:SetWrap(true)
-		end
-
-		local content = frame:Add("DScrollPanel")
-		content:Dock(FILL)
-		content:DockMargin(5, 10, 5, 5)
-
+		local frame = vgui.Create("mta_shop")
 		local orange_color = Color(244, 135, 2)
 		local function add_blueprint(item, price)
-			local panel = content:Add("DPanel")
+			local panel = frame.Content:Add("DPanel")
 			panel:Dock(TOP)
 			panel:DockMargin(0, 10, 0, 0)
 			panel:SetTall(50)
@@ -118,8 +80,6 @@ if CLIENT then
 
 				self:SetDisabled(disabled)
 			end
-
-			return btn
 		end
 
 		for blueprint_name, price in pairs(blueprints) do
@@ -128,37 +88,6 @@ if CLIENT then
 			if not item.Craft then return end
 
 			add_blueprint(item, price)
-		end
-
-		local proper_stat_names = {
-			points = "Points",
-			killed_cops = "Killed Cops",
-			criminal_count = "Times Wanted"
-		}
-
-		local stat__height_margin = 10
-		local stat_width_margin = 20
-		function frame:PaintOver(w, h)
-			local current_width = 0
-			local i = 1
-			for stat_name, proper_name in pairs(proper_stat_names) do
-				surface.SetFont("DermaDefault")
-				surface.SetTextColor(244, 135, 2)
-
-				local text = ("%s: %d"):format(proper_name, MTA.GetPlayerStat(stat_name))
-				local tw, th = surface.GetTextSize(text)
-				surface.SetTextPos(i * stat_width_margin + current_width, h - (th + stat__height_margin))
-				surface.DrawText(text)
-
-				current_width = current_width + tw
-				i = i + 1
-			end
-
-			surface.SetDrawColor(244, 135, 2)
-			surface.DrawOutlinedRect(0, h - 30, w, 30, 2)
-
-			surface.SetDrawColor(244, 135, 2, 10)
-			surface.DrawRect(0, h - 30, w, 30)
 		end
 	end
 
