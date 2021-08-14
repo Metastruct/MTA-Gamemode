@@ -1,3 +1,9 @@
+local crafts = {
+	sawblade = {
+		{ Resource = "metal_part", Amount = 4 }
+	}
+}
+
 local function create_resource_item(item_class, item_name, item_mdl, item_stack_limit, item_rarity)
 	MTA.Inventory.RegisterItem(item_class, {
 		Name = item_name,
@@ -6,6 +12,7 @@ local function create_resource_item(item_class, item_name, item_mdl, item_stack_
 		StackLimit = item_stack_limit,
 		Rarity = item_rarity,
 		Usable = false,
+		Craft = crafts[item_class],
 	})
 end
 
@@ -95,7 +102,7 @@ if SERVER then
 			drops = combine_manhack_drops
 		elseif class == "npc_helicopter" then
 			drops = combine_helicopter_drops
-			max_drops = 3
+			max_drops = 10
 			min_drops = 1
 		end
 
@@ -107,7 +114,7 @@ if SERVER then
 
 		local old_OnDestroyed = ent.OnDestroyed
 		function ent:OnDestroyed()
-			handle_drops(car_drops, 2, 5, ent:WorldSpaceCenter())
+			handle_drops(car_drops, 2, 10, ent:WorldSpaceCenter())
 			old_OnDestroyed(self)
 		end
 	end)
