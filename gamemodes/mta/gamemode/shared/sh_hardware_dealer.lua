@@ -41,6 +41,9 @@ if CLIENT then
 	local function open_gui(npc)
 		local frame = vgui.Create("mta_shop")
 		frame:SetHeader(npc, [[Hey there! I'm selling some blueprints here, check if anything catches your attention]])
+		frame:SetSize(600, 500)
+		frame:Center()
+		frame:MakePopup()
 
 		local orange_color = Color(244, 135, 2)
 		function frame:AddBlueprint(item, price)
