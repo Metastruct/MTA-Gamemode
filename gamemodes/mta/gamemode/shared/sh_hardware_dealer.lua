@@ -8,6 +8,8 @@ if SERVER then
 	util.AddNetworkString(tag)
 
 	net.Receive(tag, function(_, ply)
+		if MTA.IsWanted(ply) then return end -- the npc is in a drill zone, dont allow buying if wanted
+
 		local item_class = net.ReadString()
 		local owned_blueprints = MTA.Crafting.Blueprints.Get(ply)
 		if blueprints[item_class] and not owned_blueprints[item_class] then
@@ -21,6 +23,7 @@ if SERVER then
 
 		local npc = ply:GetEyeTrace().Entity
 		if not npc:IsValid() then return end
+		if MTA.IsWanted(ply) then return end
 
 		if npc.role == "hardware_dealer" and npc:GetPos():DistToSqr(ply:GetPos()) <= MAX_NPC_DIST then
 			net.Start(tag)
@@ -35,7 +38,6 @@ if SERVER then
 end
 
 if CLIENT then
-
 	local function open_gui(npc)
 		local frame = vgui.Create("DFrame")
 		frame:SetSize(600, 500)
