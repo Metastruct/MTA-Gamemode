@@ -116,7 +116,6 @@ if CLIENT then
 					disabled = true
 				end
 
-				print(disabled)
 				self:SetDisabled(disabled)
 			end
 
