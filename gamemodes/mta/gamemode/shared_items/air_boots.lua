@@ -9,7 +9,7 @@ ITEM.Name = "Air Boots"
 ITEM.Description = ("A pair of boots, they increase your speed for %d seconds."):format(EFFECT_DURATION)
 ITEM.Model = "models/props_junk/shoe001a.mdl"
 ITEM.Material = "models/combine_helicopter/helicopter_bomb_off01"
-ITEM.StackLimit = 12
+ITEM.StackLimit = 4
 ITEM.Usable = true
 ITEM.Craft = {
 	{ Resource = "combine_core", Amount = 1 },

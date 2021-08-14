@@ -3,6 +3,7 @@ local blueprints = {
 	drill = 5,
 	portable_electroshield = 20,
 	air_boots = 20,
+	hacked_turret = 40,
 }
 
 if SERVER then
