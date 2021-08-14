@@ -9,7 +9,8 @@ if SERVER then
 
 	net.Receive(tag, function(_, ply)
 		local item_class = net.ReadString()
-		if blueprints[item_class] then
+		local owned_blueprints = MTA.Crafting.Blueprints.Get(ply)
+		if blueprints[item_class] and not owned_blueprints[item_class] then
 			MTA.PayPoints(ply, blueprints[item_class])
 		end
 	end)
@@ -109,10 +110,11 @@ if CLIENT then
 			function btn:Think()
 				self:SetText(("Buy (%d pts)"):format(price))
 				local disabled = MTA.GetPlayerStat("points") < price
-				if not disabled and MTA.Crafting.Blueprints[item_name] then
+				if MTA.Crafting.Blueprints[item.ClassName] then
 					disabled = true
 				end
 
+				print(disabled)
 				self:SetDisabled(disabled)
 			end
 
@@ -125,6 +127,37 @@ if CLIENT then
 			if not item.Craft then return end
 
 			add_blueprint(item, price)
+		end
+
+		local proper_stat_names = {
+			points = "Points",
+			killed_cops = "Killed Cops",
+			criminal_count = "Times Wanted"
+		}
+
+		local stat__height_margin = 10
+		local stat_width_margin = 20
+		function frame:PaintOver(w, h)
+			local current_width = 0
+			local i = 1
+			for stat_name, proper_name in pairs(proper_stat_names) do
+				surface.SetFont("DermaDefault")
+				surface.SetTextColor(244, 135, 2)
+
+				local text = ("%s: %d"):format(proper_name, MTA.GetPlayerStat(stat_name))
+				local tw, th = surface.GetTextSize(text)
+				surface.SetTextPos(i * stat_width_margin + current_width, h - (th + stat__height_margin))
+				surface.DrawText(text)
+
+				current_width = current_width + tw
+				i = i + 1
+			end
+
+			surface.SetDrawColor(244, 135, 2)
+			surface.DrawOutlinedRect(0, h - 30, w, 30, 2)
+
+			surface.SetDrawColor(244, 135, 2, 10)
+			surface.DrawRect(0, h - 30, w, 30)
 		end
 	end
 
