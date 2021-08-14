@@ -43,6 +43,7 @@ end
 if CLIENT then
 	local function open_gui(npc)
 		local frame = vgui.Create("mta_shop")
+		frame:SetTitle("Blueprints")
 		frame:SetHeader(npc, [[Hey there! I'm selling some blueprints here, check if anything catches your attention]])
 		frame:SetSize(600, 500)
 		frame:Center()
