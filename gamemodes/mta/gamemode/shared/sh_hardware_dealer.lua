@@ -40,9 +40,11 @@ end
 if CLIENT then
 	local function open_gui(npc)
 		local frame = vgui.Create("mta_shop")
+		frame:SetHeader(npc, [[Hey there! I'm selling some blueprints here, check if anything catches your attention]])
+
 		local orange_color = Color(244, 135, 2)
-		local function add_blueprint(item, price)
-			local panel = frame.Content:Add("DPanel")
+		function frame:AddBlueprint(item, price)
+			local panel = self.Content:Add("DPanel")
 			panel:Dock(TOP)
 			panel:DockMargin(0, 10, 0, 0)
 			panel:SetTall(50)
@@ -87,7 +89,7 @@ if CLIENT then
 			if not item then return end
 			if not item.Craft then return end
 
-			add_blueprint(item, price)
+			frame:AddBlueprint(item, price)
 		end
 	end
 
