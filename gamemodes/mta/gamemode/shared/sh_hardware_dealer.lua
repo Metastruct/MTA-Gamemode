@@ -14,8 +14,9 @@ if SERVER then
 
 		local item_class = net.ReadString()
 		local owned_blueprints = MTA.Crafting.Blueprints.Get(ply)
-		if blueprints[item_class] and not owned_blueprints[item_class] then
-			MTA.PayPoints(ply, blueprints[item_class])
+		local price = blueprints[item_class]
+		if price and not owned_blueprints[item_class] and MTA.PayPoints(ply, price) then
+			MTA.Crafting.GiveBlueprint(ply, item_class)
 		end
 	end)
 
