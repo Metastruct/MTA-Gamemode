@@ -74,15 +74,16 @@ if SERVER then
 
 	local MAP_ENTS = {
 		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(840, -4237, 5498),
-			["class"] = "mta_vault",
-		},
-		{
 			["ang"] = Angle(0, -90, 0),
 			["pos"] = Vector(533, 7463, 5510),
 			["class"] = "lua_npc",
 			["role"] = "dealer",
+		},
+		{
+			["ang"] = Angle(),
+			["pos"] = Vector(),
+			["class"] = "lua_npc",
+			["role"] = "hardware_dealer"
 		},
 		{
 			["ang"] = Angle(0, -63, 0),
@@ -90,6 +91,11 @@ if SERVER then
 			["class"] = "lua_npc",
 			["role"] = "car_dealer",
 			["model"] = "models/odessa.mdl",
+		},
+		{
+			["ang"] = Angle(0, 0, 0),
+			["pos"] = Vector(840, -4237, 5498),
+			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
