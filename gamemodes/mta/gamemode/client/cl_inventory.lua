@@ -239,12 +239,14 @@ function PANEL:AddItem(class, amount, x, y)
 	local t = self:AddTileInSlot(x, y)
 	if not t then return end -- ILLEGAL or bug?!
 
+	local data = GetItemData(class)
+
 	t:SetItemClass(class)
 	t:SetItemCount(amount)
 	t:SetItemMaxCount(inventory.GetStackLimit(class))
-	t:SetItemName(GetItemData(class).Name)
-	t:SetModelIcon(GetItemData(class).Model)
-	t:SetItemDescription(GetItemData(class).Description)
+	t:SetItemName(data.Name)
+	t:SetModelIcon(data.Model, data.Material)
+	t:SetItemDescription(data.Description)
 
 	return t
 end

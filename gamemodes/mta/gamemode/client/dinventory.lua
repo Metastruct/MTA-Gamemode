@@ -358,6 +358,7 @@ function TILE:Init()
 	self.m_Inventory = true
 	self.m_InvTile   = true
 	self.m_Mdl = ""
+	self.m_Mat = nil
 
 	self.m_SlotX = 0
 	self.m_SlotY = 0
@@ -383,7 +384,7 @@ function TILE:CopyData(tile)
 	self.m_Description = tile.m_Description
 	self.m_Mdl       = tile.m_Mdl
 
-	self:SetModelIcon(tile.m_Mdl)
+	self:SetModelIcon(tile.m_Mdl, tile.m_Mat)
 end
 
 function TILE:GetID()
@@ -442,8 +443,9 @@ function TILE:GetItemDescription()
 	return self.m_Description or templateText
 end
 
-function TILE:SetModelIcon(mdl)
+function TILE:SetModelIcon(mdl, mat)
 	self.m_Mdl = mdl
+	self.m_Mat = mat
 	self.Icon:SetModel(mdl, 0, 0)
 
 	-- ty gmod for this usefulness
@@ -455,6 +457,10 @@ function TILE:SetModelIcon(mdl)
 	local tab = PositionSpawnIcon(ent, pos, true)
 
 	ent:SetAngles(ang)
+	if mat then
+		ent:SetMaterial(mat)
+	end
+
 	if tab then
 		icon:SetCamPos(tab.origin)
 		icon:SetFOV(tab.fov)

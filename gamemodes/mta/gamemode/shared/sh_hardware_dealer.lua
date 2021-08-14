@@ -2,6 +2,7 @@ local tag = "mta_hardware_dealer"
 local blueprints = {
 	drill = 5,
 	portable_electroshield = 20,
+	air_boots = 20,
 }
 
 if SERVER then
