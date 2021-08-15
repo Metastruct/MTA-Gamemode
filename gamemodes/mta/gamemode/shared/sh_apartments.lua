@@ -169,6 +169,7 @@ local APARTMENT_DATA = {
 }
 
 local MTA_Apartments = MTA_TABLE("Apartments")
+local Tag = "MTA_Apartments"
 
 local function SetupApartments()
 	local apts = {}
