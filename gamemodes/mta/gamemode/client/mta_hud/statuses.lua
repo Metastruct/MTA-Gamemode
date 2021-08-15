@@ -6,7 +6,7 @@ statuses.Current = {}
 
 function statuses.AddStatus(name, text, color, expire_time)
 	statuses.Current[name] = {
-		text = text,
+		text = text:upper(),
 		color = color or orange_color,
 		expire_time = expire_time,
 	}
