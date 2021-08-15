@@ -50,6 +50,7 @@ if SERVER then
 
 			turret:AddEntityRelationship(ply, D_LI, 99)
 
+			turret:SetCurrentWeaponProficiency(WEAPON_PROFICIENCY_PERFECT)
 			turret:SetHealth(TURRET_HEALTH)
 			turret:SetOwner(ply)
 			if turret.CPPISetOwner then
@@ -81,6 +82,8 @@ if SERVER then
 		if not IsValid(atck) then return end
 
 		if atck.MTAHackedTurret then
+			dmg_info:SetAttacker(atck:GetOwner())
+			dmg_info:SetInflictor(atck)
 			dmg_info:ScaleDamage(3)
 		end
 	end)
