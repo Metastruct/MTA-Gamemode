@@ -14,6 +14,7 @@ ITEM.Craft = {
 	{ Resource = "mh_debris", Amount = 3 },
 	{ Resource = "metal_part", Amount = 10 },
 	{ Resource = "combine_shell", Amount = 20 },
+	{ Resource = "mh_engine", Amount = 1 }
 }
 
 if SERVER then
