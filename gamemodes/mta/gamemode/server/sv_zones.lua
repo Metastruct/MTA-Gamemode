@@ -79,6 +79,7 @@ local function ZoneCheck(ply, zone)
 	end
 end
 
+local green_color = Color(0, 255, 0)
 MTAZones.ZoneUpdate = function(zone, ent, entered, zoneEnt)
 	if ent:IsPlayer() then
 		if entered then
@@ -88,6 +89,8 @@ MTAZones.ZoneUpdate = function(zone, ent, entered, zoneEnt)
 			MTAZones.Players[ent] = zone
 			MTAZones.PlayersZoneEntity[ent] = MTAZones.PlayersZoneEntity[ent] or {}
 			MTAZones.PlayersZoneEntity[ent][zoneEnt] = true
+
+			MTA.Statuses.AddStatus(ent, "safezone", "Safe-Zone", green_color)
 		else
 			if MTAZones.PlayersZoneEntity[ent] then
 				MTAZones.PlayersZoneEntity[ent][zoneEnt] = nil
@@ -98,6 +101,8 @@ MTAZones.ZoneUpdate = function(zone, ent, entered, zoneEnt)
 			else
 				MTAZones.Players[ent] = nil
 			end
+
+			MTA.Statuses.RemoveStatus(ent, "safezone")
 		end
 	end
 end
