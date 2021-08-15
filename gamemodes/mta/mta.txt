@@ -1,8 +1,8 @@
 "mta"
 {
     "base"          "sandbox"
-    "title"         "MTA"
-	"maps"       "rp_unioncity"
+    "title"         "Meta Theft Auto"
+	"maps"       	"rp_unioncity"
     "version"       "1.0.0"
     "category"      "pve"
     "menusystem"    "0"
@@ -12,7 +12,7 @@
     "author_url"    "https://gitlab.com/metastruct/internal/mta_projects/mta_gm"
 
     "icon"  ""
-    "info"  ""
+    "info"  "Fight against the oppression of the MTA force and become famous in the underworld of Union City"
     "hide"  "1"
 
 	"settings"
