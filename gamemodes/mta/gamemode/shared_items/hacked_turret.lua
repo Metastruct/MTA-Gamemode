@@ -114,6 +114,19 @@ if SERVER then
 			ent:Remove()
 		end
 	end)
+
+	local function remove_player_turrets(ply)
+		for _, turret in ipairs(ents.FindByClass("npc_turret_floor")) do
+			if turret:GetOwner() == ply then
+				turret:Remove()
+			end
+		end
+	end
+
+	hook.Add("MTAWantedStateUpdate", tag, function(ply, is_wanted)
+		if is_wanted then return end
+		remove_player_turrets(ply)
+	end)
 end
 
 MTA.Inventory.RegisterItem("hacked_turret", ITEM)
