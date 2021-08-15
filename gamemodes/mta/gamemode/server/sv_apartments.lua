@@ -6,10 +6,6 @@ util.AddNetworkString(Tag .. "_Init") -- Send initial stuff to client
 util.AddNetworkString(Tag .. "_Rent") -- Renter set/cleared -> to client OR to server
 util.AddNetworkString(Tag .. "_Invite") -- Changes to invitations -> to client OR to server
 
-for _, apt in pairs(MTA_Apartments.List) do
-	apt.Entrance = ents.GetMapCreatedEntity(apt.Data.entrance_id)
-end
-
 local function StuffToClient(ply)
 	-- Send entrance ids and whateversefsf<s to client
 	local clientdata = {}

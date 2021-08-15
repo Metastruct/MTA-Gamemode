@@ -181,7 +181,9 @@ local function SetupApartments()
 			Invitees = {}
 		}
 
-		if SERVER then -- apartment triggers
+		if SERVER then
+			apt_table.Entrance = ents.GetMapCreatedEntity(data.entrance_id)
+
 			local apt_bounds = data.bounds
 			if not data.convex_bounds then apt_bounds = {apt_bounds} end
 
@@ -206,4 +208,10 @@ local function SetupApartments()
 	return apts
 end
 
-MTA_Apartments.List = SetupApartments()
+hook.Add("InitPostEntity", Tag, function()
+	MTA_Apartments.List = SetupApartments()
+end)
+
+hook.Add("PostCleanupMap", Tag, function()
+	MTA_Apartments.List = SetupApartments()
+end)
