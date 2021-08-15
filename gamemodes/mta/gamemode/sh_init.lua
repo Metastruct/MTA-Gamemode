@@ -93,29 +93,9 @@ if SERVER then
 			["model"] = "models/odessa.mdl",
 		},
 		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(840, -4237, 5498),
-			["class"] = "mta_vault",
-		},
-		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(3904, 7282, 5510),
-			["class"] = "mta_vault",
-		},
-		{
 			["ang"] = Angle(0, -180, 0),
 			["pos"] = Vector(645, 7245, 5506),
 			["class"] = "mta_skills_computer",
-		},
-		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector(6048, -374, 5504),
-			["class"] = "mta_vault",
-		},
-		{
-			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-6702, 2956, 5449),
-			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, 0, 0),
@@ -123,18 +103,18 @@ if SERVER then
 			["class"] = "mta_jukebox",
 		},
 		{
+			["ang"] = Angle(89, -6, 94),
+			["pos"] = Vector(966, 7508, 5550),
+			["class"] = "mta_riot_shield_table",
+		},
+		{
 			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(-2242, 5527, 5507),
+			["pos"] = Vector(-6702, 2956, 5449),
 			["class"] = "mta_vault",
 		},
 		{
 			["ang"] = Angle(0, -90, 0),
 			["pos"] = Vector(-6368, 2949, 5449),
-			["class"] = "mta_vault",
-		},
-		{
-			["ang"] = Angle(0, -90, 0),
-			["pos"] = Vector(2267, 1183, 5425),
 			["class"] = "mta_vault",
 		},
 		{
@@ -147,26 +127,6 @@ if SERVER then
 			["pos"] = Vector(-6678, 2445, 5449),
 			["class"] = "mta_vault",
 		},
-		{
-			["ang"] = Angle(89, -6, 94),
-			["pos"] = Vector(966, 7508, 5550),
-			["class"] = "mta_riot_shield_table",
-		},
-		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector (1369, 8447, 5605),
-			["class"] = "mta_vault"
-		},
-		{
-			["ang"] = Angle(0, 0, 0),
-			["pos"] = Vector (-4382, -1918, 5424),
-			["class"] = "mta_vault"
-		},
-		{
-			["ang"] = Angle(0, 180, 0),
-			["pos"] = Vector (-3633, -4745, 5296),
-			["class"] = "mta_vault"
-		}
 	}
 
 	local function spawn_ents()
@@ -193,6 +153,22 @@ if SERVER then
 				ent:SetNWString("npc_role", data.role)
 			end
 			--ent:DropToFloor()
+		end
+
+		local vault_doors = ents.FindByModel("models/uc/props_unioncity/safe_door.mdl")
+		for _, door in ipairs(vault_doors) do
+			local pos = door:WorldSpaceCenter() - door:GetRight() * 20 - Vector(0, 0, 35)
+			local ang = door:GetAngles()
+			ang.y = ang.y - 90
+
+			local vault = ents.Create("mta_vault")
+			vault:Spawn()
+			vault:SetPos(pos)
+			vault:SetAngles(ang)
+
+			function ent:UpdateTransmitState()
+				return TRANSMIT_ALWAYS
+			end
 		end
 	end
 
