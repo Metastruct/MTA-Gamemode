@@ -20,6 +20,7 @@ AddCSLuaFile("client/cl_car_dealer.lua")
 AddCSLuaFile("client/dinventory.lua")
 AddCSLuaFile("client/cl_inventory.lua")
 AddCSLuaFile("client/cl_crafting.lua")
+AddCSLuaFile("client/cl_apartments.lua")
 
 AddCSLuaFile("shared/sh_daily_challenges.lua")
 AddCSLuaFile("shared/sh_death_recap.lua")
@@ -29,6 +30,7 @@ AddCSLuaFile("shared/sh_hardware_dealer.lua")
 AddCSLuaFile("shared/sh_inventory.lua")
 AddCSLuaFile("shared/sh_crafting.lua")
 AddCSLuaFile("shared/sh_spawnmenu.lua")
+AddCSLuaFile("shared/sh_apartments.lua")
 
 include("sh_init.lua")
 
@@ -40,6 +42,7 @@ include("shared/sh_hardware_dealer.lua")
 include("shared/sh_inventory.lua")
 include("shared/sh_crafting.lua")
 include("shared/sh_spawnmenu.lua")
+include("shared/sh_apartments.lua")
 
 include("server/sv_statuses.lua")
 include("server/sv_hud.lua")
@@ -48,6 +51,7 @@ include("server/sv_misc_map_ents.lua")
 include("server/sv_hunter_model.lua")
 include("server/sv_bank.lua")
 include("server/sv_combine_vault_skybox.lua")
+include("server/sv_apartments.lua")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.
