@@ -166,7 +166,7 @@ if SERVER then
 			vault:SetPos(pos)
 			vault:SetAngles(ang)
 
-			function ent:UpdateTransmitState()
+			function vault:UpdateTransmitState()
 				return TRANSMIT_ALWAYS
 			end
 		end
