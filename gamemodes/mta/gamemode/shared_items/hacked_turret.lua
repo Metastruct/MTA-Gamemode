@@ -1,6 +1,7 @@
-local TURRET_DURATION = 5 * 60
+local tag = "mta_hacked_turret"
+local TURRET_DURATION = 8 * 60
 local TURRET_IGNITE_DURATION = 20
-local TURRET_HEALTH = 200
+local TURRET_HEALTH = 500
 local TURRET_IGNITE_HEALTH = 40
 local ITEM = {}
 
@@ -75,7 +76,16 @@ if SERVER then
 		end
 	end
 
-	hook.Add("EntityTakeDamage", "mta_hacked_turret", function(ent, dmg_info)
+	hook.Add("ScaleNPCDamage", tag, function(_, _, dmg_info)
+		local atck = dmg_info:GetAttacker()
+		if not IsValid(atck) then return end
+
+		if atck.MTAHackedTurret then
+			dmg_info:ScaleDamage(3)
+		end
+	end)
+
+	hook.Add("EntityTakeDamage", tag, function(ent, dmg_info)
 		if not ent.MTAHackedTurret then return end
 
 		local atck = dmg_info:GetAttacker()
