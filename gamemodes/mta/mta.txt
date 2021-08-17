@@ -5,15 +5,15 @@
 	"maps"       	"rp_unioncity"
     "version"       "1.0.0"
     "category"      "pve"
-    "menusystem"    "0"
+    "menusystem"    "1"
 
     "author_name"   "Earu"
     "author_email"  ""
     "author_url"    "https://gitlab.com/metastruct/internal/mta_projects/mta_gm"
 
     "icon"  ""
-    "info"  "Fight against the oppression of the MTA force and become famous in the underworld of Union City"
-    "hide"  "1"
+    "info"  "Fight against the oppression of the MTA forces and become infamous in the underworld of Union City"
+    "hide"  "0"
 
 	"settings"
 	{

@@ -8,7 +8,9 @@ GM.Website = "http://metastruct.net"
 team.SetUp(6669, "Wanted", Color(244, 135, 2), false)
 team.SetUp(6668, "Bounty Hunters", Color(255, 0, 0), false)
 
-GM["PlayerNoClip"] = function(gm, ply) return ply:IsAdmin() end
+function GM:PlayerNoClip(ply)
+	return ply:IsAdmin()
+end
 
 if SERVER then
 	resource.AddWorkshop("372740052") -- synthetik health bars
