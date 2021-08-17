@@ -31,13 +31,23 @@ end
 
 hook.Add("PlayerFullyConnected", Tag, SendDataToClient)
 
+local function IsInvited(ply, apt)
+	if not apt.Invitees then return end
+
+	for _, invitee in ipairs(apt.Invitees) do
+		if ply == invitee then return true end
+	end
+
+	return false
+end
+
 net.Receive(Tag, function(l, ply)
 	local id = net.ReadInt(32)
 
-	local apt = net.ReadTable()
-	local apt_name = apt.Data.name
-
 	if id == APT_RENT then
+		local apt = net.ReadTable()
+		local apt_name = apt.Data.name
+
 		if apt.Renter and ply ~= apt.Renter then
 			apt.Entrance:EmitSound("vo/Citadel/br_youfool.wav")
 			ply:ChatPrint("This apartment is already rented!")
@@ -74,6 +84,7 @@ net.Receive(Tag, function(l, ply)
 	end
 
 	if id == APT_INVITE then
+		local apt_name = net.ReadString()
 		local invitee = net.ReadEntity()
 
 		if IsInvited(invitee, MTA_Apartments.List[apt_name]) then
@@ -235,7 +246,7 @@ function MTA_Apartments.SendPlayerTo(ply, apt_lookup)
 	end
 
 	ply:SetPos(apt.Data.travel_pos)
-	ply:SetEyeAngles((apt.Entrance:WorldSpaceCenter() - me:WorldSpaceCenter()):Angle())
+	ply:SetEyeAngles((apt.Entrance:WorldSpaceCenter() - ply:WorldSpaceCenter()):Angle())
 
 	timer.Simple(.5, function()
 		if not apt.Renter or apt.Renter == ply or IsInvited(ply) then
