@@ -34,9 +34,6 @@ end
 net.Receive(Tag, function()
 	local id = net.ReadInt(32)
 
-	local apt_name = net.ReadString()
-	local apt = MTA.Apartments.List[apt_name]
-
 	if id == APT_INIT then
 		local clientdata = net.ReadTable()
 		for _, apt_table in ipairs(clientdata) do
@@ -55,6 +52,9 @@ net.Receive(Tag, function()
 
 		return
 	end
+
+	local apt_name = net.ReadString()
+	local apt = MTA.Apartments.List[apt_name]
 
 	if id == APT_RENT then
 		apt.Invitees = {}
