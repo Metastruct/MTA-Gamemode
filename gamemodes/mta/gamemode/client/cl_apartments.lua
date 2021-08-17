@@ -48,11 +48,9 @@ net.Receive(Tag, function()
 			if IsValid(possible_ent) then
 				apt.Entrance = possible_ent
 				RefreshEntranceHighlight(apt)
-
-				return
+			else
+				apt.entrance_index = apt_table.entrance_index
 			end
-
-			apt.entrance_index = apt_table.entrance_index
 		end
 
 		return
