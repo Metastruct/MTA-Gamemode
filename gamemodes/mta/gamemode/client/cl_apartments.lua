@@ -1,5 +1,9 @@
 
 local Tag = "MTA_Apartments"
+local APT_INIT = 1
+local APT_RENT = 2
+local APT_INVITE = 3
+
 local MTA_Apartments = MTA.Apartments
 
 local function IsInvited(ply, apt)
@@ -27,47 +31,52 @@ local function RefreshEntranceHighlight(apt)
 	MTA.RegisterEntityForHighlight(apt.Entrance, str, color)
 end
 
-net.Receive(Tag .. "_Init", function()
-	local clientdata = net.ReadTable()
-	for _, apt_table in ipairs(clientdata) do
-		local apt = MTA_Apartments.List[apt_table.apt_name]
+net.Receive(Tag, function()
+	local id = net.ReadInt(32)
 
-		apt.Invitees = apt_table.apt_invitees
+	local apt_name = net.ReadString()
+	local apt = MTA.Apartments.List[apt_name]
 
-		local possible_ent = Entity(apt_table.entrance_index)
-		if IsValid(possible_ent) then
-			apt.Entrance = possible_ent
-			RefreshEntranceHighlight(apt)
-		else
+	if id == APT_INIT then
+		local clientdata = net.ReadTable()
+		for _, apt_table in ipairs(clientdata) do
+			local apt = MTA_Apartments.List[apt_table.apt_name]
+
+			apt.Invitees = apt_table.apt_invitees
+
+			local possible_ent = Entity(apt_table.entrance_index)
+			if IsValid(possible_ent) then
+				apt.Entrance = possible_ent
+				RefreshEntranceHighlight(apt)
+
+				return
+			end
+
 			apt.entrance_index = apt_table.entrance_index
 		end
+
+		return
 	end
-end)
 
-net.Receive(Tag .. "_Rent", function()
-	local apt_name = net.ReadString()
-	local apt = MTA.Apartments.List[apt_name]
+	if id == APT_RENT then
+		apt.Invitees = {}
 
-	apt.Invitees = {}
+		local new_renter = net.ReadEntity()
+		apt.Renter = IsValid(new_renter) and new_renter or nil
+	end
 
-	local new_renter = net.ReadEntity()
-	apt.Renter = IsValid(new_renter) and new_renter or nil
+	if id == APT_INVITE then
+		local new_invitees = net.ReadTable()
 
-	RefreshEntranceHighlight(apt)
-end)
-
-net.Receive(Tag .. "_Invite", function()
-	local apt_name = net.ReadString()
-	local apt = MTA.Apartments.List[apt_name]
-
-	local new_invitees = net.ReadTable()
-
-	apt.Invitees = new_invitees
+		apt.Invitees = new_invitees
+	end
 
 	RefreshEntranceHighlight(apt)
 end)
 
 hook.Add("OnEntityCreated", Tag, function(ent)
+	if not MTA.Apartments or not MTA.Apartments.List then return end
+
 	for _, apt in pairs(MTA_Apartments.List) do
 		if apt.entrance_index and apt.entrance_index == ent:EntIndex() then
 			apt.Entrance = ent
@@ -108,7 +117,8 @@ local function CreateEntranceGui(apt)
 	function RENT_BTN:DoClick()
 		FRAME:Remove()
 
-		net.Start(Tag .. "_Rent")
+		net.Start(Tag)
+			net.WriteInt(APT_RENT, 32)
 			net.WriteTable(apt)
 		net.SendToServer()
 	end
@@ -155,7 +165,8 @@ local function CreateEntranceGui(apt)
 		function INVITE_GUI_BTN:DoClick()
 			local _, ply = INVITE_GUI_LIST:GetSelected()
 
-			net.Start(Tag .. "_Invite")
+			net.Start(Tag)
+				net.WriteInt(APT_INVITE, 32)
 				net.WriteString(apt.Data.name)
 				net.WriteEntity(ply)
 			net.SendToServer()
@@ -171,6 +182,7 @@ end
 
 local last_press = RealTime()
 hook.Add("KeyPress", Tag, function(ply, key)
+	if not MTA.Apartments or not MTA.Apartments.List then return end
 	if ply ~= LocalPlayer() or last_press + 1 > RealTime() then return end
 
 	for _, apt in pairs(MTA_Apartments.List) do
