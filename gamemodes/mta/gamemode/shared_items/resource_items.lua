@@ -26,7 +26,7 @@ do
 	-- manhacks
 	create_resource_item("mh_debris", "Manhack Debris", "models/gibs/manhack_gib05.mdl", 64, 30)
 	create_resource_item("mh_engine", "Manhack Engine", "models/gibs/manhack_gib02.mdl", 6, 5)
-	create_resource_item("metal_part", "Metal Part", "models/gibs/manhack_gib03.mdl", 32, 15)
+	create_resource_item("metal_part", "Metal Part", "models/gibs/manhack_gib03.mdl", 64, 40)
 
 	-- helicopters
 	create_resource_item("heli_rotor", "Rotor", "models/gibs/helicopter_brokenpiece_05_tailfan.mdl", 1, 100) -- always drop on helis
