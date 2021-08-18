@@ -13,6 +13,7 @@ local function create_menu()
 	inv:SetTileSize(TILE_SIZE)
 	inv:SetGridSize(1, TILE_COUNT)
 	inv:SetPos(ScrW() / 2 + X_OFFSET, Y_POS)
+	inv:SetDrawOnTop(true)
 	inv.QuickItems = true
 
 	function inv:SaveQuickItems()
