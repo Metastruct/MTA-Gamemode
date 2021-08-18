@@ -1,9 +1,6 @@
 local TAG = "inventory_drag"
 local PANEL = {}
 
---Known Bugs:
---Grid does not scale properly to grid size, hardcoded margin fixed for 9x4
-
 --Notes:
 --Some unused stuff and overhead, does not affect anything, just cluttered code
 --Untested bugs due to how the Inventory backend handle stuff and will not be affected by this
@@ -305,18 +302,29 @@ function PANEL:GetTileInSlot(slotX, slotY)
 	return self:GetTile(x, y)
 end
 
-local png = "gui/sm_hover.png"
-local mat = Material(png, "noclamp")
-
---not sure what I need the margin for, and what to base it off..
-local marginW, marginH = 0.128, 0.048
+local surface_DrawLine = surface.DrawLine
+local surface_SetDrawColor = surface.SetDrawColor
+local surface_DrawRect = surface.DrawRect
 function PANEL:Paint(w, h)
-	surface.SetDrawColor(64, 64, 64, 128)
-	surface.DrawRect(0, 0, w, h)
+	surface_SetDrawColor(200, 75, 0, 32)
+	surface_DrawRect(0, 0, w, h)
 
-	surface.SetDrawColor(255, 100, 0)
-	surface.SetMaterial(mat)
-	surface.DrawTexturedRectUV(0, 0, w, h, 0, 0, self.GridSize.x + marginW, self.GridSize.y + marginH)
+	local max_width = self.GridSize.x * self.TileSize
+	local max_height = self.GridSize.y * self.TileSize
+
+	surface_SetDrawColor(255, 100, 0)
+	for i = 1, self.GridSize.x do
+		local x = (i - 1) * self.TileSize
+		surface_DrawLine(x, 0, x, max_height)
+	end
+
+	for i = 1, self.GridSize.y do
+		local y = (i - 1) * self.TileSize
+		surface_DrawLine(0, y, max_width, y)
+	end
+
+	surface_DrawLine(0, max_height - 1, max_width, max_height - 1)
+	surface_DrawLine(max_width - 1, 0, max_width - 1, max_height)
 end
 
 --override, default behaviour allows for swapping tiles
