@@ -240,6 +240,13 @@ function PANEL:AddItem(class, amount, x, y)
 	if not t then return end -- ILLEGAL or bug?!
 
 	local data = GetItemData(class)
+	if not data then
+		data = {
+			Name = "Nothing",
+			Description = "There was once something, it is now nothing...",
+			Model = "models/Gibs/HGIBS.mdl",
+		}
+	end
 
 	t:SetItemClass(class)
 	t:SetItemCount(amount)
@@ -257,9 +264,8 @@ function PANEL:OnTileDroppedInWorld(tile)
 end
 
 function PANEL:OnTileSlotChanged(tile, oldSlotX, oldSlotY, slotX, slotY, swapOrder)
-	if slotX == oldSlotX and slotY == oldSlotY then
-		return
-	end
+	if slotX == oldSlotX and slotY == oldSlotY then return end
+
 	local class = tile:GetItemClass()
 	local amount = tile:GetItemCount()
 
