@@ -177,6 +177,7 @@ end
 if IsValid(MTA.HUD.Vars.MapPanel) then MTA.HUD.Vars.MapPanel:Remove() end
 
 MTA.HUD.Vars.MapPanel = vgui.Create("Panel")
+MTA.HUD.Vars.MapPanel.NoCleanup = true
 MTA.HUD.Vars.MapPanel:SetSize(MapW, MapH)
 MTA.HUD.Vars.MapPanel:SetPaintedManually(true)
 MTA.HUD.Vars.MapPanel:SetKeyboardInputEnabled(false)
