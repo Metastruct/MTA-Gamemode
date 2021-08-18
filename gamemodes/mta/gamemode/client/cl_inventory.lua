@@ -290,6 +290,9 @@ function PANEL:OnTileChangedPanel(tile, toPanel, x, y)
 
 		tile:Remove()
 		self:RemoveTile(tile)
+	elseif toPanel.QuickItems and toPanel.OnReceiveItem then -- add item class to quick items
+		local class = tile:GetItemClass()
+		toPanel:OnReceiveItem(class, input.GetCursorPos())
 	end
 end
 
