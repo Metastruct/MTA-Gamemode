@@ -10,6 +10,10 @@ local function GetItemModel(class)
 	return inventory.Items[class] and inventory.Items[class].Model or ""
 end
 
+local function GetItemMaterial(class)
+	return inventory.Items[class] and inventory.Items[class].Material or ""
+end
+
 local PANEL = {}
 function PANEL:Init()
 	self.CraftAmount = 1
@@ -80,6 +84,7 @@ function PANEL:Init()
 		self:UpdateCraftingInfo()
 
 		self.ItemViewIcon:SetModel(GetItemModel(row.class))
+		self.ItemViewIcon:GetEntity():SetMaterial(GetItemMaterial(row.class))
 		self:UpdateItemView()
 	end
 	--self.BlueprintList.DoDoubleClick
