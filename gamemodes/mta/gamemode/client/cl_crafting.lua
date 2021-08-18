@@ -84,7 +84,10 @@ function PANEL:Init()
 		self:UpdateCraftingInfo()
 
 		self.ItemViewIcon:SetModel(GetItemModel(row.class))
-		self.ItemViewIcon:GetEntity():SetMaterial(GetItemMaterial(row.class))
+		function self.ItemViewIcon:PreDrawModel(ent)
+			ent:SetMaterial(GetItemMaterial(row.class))
+		end
+
 		self:UpdateItemView()
 	end
 	--self.BlueprintList.DoDoubleClick

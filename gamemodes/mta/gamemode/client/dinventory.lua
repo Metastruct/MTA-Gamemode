@@ -371,7 +371,9 @@ function TILE:Init()
 	self.Icon:SetKeyboardInputEnabled(false)
 
 	-- Disable cam rotation
-	function self.Icon:LayoutEntity(ent)
+	function self.Icon:LayoutEntity(ent) return end
+
+	function self.Icon:PreDrawModel(ent)
 		local mat = self:GetParent().m_Mat
 		if isstring(mat) then
 			ent:SetMaterial(mat)
@@ -464,9 +466,6 @@ function TILE:SetModelIcon(mdl, mat)
 	local tab = PositionSpawnIcon(ent, pos, true)
 
 	ent:SetAngles(ang)
-	if self.m_Mat then
-		ent:SetMaterial(self.m_Mat)
-	end
 
 	if tab then
 		icon:SetCamPos(tab.origin)
