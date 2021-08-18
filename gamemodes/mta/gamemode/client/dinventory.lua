@@ -369,7 +369,14 @@ function TILE:Init()
 	self.Icon:Dock(FILL)
 	self.Icon:SetMouseInputEnabled(false)
 	self.Icon:SetKeyboardInputEnabled(false)
-	function self.Icon:LayoutEntity(ent) return end	-- Disable cam rotation
+
+	-- Disable cam rotation
+	function self.Icon:LayoutEntity(ent)
+		local mat = self:GetParent().m_Mat
+		if isstring(mat) then
+			ent:SetMaterial(mat)
+		end
+	end
 
 	self.isActive = false
 	self.ID = lastTileID
@@ -457,8 +464,8 @@ function TILE:SetModelIcon(mdl, mat)
 	local tab = PositionSpawnIcon(ent, pos, true)
 
 	ent:SetAngles(ang)
-	if mat then
-		ent:SetMaterial(mat)
+	if self.m_Mat then
+		ent:SetMaterial(self.m_Mat)
 	end
 
 	if tab then
