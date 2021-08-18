@@ -19,6 +19,7 @@ AddCSLuaFile("client/cl_intro.lua")
 AddCSLuaFile("client/cl_car_dealer.lua")
 AddCSLuaFile("client/dinventory.lua")
 AddCSLuaFile("client/cl_inventory.lua")
+AddCSLuaFile("client/cl_quick_items.lua")
 AddCSLuaFile("client/cl_crafting.lua")
 AddCSLuaFile("client/cl_apartments.lua")
 

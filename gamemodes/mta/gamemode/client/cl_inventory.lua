@@ -293,6 +293,10 @@ function PANEL:OnTileChangedPanel(tile, toPanel, x, y)
 	elseif toPanel.QuickItems and toPanel.OnReceiveItem then -- add item class to quick items
 		local class = tile:GetItemClass()
 		toPanel:OnReceiveItem(class, input.GetCursorPos())
+
+		local old_tile = self:AddTileInSlot(x, y)
+		old_tile:CopyData(tile)
+		tile:Remove()
 	end
 end
 
@@ -333,8 +337,8 @@ function PANEL:ItemRemove(ply, class, amount, x, y)
 	local tile = self:GetTileInSlot(x, y)
 	if IsValid(tile) and tile:GetItemClass() == class then
 		if amount <= 0 then
-			tile:Remove()
 			self:RemoveTile(tile)
+			tile:Remove()
 			return
 		end
 
