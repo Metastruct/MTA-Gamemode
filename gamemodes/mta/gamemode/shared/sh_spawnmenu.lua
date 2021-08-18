@@ -340,6 +340,8 @@ if CLIENT then
 
 	local PANEL = {}
 	function PANEL:Init()
+		self.NoCleanup = true -- for vgui_cleanup
+
 		local width, height = 900, 600
 		self:SetSize(width, height)
 		self:SetPos(ScrW() / 2 - width / 2, ScrH() / 2 - height / 2)
