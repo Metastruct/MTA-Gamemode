@@ -1,6 +1,6 @@
 local tag = "MTACombineVault"
 
-local vol_light, light
+--[[local vol_light, light
 local function spawn_light()
 	vol_light = ents.Create("prop_physics")
 	vol_light:SetModel("models/effects/vol_light128x512.mdl")
@@ -67,7 +67,7 @@ hook.Add("Think", tag, function()
 
 	vol_light:SetPos(light_pos)
 	light:SetLocalPos(light_pos - Vector(0, 0, 400))
-end)
+end)]]--
 
 local function skyboxize(ent)
 	local phys = ent:GetPhysicsObject()
@@ -122,7 +122,7 @@ local function populate_skybox()
 	light_source_rev:SetLightFOV(9999)
 	skyboxize(light_source)
 
-	hook.Add("Think", tag .. "Hover", function()
+	hook.Add("Think", combine_vault, function()
 		if not IsValid(combine_vault) then return end
 		combine_vault:SetPos(combine_vault:GetPos() + Vector(0, 0, math.sin(CurTime()) * 0.1))
 	end)
