@@ -173,7 +173,7 @@ if SERVER then
 		end
 
 		file.Write(data_file_name, util.TableToJSON({
-			date = cur_date,
+			date = os.date("%d/%m/%Y"),
 			challenges = MTADailyChallenges.CurrentChallenges,
 		}))
 	end)
