@@ -17,18 +17,18 @@ function MTADailyChallenges.AddProgress(ply, mission_id, amount)
 	local mission = MTADailyChallenges.BaseChallenges[mission_id]
 	if not mission then return end
 
-	local state = MTADailyChallenges.CurrentChallenges[mission_id][ply:AccountID()] or { Progress = 0, Completed = false }
+	local state = MTADailyChallenges.CurrentChallenges[mission_id][ply:SteamID()] or { Progress = 0, Completed = false }
 	if state.Completed then return end
 
 	state.Progress = state.Progress + amount
-	MTADailyChallenges.CurrentChallenges[mission_id][ply:AccountID()] = state
+	MTADailyChallenges.CurrentChallenges[mission_id][ply:SteamID()] = state
 
 	local nw_var_name = tag .. "_" .. mission_id
 	ply:SetNWInt(nw_var_name, state.Progress)
 
 	if state.Progress >= mission.Completion then
 		MTA.GivePoints(ply, mission.Reward)
-		MTADailyChallenges.CurrentChallenges[mission_id][ply:AccountID()].Completed = true
+		MTADailyChallenges.CurrentChallenges[mission_id][ply:SteamID()].Completed = true
 	end
 end
 
