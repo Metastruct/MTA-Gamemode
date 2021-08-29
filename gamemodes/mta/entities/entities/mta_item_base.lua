@@ -108,7 +108,7 @@ if CLIENT then
 	hook.Add("PreDrawOutlines", "mta_item_base", function()
 		for _, item_base in ipairs(ents.FindByClass("mta_item_base")) do
 			if item_base.ShouldHighlight then
-				outline.Add(item_base, color_white, OUTLINE_MODE_BOTH, 1)
+				outline.Add(item_base, color_white, OUTLINE_MODE_NOTVISIBLE, 1)
 			end
 		end
 	end)
