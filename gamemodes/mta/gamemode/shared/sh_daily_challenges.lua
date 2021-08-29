@@ -131,7 +131,7 @@ if SERVER then
 	function MTADailyChallenges.SelectDailyChallenges()
 		for mission_id, _ in pairs(MTADailyChallenges.CurrentChallenges) do
 			MTADailyChallenges.BaseChallenges[mission_id].Finish()
-			MTADailyChallenges.BaseChallenges[mission_id] = nil
+			MTADailyChallenges.CurrentChallenges[mission_id] = nil
 		end
 
 		local keys = table.GetKeys(MTADailyChallenges.BaseChallenges)
