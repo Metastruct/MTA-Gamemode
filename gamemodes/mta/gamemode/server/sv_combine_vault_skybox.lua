@@ -99,6 +99,7 @@ local function populate_skybox()
 	light_source:SetPos(COMBINE_VAULT_LIGHT_POS)
 	light_source:Spawn()
 	light_source:SetParent(combine_vault)
+	light_source:SetNoDraw(true)
 
 	light_source:SetFlashlightTexture("effects/flashlight001")
 	light_source:SetOn(true)
