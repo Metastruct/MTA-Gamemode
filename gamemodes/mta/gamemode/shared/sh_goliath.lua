@@ -217,15 +217,17 @@ if SERVER then
 			net.Broadcast()
 
 			for ply, _ in pairs(self.Targets) do
-				MTA.AllowPlayerEscape(ply)
-				MTA.GivePoints(ply, 250)
-				hook.Run("MTAGoliathKilled", ply, self)
+				if IsValid(ply) then
+					MTA.AllowPlayerEscape(ply)
+					MTA.GivePoints(ply, 250)
+					hook.Run("MTAGoliathKilled", ply, self)
+				end
 			end
 
 			timer.Simple(RESPAWN_TIME, spawn_goliath)
 		end)
 
-		MTA.ChatPrint(player.GetAll(), MTA.TextColor, "A ", MTA.OldValueColor, " GOLIATH ", MTA.TextColor, "has been ", MTA.OldValueColor, "deployed")
+		MTA.ChatPrint(player.GetAll(), MTA.TextColor, "A", MTA.OldValueColor, " GOLIATH ", MTA.TextColor, "has been ", MTA.OldValueColor, "deployed")
 	end
 
 	hook.Add("InitPostEntity", TAG, function()
