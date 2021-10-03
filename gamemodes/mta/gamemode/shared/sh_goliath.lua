@@ -184,13 +184,15 @@ if SERVER then
 					return true
 				end
 
-				self:AddEntityRelationship(attacker, D_HT, 99)
-				self.Targets[attacker] = true
-
 				if attacker:IsPlayer() then
 					MTA.IncreasePlayerFactor(attacker, 1)
-					MTA.DisallowPlayerEscape(attacker)
+					if not self.Targets[attacker] then
+						MTA.DisallowPlayerEscape(attacker)
+					end
 				end
+
+				self:AddEntityRelationship(attacker, D_HT, 99)
+				self.Targets[attacker] = true
 			end
 		end)
 
