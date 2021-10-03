@@ -32,6 +32,7 @@ AddCSLuaFile("shared/sh_inventory.lua")
 AddCSLuaFile("shared/sh_crafting.lua")
 AddCSLuaFile("shared/sh_spawnmenu.lua")
 AddCSLuaFile("shared/sh_apartments.lua")
+AddCSLuaFile("shared/sh_goliath.lua")
 
 include("sh_init.lua")
 
@@ -44,6 +45,7 @@ include("shared/sh_inventory.lua")
 include("shared/sh_crafting.lua")
 include("shared/sh_spawnmenu.lua")
 include("shared/sh_apartments.lua")
+include("shared/sh_goliath.lua")
 
 include("server/sv_statuses.lua")
 include("server/sv_hud.lua")
