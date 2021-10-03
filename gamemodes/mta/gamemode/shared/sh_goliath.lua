@@ -24,7 +24,7 @@ if SERVER then
 		npc.dont_televate = true
 		npc.ms_notouch = true
 		npc.Targets = {}
-		npc.IsGoliath = true
+		npc:SetNWBool("MTAGoliath", true)
 
 		local phys = npc:GetPhysicsObject()
 		if IsValid(phys) then
@@ -240,12 +240,9 @@ if SERVER then
 end
 
 if CLIENT then
-	local display = false
-	local goliath
 	net.Receive(NET_GOLIATH, function()
-		display = net.ReadBool()
-		if display then
-			goliath = net.ReadEntity()
+		local spawned = net.ReadBool()
+		if spawned then
 			surface.PlaySound("mvm/giant_heavy/giant_heavy_entrance.wav")
 		end
 	end)
@@ -259,15 +256,17 @@ if CLIENT then
 	local old_health = GOLIATH_MAX_HEALTH
 	local width, height = 400, 40
 	local margin = 2
-	local next_dist_check = 0
 	hook.Add("HUDPaint", TAG, function()
-		if IsValid(goliath) then
-			if CurTime() > next_dist_check then
-				display = goliath:GetPos():Distance(LocalPlayer():GetPos()) < DIST_THRESHOLD
-				next_dist_check = CurTime() + 1
+		for _, goliath in ipairs(ents.FindByClass("npc_hunter")) do
+			if not goliath:GetNWBool("MTAGoliath") then continue end
+
+			goliath.NextDistCheck = goliath.NextDistCheck or 0
+			if CurTime() > goliath.NextDistCheck then
+				goliath.HUDDisplay = goliath:GetPos():Distance(LocalPlayer():GetPos()) < DIST_THRESHOLD
+				goliath.NextDistCheck = CurTime() + 1
 			end
 
-			if not display then return end
+			if not goliath.HUDDisplay then continue end
 
 			local screen_pos = goliath:WorldSpaceCenter():ToScreen()
 			local x, y = screen_pos.x, screen_pos.y
