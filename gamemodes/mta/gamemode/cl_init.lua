@@ -26,6 +26,7 @@ include("shared/sh_hardware_dealer.lua")
 include("shared/sh_inventory.lua")
 include("shared/sh_crafting.lua")
 include("shared/sh_spawnmenu.lua")
+include("shared/sh_goliath.lua")
 
 -- MTA Cars & Apartments
 -- these need to be included in that specific order

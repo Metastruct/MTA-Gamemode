@@ -13,7 +13,6 @@ function GM:PlayerNoClip(ply)
 end
 
 if SERVER then
-	resource.AddWorkshop("372740052") -- synthetik health bars
 	resource.AddWorkshop("2061960116") -- vault model
 
 	function GM:pac_Initialized()
