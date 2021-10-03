@@ -86,6 +86,8 @@ if SERVER then
 
 			timer.Simple(0, function()
 				if not IsValid(ent) then return end
+				if not ent:IsPlayer() then return end
+
 				if ent:Health() == old_health then
 					ent:KillSilent()
 					hook.Run("PlayerDeath", ent, self, self)
@@ -208,29 +210,29 @@ if SERVER then
 			MTA.AllowPlayerEscape(ply)
 		end)
 
-		hook.Add("OnNPCKilled", npc, function(self, ent, attacker)
-			if self ~= ent then return end
-			if not attacker:IsPlayer() then return end
-
-			MTA.ChatPrint(player.GetAll(), attacker, white_color, " has slain the ", red_color, "GOLIATH")
-
-			net.Start(NET_GOLIATH)
-			net.WriteBool(false)
-			net.Broadcast()
-
-			for ply, _ in pairs(self.Targets) do
-				if IsValid(ply) then
-					MTA.AllowPlayerEscape(ply)
-					MTA.GivePoints(ply, 250)
-					hook.Run("MTAGoliathKilled", ply, self)
-				end
-			end
-
-			timer.Simple(RESPAWN_TIME, spawn_goliath)
-		end)
-
 		MTA.ChatPrint(player.GetAll(), MTA.TextColor, "A", MTA.OldValueColor, " GOLIATH ", MTA.TextColor, "has been ", MTA.OldValueColor, "deployed")
 	end
+
+	hook.Add("OnNPCKilled", TAG, function(ent, attacker)
+		if not ent:GetNWBool("MTAGoliath") then return end
+		if not attacker:IsPlayer() then return end
+
+		MTA.ChatPrint(player.GetAll(), attacker, white_color, " has slain the ", red_color, "GOLIATH")
+
+		net.Start(NET_GOLIATH)
+		net.WriteBool(false)
+		net.Broadcast()
+
+		for ply, _ in pairs(ent.Targets) do
+			if IsValid(ply) then
+				MTA.AllowPlayerEscape(ply)
+				MTA.GivePoints(ply, 250)
+				hook.Run("MTAGoliathKilled", ply, ent)
+			end
+		end
+
+		timer.Simple(RESPAWN_TIME, spawn_goliath)
+	end)
 
 	hook.Add("InitPostEntity", TAG, function()
 		timer.Simple(RESPAWN_TIME, spawn_goliath)
