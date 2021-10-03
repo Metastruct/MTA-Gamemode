@@ -223,11 +223,11 @@ if SERVER then
 		net.WriteBool(false)
 		net.Broadcast()
 
-		for ply, _ in pairs(ent.Targets) do
-			if IsValid(ply) then
-				MTA.AllowPlayerEscape(ply)
-				MTA.GivePoints(ply, 250)
-				hook.Run("MTAGoliathKilled", ply, ent)
+		for target, _ in pairs(ent.Targets) do
+			if IsValid(target) and target:IsPlayer() then
+				MTA.AllowPlayerEscape(target)
+				MTA.GivePoints(target, 250)
+				hook.Run("MTAGoliathKilled", target, ent)
 			end
 		end
 
