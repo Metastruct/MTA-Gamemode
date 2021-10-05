@@ -5,6 +5,8 @@ local NET_GOLIATH = "mta_goliath"
 local GOLIATH_MAX_HEALTH = 10000
 local DIST_THRESHOLD = 1500
 local RESPAWN_TIME = 300 -- 5 mins
+local DMG_PER_SHOT = 15
+local SHOT_SIZE = 5
 
 if SERVER then
 	util.AddNetworkString(NET_GOLIATH)
@@ -75,7 +77,7 @@ if SERVER then
 			if not ent:IsPlayer() and not ent:IsNPC() then return end
 
 			local dmg = DamageInfo()
-			dmg:SetDamage(10)
+			dmg:SetDamage(DMG_PER_SHOT)
 			dmg:SetDamageForce(VectorRand() * 100)
 			dmg:SetDamageType(DMG_DISSOLVE)
 			dmg:SetAttacker(self)
@@ -89,8 +91,12 @@ if SERVER then
 				if not ent:IsPlayer() then return end
 
 				if ent:Health() == old_health then
-					ent:KillSilent()
-					hook.Run("PlayerDeath", ent, self, self)
+					ent:SetHealth(ent:Health() - SHOT_DMG)
+
+					if ent:Health() <= 0 then
+						ent:KillSilent()
+						hook.Run("PlayerDeath", ent, self, self)
+					end
 				end
 			end)
 		end
@@ -101,7 +107,7 @@ if SERVER then
 			core:SetParent(parent)
 			core:Spawn()
 			core:SetColor(red_color)
-			core:SetSize(3)
+			core:SetSize(SHOT_SIZE)
 
 			parent.IsThrownCore = true
 
