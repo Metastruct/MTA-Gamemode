@@ -5,8 +5,23 @@ local NET_GOLIATH = "mta_goliath"
 local GOLIATH_MAX_HEALTH = 10000
 local DIST_THRESHOLD = 1500
 local RESPAWN_TIME = 300 -- 5 mins
-local DMG_PER_SHOT = 15
+local DMG_PER_SHOT = 5
+local DMG_SHOCKWAVE = 25
 local SHOT_SIZE = 5
+
+if SERVER then
+	function ENT:Initialize()
+		self:SetMoveType(MOVETYPE_NONE)
+		self:SetSolid(SOLID_VPHYSICS)
+		self:SetUnFreezable(true)
+		self:SetModel("models/dav0r/hoverball.mdl")
+		self:SetMaterial("models/alyx/emptool_glow")
+		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
+		self:DrawShadow(false)
+	end
+end
+
+scripted_ents.Register(ENT, "mta_goliath")
 
 if SERVER then
 	util.AddNetworkString(NET_GOLIATH)
@@ -32,6 +47,12 @@ if SERVER then
 		if IsValid(phys) then
 			phys:EnableCollisions(false)
 		end
+
+		local goliath_ent = ents.Create("mta_goliath")
+		goliath_ent:SetPos(npc:GetPos())
+		goliath_ent:SetParent(npc)
+		goliath_ent:Spawn()
+		npc.GoliathEnt = goliath_ent
 
 		timer.Create(TAG, 10, 0, function()
 			if not IsValid(npc) then return end
@@ -62,7 +83,7 @@ if SERVER then
 			local dmg_info = DamageInfo()
 			dmg_info:SetInflictor(shockwave)
 			dmg_info:SetAttacker(self)
-			dmg_info:SetDamage(25)
+			dmg_info:SetDamage(DMG_SHOCKWAVE)
 			dmg_info:SetDamageType(DMG_SHOCK)
 
 			for _, ent in ipairs(ents.FindInSphere(shockwave:GetPos(), DIST_THRESHOLD)) do
@@ -179,12 +200,19 @@ if SERVER then
 		hook.Add("EntityTakeDamage", npc, function(self, ent, dmg_info)
 			local attacker = dmg_info:GetAttacker()
 			local inflictor = dmg_info:GetInflictor()
+
+			if attacker == ent then return true end -- dont hurt yourself
+
+			if attacker == self and IsValid(attacker.GoliathEnt) then -- for kill feed
+				dmg_info:SetAttacker(attacker.GoliathEnt)
+			end
+
 			if ent == self and IsValid(attacker) then
 				if inflictor:GetClass():match("combine_ball") or inflictor == game.GetWorld() then return true end
 				if attacker:IsPlayer() and not attacker:Alive() then return true end
 				if attacker:WorldSpaceCenter():Distance(self:WorldSpaceCenter()) > DIST_THRESHOLD then return true end
 
-				if attacker:GetClass() == "crossbow_bolt"
+				if not attacker:IsPlayer() and not attacker:IsNPC()
 					and attacker.CPPIGetOwner
 					and IsValid(attacker:CPPIGetOwner())
 					and attacker:CPPIGetOwner():WorldSpaceCenter():Distance(self:WorldSpaceCenter()) > DIST_THRESHOLD
@@ -250,6 +278,8 @@ if SERVER then
 end
 
 if CLIENT then
+	language.Add("mta_goliath", "GOLIATH")
+
 	net.Receive(NET_GOLIATH, function()
 		local spawned = net.ReadBool()
 		if spawned then
