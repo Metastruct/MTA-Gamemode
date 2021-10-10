@@ -1,5 +1,6 @@
 local tag = "mta_daily_missions"
 
+local MAX_CHALLENGES = 3
 local MTADailyChallenges = MTA_TABLE("DailyChallenges")
 
 MTADailyChallenges.BaseChallenges = {}
@@ -136,7 +137,7 @@ if SERVER then
 
 		local keys = table.GetKeys(MTADailyChallenges.BaseChallenges)
 		local selected_mission_ids = {}
-		for i = 1, 3 do
+		for i = 1, MAX_CHALLENGES do
 			local rand = math.random(#keys)
 			table.insert(selected_mission_ids, keys[rand])
 			table.remove(keys, rand)
@@ -154,7 +155,7 @@ if SERVER then
 
 	hook.Add("PlayerFullyConnected", tag, function(ply)
 		for mission_id, data in pairs(MTADailyChallenges.CurrentChallenges) do
-			local ply_data = data[ply:AccountID()] or { Progress = 0, Completed = false }
+			local ply_data = data[ply:SteamID()] or { Progress = 0, Completed = false }
 			ply:SetNWInt(tag .. "_" .. mission_id, ply_data.Progress)
 		end
 
@@ -179,8 +180,11 @@ if SERVER then
 	end)
 
 	local data = util.JSONToTable(file.Read(data_file_name, "DATA") or "")
-	if data and data.date == os.date("%d/%m/%Y") then
+	if data and data.date == os.date("%d/%m/%Y") and table.Count(data.challenges) == MAX_CHALLENGES then
 		MTADailyChallenges.CurrentChallenges = data.challenges
+		for mission_id, _ in pairs(MTADailyChallenges.CurrentChallenges) do
+			MTADailyChallenges.BaseChallenges[mission_id].Execute()
+		end
 	else
 		MTADailyChallenges.SelectDailyChallenges()
 	end
