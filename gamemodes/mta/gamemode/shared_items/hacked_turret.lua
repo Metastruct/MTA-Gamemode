@@ -21,11 +21,11 @@ ITEM.Craft = {
 if SERVER then
 	function ITEM:OnUse(ply, amount)
 		for i = 1, amount do
-            local tr = util.TraceLine({
-                start = ply:EyePos(),
-                endpos = ply:EyePos() + ply:GetAimVector() * 200,
-                filter = ply
-            })
+			local tr = util.TraceLine({
+				start = ply:EyePos(),
+				endpos = ply:EyePos() + ply:GetAimVector() * 200,
+				filter = ply
+			})
 
 			local pos = tr.HitPos
 			local turret = ents.Create("npc_turret_floor")
@@ -34,7 +34,7 @@ if SERVER then
 			turret:Spawn()
 			turret:Activate()
 			turret:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-            turret:DropToFloor()
+			turret:DropToFloor()
 
 			local phys = turret:GetPhysicsObject()
 			if IsValid(phys) then
@@ -123,7 +123,7 @@ if SERVER then
 		end
 	end
 
-	hook.Add("MTAWantedStateUpdate", tag, function(ply, is_wanted)
+	hook.Add("MTAPlayerFailed", tag, function(ply)
 		if is_wanted then return end
 		remove_player_turrets(ply)
 	end)
