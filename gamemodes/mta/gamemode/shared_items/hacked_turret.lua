@@ -123,7 +123,7 @@ if SERVER then
 		end
 	end
 
-	hook.Add("MTAPlayerFailed", tag, function(ply)
+	hook.Add("MTAWantedStateUpdate", tag, function(ply, is_wanted)
 		if is_wanted then return end
 		remove_player_turrets(ply)
 	end)
