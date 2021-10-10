@@ -11,6 +11,21 @@ function MTADailyChallenges.GetProgress(ply, mission_id)
 	return ply:GetNWInt(nw_var_name)
 end
 
+if SERVER then
+	function MTADailyChallenges.UpgradeBadge(ply)
+		local succ, err = pcall(function()
+			if MetaBadges and MetaBadges.IsValidBadge("daily_commitment") then
+				local cur_lvl = MetaBadges.GetBadgeLevel(ply, "daily_commitment") or 0
+				MetaBadges.UpgradeBadge(ply, "daily_commitment", cur_lvl + 1)
+			end
+		end)
+
+		if not succ then
+			MTA.Print("Failed to update badge for:", ply, err)
+		end
+	end
+end
+
 function MTADailyChallenges.AddProgress(ply, mission_id, amount)
 	if CLIENT then return end
 	if not MTADailyChallenges.CurrentChallenges[mission_id] then return end
@@ -30,6 +45,7 @@ function MTADailyChallenges.AddProgress(ply, mission_id, amount)
 	if state.Progress >= mission.Completion then
 		MTA.GivePoints(ply, mission.Reward)
 		MTADailyChallenges.CurrentChallenges[mission_id][ply:SteamID()].Completed = true
+		MTADailyChallenges.UpgradeBadge(ply)
 	end
 end
 
