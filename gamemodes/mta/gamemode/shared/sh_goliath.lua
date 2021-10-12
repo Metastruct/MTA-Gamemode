@@ -10,20 +10,6 @@ local DMG_SHOCKWAVE = 25
 local SHOT_SIZE = 5
 
 if SERVER then
-	function ENT:Initialize()
-		self:SetMoveType(MOVETYPE_NONE)
-		self:SetSolid(SOLID_VPHYSICS)
-		self:SetUnFreezable(true)
-		self:SetModel("models/dav0r/hoverball.mdl")
-		self:SetMaterial("models/alyx/emptool_glow")
-		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-		self:DrawShadow(false)
-	end
-end
-
-scripted_ents.Register(ENT, "mta_goliath")
-
-if SERVER then
 	util.AddNetworkString(NET_GOLIATH)
 
 	local SPAWN_POS = Vector (-2108, 2889, 5416)
@@ -37,6 +23,7 @@ if SERVER then
 		npc:SetMaterial("models/xqm/lightlinesred")
 		npc:SetHealth(GOLIATH_MAX_HEALTH)
 		npc:DropToFloor()
+		npc:SetKeyValue("classname", "GOLIATH")
 		npc.PhysgunDisabled = true
 		npc.dont_televate = true
 		npc.ms_notouch = true
@@ -47,12 +34,6 @@ if SERVER then
 		if IsValid(phys) then
 			phys:EnableCollisions(false)
 		end
-
-		local goliath_ent = ents.Create("mta_goliath")
-		goliath_ent:SetPos(npc:GetPos())
-		goliath_ent:SetParent(npc)
-		goliath_ent:Spawn()
-		npc.GoliathEnt = goliath_ent
 
 		timer.Create(TAG, 10, 0, function()
 			if not IsValid(npc) then return end
@@ -203,10 +184,6 @@ if SERVER then
 
 			if attacker == ent then return true end -- dont hurt yourself
 
-			if attacker == self and IsValid(attacker.GoliathEnt) then -- for kill feed
-				dmg_info:SetAttacker(attacker.GoliathEnt)
-			end
-
 			if ent == self and IsValid(attacker) then
 				if inflictor:GetClass():match("combine_ball") or inflictor == game.GetWorld() then return true end
 				if attacker:IsPlayer() and not attacker:Alive() then return true end
@@ -278,8 +255,6 @@ if SERVER then
 end
 
 if CLIENT then
-	language.Add("mta_goliath", "GOLIATH")
-
 	net.Receive(NET_GOLIATH, function()
 		local spawned = net.ReadBool()
 		if spawned then
