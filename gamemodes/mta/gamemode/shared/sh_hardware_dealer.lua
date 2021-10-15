@@ -50,7 +50,6 @@ if CLIENT then
 		frame:Center()
 		frame:MakePopup()
 
-		local orange_color = Color(244, 135, 2)
 		function frame:AddBlueprint(item, price)
 			local panel = self.Content:Add("DPanel")
 			panel:Dock(TOP)
@@ -66,13 +65,13 @@ if CLIENT then
 			label_desc:SetPos(10, 20)
 			label_desc:SetText(item.Description)
 			label_desc:SetWide(400)
-			label_desc:SetTextColor(orange_color)
+			label_desc:SetTextColor(MTA.PrimaryColor)
 
 			local btn = panel:Add("DButton")
 			btn:Dock(RIGHT)
 			btn:DockMargin(5, 5, 5, 5)
 			btn:SetText(("Buy (%d pts)"):format(price))
-			btn:SetTextColor(color_white)
+			btn:SetTextColor(MTA.TextColor)
 			btn:SetWide(125)
 			btn.DoClick = function()
 				net.Start(tag)

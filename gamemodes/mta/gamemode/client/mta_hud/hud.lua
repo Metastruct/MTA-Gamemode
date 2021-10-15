@@ -348,10 +348,10 @@ return function()
             HpBarLength * 2 + (Separated * 4),
             39 * MTA.HUD.Config.ScrRatio
 
-        surface.SetDrawColor(0, 0, 0, 150)
+        surface.SetDrawColor(MTA.BackgroundColor)
         surface.DrawRect(x, y, w, h)
 
-        surface.SetDrawColor(244, 135, 2)
+        surface.SetDrawColor(MTA.PrimaryColor)
         surface.DrawOutlinedRect(x, y, w, h, 2)
     end
     -- END of background elements
@@ -831,11 +831,11 @@ return function()
         surface.DrawRect(ApStart, HealthBarPercentageStartH, HpBarLength * ApRatio * 2, HpBarHeight)
 
         -- HpBar
-        surface.SetDrawColor(244, 135, 2)
+        surface.SetDrawColor(MTA.PrimaryColor)
         surface.DrawRect(HealthBarPercentageStartW, HealthBarPercentageStartH, HpLength, HpBarHeight)
 
         -- ArmorBar
-        surface.SetDrawColor(244, 135, 2)
+        surface.SetDrawColor(MTA.PrimaryColor)
         surface.DrawRect(ApStart, HealthBarPercentageStartH, ApLength, HpBarHeight)
 
         if Separated == 0 then
@@ -901,7 +901,7 @@ return function()
 
         -- Texts
         surface.SetTexture(HpIcon)
-        surface.SetDrawColor(244, 135, 2)
+        surface.SetDrawColor(MTA.PrimaryColor)
         surface.DrawTexturedRect(
             HealthBarPercentageStartW,
             HealthBarPercentageStartH + (23 * MTA.HUD.Config.ScrRatio),
@@ -948,7 +948,7 @@ return function()
 
         if MaxAp > 0 then
             surface.SetTexture(ApIcon)
-            surface.SetDrawColor(244, 135, 2)
+            surface.SetDrawColor(MTA.PrimaryColor)
             surface.DrawTexturedRect(
                 math.Clamp(ApStart, HealthBarPercentageStartW + (ArmorClamp * MTA.HUD.Config.ScrRatio), 100000),
                 HealthBarPercentageStartH + (23 * MTA.HUD.Config.ScrRatio),

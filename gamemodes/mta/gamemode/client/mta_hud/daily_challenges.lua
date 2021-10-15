@@ -43,8 +43,6 @@ surface.CreateFont("MTAMissionsFontTitle", {
 	extended = true,
 })
 
-local orange_color = Color(244, 135, 2)
-local white_color = Color(255, 255, 255)
 local mat_vec = Vector()
 local mat = Matrix()
 
@@ -70,13 +68,13 @@ return function()
 	cam.PushModelMatrix(mat)
 		local margin = 5 * MTA.HUD.Config.ScrRatio
 		local title_x, title_y = ScrW() - offset_x, ScrH() / 2 - 50 * MTA.HUD.Config.ScrRatio
-		surface.SetDrawColor(0, 0, 0, 150)
+		surface.SetDrawColor(MTA.BackgroundColor)
 		surface.DrawRect(title_x - margin, title_y - margin, width, 40 * MTA.HUD.Config.ScrRatio)
 
-		surface.SetDrawColor(orange_color)
+		surface.SetDrawColor(MTA.PrimaryColor)
 		surface.DrawOutlinedRect(title_x - margin, title_y - margin, width, 40 * MTA.HUD.Config.ScrRatio, 2)
 
-		surface.SetTextColor(color_white)
+		surface.SetTextColor(MTA.TextColor)
 		surface.SetTextPos(title_x + margin, title_y)
 		surface.SetFont("MTAMissionsFontTitle")
 		surface.DrawText("DAILY CHALLENGES")
@@ -89,15 +87,15 @@ return function()
 				surface.SetFont("MTAMissionsFontDesc")
 				local desc = mission.Description:upper()
 				local x, y = ScrW() - offset_x, ScrH() / 2 + (60 * (i -1) * MTA.HUD.Config.ScrRatio)
-				surface.SetDrawColor(0, 0, 0, 150)
+				surface.SetDrawColor(MTA.BackgroundColor)
 				surface.DrawRect(x - margin, y - margin, width, 50 * MTA.HUD.Config.ScrRatio)
 
-				surface.SetTextColor(white_color)
+				surface.SetTextColor(MTA.TextColor)
 				surface.SetTextPos(x, y)
 				surface.DrawText(desc)
 
 				surface.SetFont("MTAMissionsFont")
-				surface.SetTextColor(orange_color)
+				surface.SetTextColor(MTA.PrimaryColor)
 				surface.SetTextPos(x, y + 20 * MTA.HUD.Config.ScrRatio)
 				surface.DrawText(("%d/%d"):format(progress, mission.Completion))
 
@@ -106,7 +104,7 @@ return function()
 				surface.SetTextPos(x + width - (tw + 10 * MTA.HUD.Config.ScrRatio), y + 20 * MTA.HUD.Config.ScrRatio)
 				surface.DrawText(points)
 
-				surface.SetDrawColor(orange_color)
+				surface.SetDrawColor(MTA.PrimaryColor)
 				surface.DrawLine(x - margin, y + 45 * MTA.HUD.Config.ScrRatio, x + width - margin, y + 45 * MTA.HUD.Config.ScrRatio)
 
 				i = i + 1

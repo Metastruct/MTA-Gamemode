@@ -77,11 +77,6 @@ if CLIENT then
 		net.SendToServer()
 	end)
 
-	local orange_color = Color(244, 135, 2)
-	local black_color = Color(0, 0, 0, 150)
-	local orange_color = Color(244, 135, 2)
-	local white_color = Color(255, 255, 255)
-
 	local DealerIcon = Material("vgui/mta_hud/dealer_icon.png")
 	local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
 	local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
@@ -235,7 +230,7 @@ if CLIENT then
 				end
 			end
 
-			surface.SetDrawColor(orange_color)
+			surface.SetDrawColor(MTA.PrimaryColor)
 			for _, ply in ipairs(player.GetAll()) do
 				if ply ~= LocalPlayer() and ply:Alive() then
 					local yaw = ply:EyeAngles().yaw
@@ -246,7 +241,7 @@ if CLIENT then
 					surface.DrawPoly(tri)
 				end
 			end
-			surface.SetDrawColor(white_color)
+			surface.SetDrawColor(MTA.TextColor)
 
 			-- Draw your vehicle on the map
 			if MTA.Cars then
@@ -280,7 +275,7 @@ if CLIENT then
 			draw.NoTexture()
 			surface.DrawPoly(tri)
 
-			surface.SetDrawColor(244, 135, 2)
+			surface.SetDrawColor(MTA.PrimaryColor)
 			surface.DrawOutlinedRect(0, 0, w, h, 2)
 		end
 
@@ -293,9 +288,9 @@ if CLIENT then
 		function LEADERBOARD_TAB:Init() end
 
 		function LEADERBOARD_TAB:Paint(w, h)
-			surface.SetDrawColor(black_color)
+			surface.SetDrawColor(MTA.BackgroundColor)
 			surface.DrawRect(0, 0, w, h)
-			surface.SetDrawColor(orange_color)
+			surface.SetDrawColor(MTA.PrimaryColor)
 			surface.DrawOutlinedRect(0, 0, w, h)
 			surface.DrawOutlinedRect(1, 1, w - 2, h - 2)
 
@@ -303,7 +298,7 @@ if CLIENT then
 			do
 				surface.DrawRect(0, 0, w, 32)
 
-				surface.SetTextColor(white_color)
+				surface.SetTextColor(MTA.TextColor)
 				surface.SetFont("DermaLarge")
 				surface.SetTextPos(7, 1)
 				surface.DrawText("LEADERBOARD")
@@ -352,7 +347,7 @@ if CLIENT then
 			ply_panel:Dock(LEFT)
 			ply_panel:SetWide(165)
 			function ply_panel:Paint(w, h)
-				surface.SetDrawColor(orange_color)
+				surface.SetDrawColor(MTA.PrimaryColor)
 				surface.DrawRect(w - 2, 0, w, h)
 			end
 
@@ -372,7 +367,7 @@ if CLIENT then
 				end
 
 				function sep:Paint(w, h)
-					surface.SetDrawColor(orange_color)
+					surface.SetDrawColor(MTA.PrimaryColor)
 					surface.DrawRect(0, 0, w, h)
 				end
 			end
@@ -383,7 +378,7 @@ if CLIENT then
 				lbl:DockMargin(10, 5, 10, 0)
 				lbl:SetTall(20)
 				lbl:SetFont(font)
-				lbl:SetTextColor(white_color)
+				lbl:SetTextColor(MTA.TextColor)
 				lbl:SetText(text)
 			end
 
@@ -431,10 +426,10 @@ if CLIENT then
 		local function tab_paint(self, w, h)
 			if sheet:GetActiveTab() ~= self then return end
 
-			surface.SetDrawColor(0, 0, 0, 150)
+			surface.SetDrawColor(MTA.BackgroundColor)
 			surface.DrawRect(0, 0, w, h)
 
-			surface.SetDrawColor(white_color)
+			surface.SetDrawColor(MTA.TextColor)
 			surface.DrawLine(0, 0, w, 0)
 			surface.DrawLine(0, 1, w, 1)
 		end
@@ -443,20 +438,20 @@ if CLIENT then
 			local map_panel = vgui.Create("DPanel")
 			local map = map_panel:Add("mta_map")
 			function map_panel:Paint(w, h)
-				surface.SetDrawColor(0, 0, 0, 150)
+				surface.SetDrawColor(MTA.BackgroundColor)
 				surface.DrawRect(0, 0, w, h)
 			end
 
 			function map_panel:DrawLegend(icon, text, y)
 				local base_x = map:GetWide()
-				surface.SetDrawColor(white_color)
+				surface.SetDrawColor(MTA.TextColor)
 				surface.SetMaterial(icon)
 				surface.DrawTexturedRect(base_x + 10, y, IconSize, IconSize)
 
 				surface.SetFont("MTALegendFont")
 				local _, th = surface.GetTextSize(text)
 
-				surface.SetTextColor(white_color)
+				surface.SetTextColor(MTA.TextColor)
 				surface.SetTextPos(base_x + IconSize + 20, y + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
@@ -472,14 +467,14 @@ if CLIENT then
 				surface.SetFont("MTALegendFont")
 				local _, th = surface.GetTextSize(text)
 
-				surface.SetTextColor(white_color)
+				surface.SetTextColor(MTA.TextColor)
 				surface.SetTextPos(base_x + IconSize + 20, y + (IconSize / 2 - th / 2))
 				surface.DrawText(text)
 			end
 
 			function map_panel:PaintOver(w, h)
-				self:DrawArrowLegend("You", white_color, 0)
-				self:DrawArrowLegend("Other Players", orange_color, 40)
+				self:DrawArrowLegend("You", MTA.TextColor, 0)
+				self:DrawArrowLegend("Other Players", MTA.PrimaryColor, 40)
 				self:DrawLegend(DealerIcon, "Gun Dealer", 80)
 				self:DrawLegend(CarDealerIcon, "Car Dealer", 120)
 				self:DrawLegend(VehicleIcon, "Your Vehicle", 160)
@@ -542,7 +537,7 @@ if CLIENT then
 		end
 
 		function craft_button:Paint(w, h)
-			local col = self:IsHovered() and white_color or orange_color
+			local col = self:IsHovered() and MTA.TextColor or MTA.PrimaryColor
 
 			surface.SetDrawColor(col)
 			surface.DrawOutlinedRect(0, 0, w, h)
@@ -586,7 +581,7 @@ if CLIENT then
 		surface.SetDrawColor(0, 0, 0, 220)
 		surface.DrawRect(0, 0, w, h)
 
-		surface.SetDrawColor(orange_color)
+		surface.SetDrawColor(MTA.PrimaryColor)
 		surface.DrawOutlinedRect(0, 0, w, h, 2)
 
 		local header_text = GetHostName()

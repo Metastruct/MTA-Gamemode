@@ -2,14 +2,6 @@ DeriveGamemode("sandbox")
 DEFINE_BASECLASS("gamemode_sandbox")
 GM.Sandbox = BaseClass
 
-IS_MTA_GMA = true
-
-function MTA_TABLE(name)
-	_G.MTA = _G.MTA or {}
-	_G.MTA[name] = _G.MTA[name] or {}
-	return _G.MTA[name]
-end
-
 AddCSLuaFile("sh_init.lua")
 AddCSLuaFile("cl_init.lua")
 

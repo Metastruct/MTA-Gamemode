@@ -1,5 +1,30 @@
 DeriveGamemode("sandbox")
 
+do
+	IS_MTA_GMA = true
+
+	function MTA_TABLE(name)
+		_G.MTA = _G.MTA or {}
+		_G.MTA[name] = _G.MTA[name] or {}
+		return _G.MTA[name]
+	end
+
+	_G.MTA = _G.MTA or {}
+	-- color scheme for most UI of MTA
+	MTA.PrimaryColor = Color(244, 135, 2)
+	MTA.BackgroundColor = Color(0, 0, 0, 200)
+	MTA.TextColor = Color(255, 255, 255)
+
+	MTA.DangerColor = Color(255, 0, 0)
+
+	MTA.NewValueColor = Color(58, 252, 113)
+	MTA.OldValueColor = Color(252, 71, 58)
+	MTA.AdditionalValueColor = Color(200, 200, 200)
+
+	-- dictionary of some kind
+	MTA.WantedText = "WANTED"
+end
+
 GM.Name = "MTA"
 GM.Author = "Meta Construct"
 GM.Email = ""

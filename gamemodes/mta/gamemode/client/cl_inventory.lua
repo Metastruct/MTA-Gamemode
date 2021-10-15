@@ -19,7 +19,7 @@ function PANEL:Init()
 	function self.TrashCan:Paint(w, h)
 		surface.SetDrawColor(255, 255, 255)
 		if self:IsHovered() then
-			surface.SetDrawColor(255, 0, 0)
+			surface.SetDrawColor(MTA.DangerColor)
 		end
 
 		surface.SetMaterial(trashMat)
@@ -43,7 +43,7 @@ function PANEL:Init()
 
 	self.ItemViewHeader = self.ViewDocker:Add("DLabel")
 	self.ItemViewHeader:Dock(TOP)
-	self.ItemViewHeader:SetColor(Color(100, 255, 100))
+	self.ItemViewHeader:SetColor(MTA.NewValueColor)
 	self.ItemViewHeader:SetText("BASE_ITEM")
 	self.ItemViewHeader:SetFont("ScoreboardDefault")
 	self.ItemViewHeader:DockMargin(2, 4, 0, 4)
