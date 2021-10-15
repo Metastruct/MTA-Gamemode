@@ -306,15 +306,13 @@ local surface_DrawLine = surface.DrawLine
 local surface_SetDrawColor = surface.SetDrawColor
 local surface_DrawRect = surface.DrawRect
 function PANEL:Paint(w, h)
-	local p_r, p_g, p_b = MTA.PrimaryColor
-
-	surface_SetDrawColor(p_r, p_g, p_b, 32)
+	surface_SetDrawColor(MTA.BackgroundColor)
 	surface_DrawRect(0, 0, w, h)
 
 	local max_width = self.GridSize.x * self.TileSize
 	local max_height = self.GridSize.y * self.TileSize
 
-	surface_SetDrawColor(p_r, p_g, p_b)
+	surface_SetDrawColor(MTA.PrimaryColor)
 	for i = 1, self.GridSize.x do
 		local x = (i - 1) * self.TileSize
 		surface_DrawLine(x, 0, x, max_height)
