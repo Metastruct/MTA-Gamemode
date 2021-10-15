@@ -76,6 +76,7 @@ Right click drag an item to split the stack.]]
 	self.ItemViewButton:SetSize(128, 24)
 	self.ItemViewButton:SetPos(8, self:GetTall() - 32)
 	self.ItemViewButton:SetText("Use Item")
+	self.ItemViewButton:SetTextColor(MTA.TextColor)
 
 	function self.ItemViewButton.DoClick(this)
 		if IsValid(self) then
