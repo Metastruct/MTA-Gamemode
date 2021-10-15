@@ -181,16 +181,17 @@ if SERVER then
 	end)
 
 	local data_file_name = tag .. ".json"
-	local last_day = os.date("%d")
+	local last_day_component = os.date("%d")
 	timer.Create(tag, 60, 0, function()
 		local day_component = os.date("%d")
-		if last_day ~= day_component and os.date("%H") == "0" then
+		if last_day_component ~= day_component then
 			MTADailyChallenges.SelectDailyChallenges()
-			last_day = day_component
+			last_day_component = day_component
 		end
 
+		local prev_data = util.JSONToTable(file.Read(data_file_name, "DATA") or "")
 		file.Write(data_file_name, util.TableToJSON({
-			date = os.date("%d/%m/%Y"),
+			date = prev_data and prev_data.date or os.date("%d/%m/%Y"),
 			challenges = MTADailyChallenges.CurrentChallenges,
 		}))
 	end)
