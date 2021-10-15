@@ -234,9 +234,6 @@ if CLIENT then
 		end
 	end)
 
-	local orange_color = Color(244, 135, 2)
-	local white_color = Color(255, 255, 255)
-	local red_color = Color(255, 0, 0)
 	hook.Add("HUDPaint", tag, function()
 		if LocalPlayer():Alive() and displayed_recap then
 			recap = {}
@@ -251,14 +248,14 @@ if CLIENT then
 		local base_x, base_y = ScrW() / 2 - w / 2, ScrH() / 3
 
 		surface.SetFont("MTADeathRecapTitle")
-		surface.SetTextColor(white_color)
+		surface.SetTextColor(MTA.TextColor)
 		surface.SetTextPos(base_x, base_y - 75)
 		surface.DrawText("DEATH RECAP")
 
 		for i = 1, #recap do
 			if i == 1 then
 				surface.SetFont("MTADeathRecapKiller")
-				surface.SetTextColor(white_color)
+				surface.SetTextColor(MTA.TextColor)
 				surface.SetTextPos(base_x - 150, base_y + 5)
 				surface.DrawText("KILLER")
 			end
@@ -266,7 +263,7 @@ if CLIENT then
 			local y = base_y + ((i - 1) * (h + 5))
 			surface.SetDrawColor(0, 0, 0, 150)
 			surface.DrawRect(base_x, y, w, h)
-			surface.SetDrawColor(orange_color)
+			surface.SetDrawColor(MTA.PrimaryColor)
 			surface.DrawOutlinedRect(base_x, y, w, h, 2)
 
 			local atck_text = language.GetPhrase(recap[i].Attacker)
@@ -275,13 +272,13 @@ if CLIENT then
 			local tw = 100
 
 			surface.SetFont("MTADeathRecapNameFont")
-			surface.SetTextColor(white_color)
+			surface.SetTextColor(MTA.TextColor)
 			surface.SetTextPos(base_x + 5, y + 5)
 			surface.DrawText(atck_text)
 			local atck_tw, _ = surface.GetTextSize(atck_text)
 
 			surface.SetFont("DermaDefaultBold")
-			surface.SetTextColor(orange_color)
+			surface.SetTextColor(MTA.PrimaryColor)
 			surface.SetTextPos(base_x + 5, y + 30)
 			surface.DrawText(infl_text)
 			local infl_tw, _ = surface.GetTextSize(atck_text)
@@ -298,7 +295,7 @@ if CLIENT then
 				tw = base_x + tw
 			end
 
-			surface.SetTextColor(red_color)
+			surface.SetTextColor(MTA.DangerColor)
 			surface.SetTextPos(tw, y + 10)
 			surface.DrawText(dmg_text)
 		end

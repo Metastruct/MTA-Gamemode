@@ -1,5 +1,4 @@
 local tag = "mta_statuses"
-local orange_color = Color(244, 135, 2)
 local statuses = MTA_TABLE("Statuses")
 
 statuses.Current = {}
@@ -7,7 +6,7 @@ statuses.Current = {}
 function statuses.AddStatus(name, text, color, expire_time)
 	statuses.Current[name] = {
 		text = text:upper(),
-		color = color or orange_color,
+		color = color or MTA.PrimaryColor,
 		expire_time = expire_time,
 	}
 end
@@ -74,7 +73,7 @@ return function()
 			local tw, th = surface.GetTextSize(text)
 			local x, y = base_x, base_y + i * (th + padding + margin)
 
-			surface.SetDrawColor(0, 0, 0, 200)
+			surface.SetDrawColor(MTA.BackgroundColor)
 			surface.DrawRect(x - padding / 2, y - padding / 2, tw + padding, th + padding)
 
 			surface.SetTextColor(status_data.color)

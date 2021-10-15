@@ -17,7 +17,6 @@ local function CallBuyServer()
 	net.SendToServer()
 end
 
-local MTA_COLOR = Color(244, 136, 0)
 local WHITE = Color(255, 255, 255)
 local function CreateCarDealerUI()
 	if not MTACars then return end
@@ -161,7 +160,7 @@ local function CreateCarDealerUI()
 
 	function DESCRIPTION:UpdateText()
 		DESCRIPTION:SetText("")
-		DESCRIPTION:InsertColorChange(MTA_COLOR:Unpack())
+		DESCRIPTION:InsertColorChange(MTA.PrimaryColor:Unpack())
 
 		local name = MTA.Cars.GetCarName(selectedCar)
 		DESCRIPTION:AppendText(name .. "\n")
@@ -284,8 +283,8 @@ local function CreateCarDealerUI()
 			local arrowSize = h / 2
 
 			if self:IsHovered() then
-				surface.SetTextColor(MTA_COLOR)
-				surface.SetDrawColor(MTA_COLOR)
+				surface.SetTextColor(MTA.PrimaryColor)
+				surface.SetDrawColor(MTA.PrimaryColor)
 			else
 				surface.SetTextColor(255, 255, 255)
 				surface.SetDrawColor(255, 255, 255)
@@ -380,7 +379,7 @@ local function CreateCarDealerUI()
 	STYLE_LABEL:Dock(TOP)
 	STYLE_LABEL:DockMargin(10, 10, 0, 0)
 	STYLE_LABEL:SetText("SKIN")
-	STYLE_LABEL:SetColor(MTA_COLOR)
+	STYLE_LABEL:SetColor(MTA.PrimaryColor)
 	STYLE_LABEL:SetFont("DermaLarge")
 
 	STYLE_BODY = BOTTOM_DOCK:Add("DPanel")
@@ -442,10 +441,10 @@ local function DoNotice()
 		surface.SetDrawColor(0, 0, 0, 200)
 		surface.DrawRect(x, y, RECTW, RECTH)
 
-		surface.SetDrawColor(MTA_COLOR)
+		surface.SetDrawColor(MTA.PrimaryColor)
 		surface.DrawOutlinedRect(x, y, RECTW, RECTH, 2)
 
-		surface.SetTextColor(MTA_COLOR)
+		surface.SetTextColor(MTA.PrimaryColor)
 
 		surface.SetTextPos(x + RECTW / 2 - tW / 2, y + RECTH / 2 - tH / 2)
 		surface.DrawText(text)
@@ -469,7 +468,7 @@ end
 hook.Add("PreDrawOutlines", tag, function()
 	if MTA and MTA.Cars and IsValid(MTA.Cars.CurrentVehicle) then
 		if MTA.Cars.CurrentVehicle:GetDriver() == LocalPlayer() then return end
-		outline.Add(MTA.Cars.CurrentVehicle, MTA_COLOR, OUTLINE_MODE_BOTH, 4)
+		outline.Add(MTA.Cars.CurrentVehicle, MTA.PrimaryColor, OUTLINE_MODE_BOTH, 4)
 	end
 end)
 

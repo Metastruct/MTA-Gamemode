@@ -25,7 +25,7 @@ local function RefreshEntranceHighlight(apt)
 	"(R) Available for rent!"
 
 	local color = apt.Renter and
-	((apt.Renter == LocalPlayer() or IsInvited(LocalPlayer(), apt)) and Color(50, 255, 50) or Color(255, 0, 0))
+	((apt.Renter == LocalPlayer() or IsInvited(LocalPlayer(), apt)) and MTA.NewValueColor or MTA.OldValueColor)
 	or color_white
 
 	MTA.RegisterEntityForHighlight(apt.Entrance, str, color)

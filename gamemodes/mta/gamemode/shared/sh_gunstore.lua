@@ -192,9 +192,7 @@ if SERVER then
 	return
 end
 
-local noBuyColor = Color(221, 0, 74)
 local white = Color(255, 255, 255)
-
 local gunStoreLocation = Vector(425, 7330, 5506)
 local highlightColor = Color(255, 255, 255)
 
@@ -269,13 +267,13 @@ hook.Add("HUDPaint", tag, function()
 
 			if MTA.Weapons[data.class] == true then
 				text = "You own this weapon"
-				highlightColor = noBuyColor
+				highlightColor = MTA.OldValueColor
 			elseif MTA.Crafting.Blueprints[data.class] == true then
 				text = "You own this blueprint"
-				highlightColor = noBuyColor
+				highlightColor = MTA.OldValueColor
 			elseif MTA.GetPlayerStat("points") < cost then
 				text = "You can't afford this - " .. cost .. " points"
-				highlightColor = noBuyColor
+				highlightColor = MTA.OldValueColor
 			else
 				highlightColor = white
 				text = "Buy " .. name .. " - " .. cost .. " points"

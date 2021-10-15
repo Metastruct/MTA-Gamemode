@@ -89,7 +89,7 @@ local phases = {
 			local red_color = Color(255, 0, 0)
 			hook.Add("PreDrawOutlines", tag, function()
 				red_color.a = 200 + math.sin(CurTime() * 5) * 150
-				outline.Add(cur_vault, red_color, OUTLINE_MODE_BOTH, 4)
+				outline.Add(cur_vault, MTA.DangerColor, OUTLINE_MODE_BOTH, 4)
 			end)
 		end,
 		finish = function()
@@ -139,7 +139,7 @@ local phases = {
 			local red_color = Color(255, 0, 0)
 			hook.Add("PreDrawOutlines", tag, function()
 				red_color.a = 200 + math.sin(CurTime() * 5) * 150
-				outline.Add({ jukebox, computer, dealer }, red_color, OUTLINE_MODE_BOTH, 4)
+				outline.Add({ jukebox, computer, dealer }, MTA.DangerColor, OUTLINE_MODE_BOTH, 4)
 			end)
 
 			hook.Add("CalcView", tag, function(ply, pos, angles, fov)
@@ -196,7 +196,7 @@ local function create_subtitles()
 
 	local margin = 10 * MTA.HUD.Config.ScrRatio
 	local label = panel:Add("DLabel")
-	label:SetTextColor(Color(255, 255, 255))
+	label:SetTextColor(MTA.TextColor)
 	label:SetFont("MTAIntroFont")
 	label:SetText("")
 	label:Dock(FILL)
@@ -206,7 +206,7 @@ local function create_subtitles()
 	panel.Label = label
 
 	local space_notif = vgui.Create("DLabel")
-	space_notif:SetTextColor(Color(244, 135, 2))
+	space_notif:SetTextColor(MTA.PrimaryColor)
 	space_notif:SetFont("MTAIntroFont")
 	space_notif:SetText("Press space to continue...")
 	space_notif:SetTall(32 * MTA.HUD.Config.ScrRatio)
@@ -225,10 +225,10 @@ local function create_subtitles()
 	end
 
 	function panel:Paint(w, h)
-		surface.SetDrawColor(0, 0, 0, 220)
+		surface.SetDrawColor(MTA.BackgroundColor)
 		surface.DrawRect(0, 0, w, h)
 
-		surface.SetDrawColor(244, 135, 2)
+		surface.SetDrawColor(MTA.PrimaryColor)
 		surface.DrawRect(0, 1, w, 3)
 	end
 

@@ -1,6 +1,3 @@
-local orange_color = Color(244, 135, 2)
-local white_color = Color(255, 255, 255)
-local black_color = Color(0,0,0,150)
 local mat_vec = Vector()
 
 local mat = Matrix()
@@ -25,22 +22,22 @@ return function()
 	mat:SetTranslation(mat_vec)
 	cam.PushModelMatrix(mat)
 
-	surface.SetDrawColor(black_color)
+	surface.SetDrawColor(MTA.BackgroundColor)
 	local coef = ScrW() / 2560
 	local x, y = ScrW() - 400 * coef, ScrH() / 2
 	surface.DrawRect(x, y, 400 * coef, 55 * MTA.HUD.Config.ScrRatio)
 
-	surface.SetDrawColor(orange_color)
+	surface.SetDrawColor(MTA.PrimaryColor)
 	surface.DrawOutlinedRect(x, y, 400 * coef, 55 * MTA.HUD.Config.ScrRatio, 2)
 
-	surface.SetTextColor(white_color)
+	surface.SetTextColor(MTA.TextColor)
 	surface.SetTextPos(x + 10 * coef, y + (4 * MTA.HUD.Config.ScrRatio))
 	surface.SetFont("MTADrillFont")
 	surface.DrawText("/// DRILL PROGRESS ///")
 
 	local perc = vault:GetNWInt("DrillingProgress", 0)
 	local margin = ((300 * coef) * perc) / 100
-	surface.SetDrawColor(orange_color)
+	surface.SetDrawColor(MTA.PrimaryColor)
 	surface.DrawRect(x + 10 * coef, y + (35 * MTA.HUD.Config.ScrRatio), margin, 10)
 
 	surface.SetTextPos(x + 15 * coef + margin, y + (25 * MTA.HUD.Config.ScrRatio))
