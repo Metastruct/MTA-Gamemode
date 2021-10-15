@@ -149,6 +149,11 @@ if SERVER then
 		for mission_id, _ in pairs(MTADailyChallenges.CurrentChallenges) do
 			MTADailyChallenges.BaseChallenges[mission_id].Finish()
 			MTADailyChallenges.CurrentChallenges[mission_id] = nil
+
+			for _, ply in ipairs(player.GetAll()) do
+				local nw_var_name = tag .. "_" .. mission_id
+				ply:SetNWInt(nw_var_name, 0)
+			end
 		end
 
 		local keys = table.GetKeys(MTADailyChallenges.BaseChallenges)
