@@ -221,6 +221,11 @@ if SERVER then
 			MTA.AllowPlayerEscape(ply)
 		end)
 
+		-- low pitch the sounds
+		hook.Add("EntityEmitSound", this, function(self, data)
+			if data.Entity == self then data.Pitch = 50 return true end
+		end)
+
 		MTA.ChatPrint(player.GetAll(), MTA.TextColor, "A", MTA.OldValueColor, " GOLIATH ", MTA.TextColor, "has been ", MTA.OldValueColor, "deployed")
 	end
 
