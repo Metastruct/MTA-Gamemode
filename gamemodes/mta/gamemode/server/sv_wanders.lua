@@ -296,7 +296,7 @@ end
 local MAX_METROPOLICE = 10
 local spawned_metropolice = {}
 local function init_metropolices()
-	timer.Create(tag, 3, 0, function()
+	timer.Create(tag .. "_metrocops", 3, 0, function()
 		if not navmesh.IsLoaded() then return end
 
 		-- check if npc is still around
