@@ -214,6 +214,8 @@ local function spawn_metro_wander()
 			for _, ent in ipairs(ents.FindInSphere(self:GetPos(), 1000)) do
 				if ent:IsPlayer() and MTA.IsWanted(ent) then
 					MTA.EnrollNPC(self, ent)
+					self:StopMoving()
+					self:ClearSchedule()
 				end
 			end
 
@@ -268,6 +270,8 @@ local function spawn_metro_wander()
 		if IsValid(atck) and atck:IsPlayer() then
 			MTA.IncreasePlayerFactor(atck, 5)
 			MTA.EnrollNPC(self, atck)
+			self:StopMoving()
+			self:ClearSchedule()
 
 			hook.Remove("EntityTakeDamage", self)
 			hook.Remove("PlayerUse", self)
