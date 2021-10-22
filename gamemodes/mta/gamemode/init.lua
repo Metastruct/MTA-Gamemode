@@ -41,6 +41,7 @@ include("shared/sh_apartments.lua")
 include("shared/sh_goliath.lua")
 include("shared/sh_hotdog_dealer.lua")
 
+include("server/sv_source_patches.lua")
 include("server/sv_statuses.lua")
 include("server/sv_hud.lua")
 include("server/sv_zones.lua")
