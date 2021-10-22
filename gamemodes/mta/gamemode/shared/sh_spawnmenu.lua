@@ -487,7 +487,7 @@ if CLIENT then
 				self:DrawLegend(VehicleIcon, "Your Vehicle", 240)
 
 				self:DrawLegend(HotdogIcon, "Hotdog Stand", 280)
-				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 300)
+				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 320)
 			end
 
 			function map_panel:Think()
