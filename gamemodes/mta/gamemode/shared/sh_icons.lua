@@ -63,17 +63,19 @@ if CLIENT then
 		local text = ("/// Talk [%s] ///"):format(bind)
 
 		for _, npc in ipairs(find_by_class("lua_npc")) do
-			local dist = math.min(max_dist, distance(LocalPlayer():EyePos(), npc:EyePos()))
-			if dist >= max_dist then continue end
-
-			local alpha = (max_dist - dist) / max_dist
-			local screen_pos = (npc:EyePos() + offset):ToScreen()
 			local mat = icons.GetIconMaterial(npc)
+			if mat then
+				local dist = math.min(max_dist, distance(LocalPlayer():EyePos(), npc:EyePos()))
+				if dist >= max_dist then continue end
 
-			surface.SetAlphaMultiplier(alpha)
-			surface.SetDrawColor(white_color)
-			surface.SetMaterial(mat)
-			surface.DrawTexturedRect(screen_pos.x - 25, screen_pos.y - 25, 50, 50)
+				local alpha = (max_dist - dist) / max_dist
+				local screen_pos = (npc:EyePos() + offset):ToScreen()
+
+				surface.SetAlphaMultiplier(alpha)
+				surface.SetDrawColor(white_color)
+				surface.SetMaterial(mat)
+				surface.DrawTexturedRect(screen_pos.x - 25, screen_pos.y - 25, 50, 50)
+			end
 
 			MTA.ManagedHighlightEntity(npc, text, white_color)
 		end
