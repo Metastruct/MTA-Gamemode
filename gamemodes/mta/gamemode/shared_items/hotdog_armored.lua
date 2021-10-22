@@ -27,7 +27,7 @@ if SERVER then
 			ply._mtafull = nil
 		end)
 
-		MTA.Statuses.AddStatus(ply, "mtafull", "Well Fed", Color(255, 175, 100), FULL_EXPIRE)
+		MTA.Statuses.AddStatus(ply, "mtafull", "Well Fed", Color(255, 175, 100), CurTime() + FULL_EXPIRE)
 
 		local arm = math.min(ply:Armor() + 10, 200)
 		ply:SetArmor(arm)
