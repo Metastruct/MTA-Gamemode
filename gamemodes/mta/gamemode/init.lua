@@ -15,6 +15,7 @@ AddCSLuaFile("client/cl_quick_items.lua")
 AddCSLuaFile("client/cl_crafting.lua")
 AddCSLuaFile("client/cl_apartments.lua")
 
+AddCSLuaFile("shared/sh_icons.lua")
 AddCSLuaFile("shared/sh_daily_challenges.lua")
 AddCSLuaFile("shared/sh_death_recap.lua")
 AddCSLuaFile("shared/sh_gunstore.lua")
@@ -29,6 +30,7 @@ AddCSLuaFile("shared/sh_hotdog_dealer.lua")
 
 include("sh_init.lua")
 
+include("shared/sh_icons.lua")
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_death_recap.lua")
 include("shared/sh_gunstore.lua")

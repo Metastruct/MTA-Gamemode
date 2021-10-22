@@ -32,6 +32,6 @@ end
 
 
 hook.Add("EngineSpew", tag, function(type, msg)
-	handle_stuck_npc(type, msg)
+	if handle_stuck_npc(type, msg) then return "" end -- return an empty string to remove logs
 	-- more shit?
 end)

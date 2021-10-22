@@ -13,6 +13,7 @@ include("client/cl_inventory.lua")
 include("client/cl_crafting.lua")
 include("client/cl_quick_items.lua")
 
+include("shared/sh_icons.lua")
 include("shared/sh_daily_challenges.lua")
 include("shared/sh_death_recap.lua")
 include("shared/sh_gunstore.lua")
