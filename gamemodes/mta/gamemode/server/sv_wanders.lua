@@ -213,11 +213,7 @@ local function spawn_metro_wander()
 		if next_wanted_check < CurTime() then
 			for _, ent in ipairs(ents.FindInSphere(self:GetPos(), 1000)) do
 				if ent:IsPlayer() and MTA.IsWanted(ent) then
-					MTA.SetupCombine(self, ent, MTA.BadPlayers)
-					table.insert(MTA.Combines, self)
-					self:SetNWBool("MTACombine", true)
-					self.ms_notouch = true
-					MTA.ToSpawn = math.max(0, MTA.ToSpawn - 1)
+					MTA.EnrollNPC(self, ent)
 				end
 			end
 
@@ -271,11 +267,7 @@ local function spawn_metro_wander()
 		local atck = dmg_info:GetAttacker()
 		if IsValid(atck) and atck:IsPlayer() then
 			MTA.IncreasePlayerFactor(atck, 5)
-			MTA.SetupCombine(self, atck, MTA.BadPlayers)
-			table.insert(MTA.Combines, self)
-			self:SetNWBool("MTACombine", true)
-			self.ms_notouch = true
-			MTA.ToSpawn = math.max(0, MTA.ToSpawn - 1)
+			MTA.EnrollNPC(self, atck)
 
 			hook.Remove("EntityTakeDamage", self)
 			hook.Remove("PlayerUse", self)
