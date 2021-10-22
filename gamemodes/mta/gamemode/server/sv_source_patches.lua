@@ -32,5 +32,6 @@ end
 
 
 hook.Add("EngineSpew", tag, function(type, msg)
-	if handle_stuck_npc(type, msg) then return end
+	handle_stuck_npc(type, msg)
+	-- more shit?
 end)
