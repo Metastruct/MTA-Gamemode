@@ -1,7 +1,7 @@
 local tag = "mta_hotdog_dealer"
 local goods = {
 	hotdog = 1,
-	armored_hotdog = 5
+	hotdog_armored = 5
 }
 
 if SERVER then

@@ -1,6 +1,6 @@
 
 local ITEM = {}
-local DROP_CHANCE = 15
+local DROP_CHANCE = 30
 
 ITEM.Name = "Hotdog Charm"
 ITEM.Description = "May the hotdog be with you!\nCitizens have a low chance of dropping hotdogs!"

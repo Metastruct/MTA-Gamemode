@@ -22,7 +22,7 @@ if SERVER then
 			ply._mtafull = nil
 		end)
 
-		MTA.Statuses.AddStatus(ply, "mtafull", "Well Fed", Color(255, 175, 100), FULL_EXPIRE)
+		MTA.Statuses.AddStatus(ply, "mtafull", "Well Fed", Color(255, 175, 100), CurTime() + FULL_EXPIRE)
 
 		local hp = math.min(ply:Health() + 10, 100)
 		ply:SetHealth(hp)
