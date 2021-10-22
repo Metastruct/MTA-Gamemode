@@ -93,7 +93,7 @@ if SERVER then
 				if not ent:IsPlayer() then return end
 
 				if ent:Health() == old_health then
-					ent:SetHealth(ent:Health() - SHOT_DMG)
+					ent:SetHealth(ent:Health() - DMG_PER_SHOT)
 
 					if ent:Health() <= 0 then
 						ent:KillSilent()
