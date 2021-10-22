@@ -480,10 +480,14 @@ if CLIENT then
 				self:DrawArrowLegend("You", MTA.TextColor, 0)
 				self:DrawArrowLegend("Other Players", MTA.PrimaryColor, 40)
 				self:DrawLegend(DealerIcon, "Gun Dealer", 80)
-				self:DrawLegend(CarDealerIcon, "Car Dealer", 120)
-				self:DrawLegend(VehicleIcon, "Your Vehicle", 160)
-				self:DrawLegend(VaultIcon, "Vault", 200)
-				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 240)
+				self:DrawLegend(VaultIcon, "Vault", 120)
+				self:DrawLegend(HardwareIcon, "Hardware Store", 160)
+
+				self:DrawLegend(CarDealerIcon, "Car Dealer", 200)
+				self:DrawLegend(VehicleIcon, "Your Vehicle", 240)
+
+				self:DrawLegend(HotdogIcon, "Hotdog Stand", 280)
+				self:DrawLegend(UnknownRoleIcon, "Unknown Business", 300)
 			end
 
 			function map_panel:Think()
