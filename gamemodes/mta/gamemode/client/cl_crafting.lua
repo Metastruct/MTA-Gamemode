@@ -3,11 +3,11 @@ local inventory = MTA_TABLE("Inventory")
 local tag = "MTA_Crafting_UI"
 
 local function GetItemName(class)
-	return inventory.Items[class] and inventory.Items[class].Name or ""
+	return inventory.Items[class] and inventory.Items[class].Name or "Nothing"
 end
 
 local function GetItemModel(class)
-	return inventory.Items[class] and inventory.Items[class].Model or ""
+	return inventory.Items[class] and inventory.Items[class].Model or "models/Gibs/HGIBS.mdl"
 end
 
 local function GetItemMaterial(class)
@@ -152,6 +152,8 @@ function PANEL:UpdateCraftingInfo()
 	local item = inventory.Items[item_class]
 
 	self.CraftInfo:SetText(GetItemName(item_class) .. "\n")
+
+	if not item then return end
 	if not item.Craft then return end
 
 	for _, craft_data in ipairs(item.Craft) do
