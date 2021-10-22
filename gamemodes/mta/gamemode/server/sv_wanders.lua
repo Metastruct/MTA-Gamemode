@@ -167,6 +167,7 @@ local function spawn_metro_wander()
 	npc:Give(math.random() > 0.5 and "weapon_stunstick" or "weapon_pistol")
 	npc:AddRelationship("player D_NU 99")
 	npc:SetMaterial("models/mta/police_skins/metrocop_sheet_police")
+	npc:SetKeyValue("manhacks", tostring(math.random(0, 2)))
 	npc:Spawn()
 	npc:SetCollisionBounds(Vector(-20, -20, 0), Vector(20, 20, 72))
 
