@@ -75,9 +75,7 @@ if CLIENT then
 			surface.SetMaterial(mat)
 			surface.DrawTexturedRect(screen_pos.x - 25, screen_pos.y - 25, 50, 50)
 
-			if alpha > 0.85 then
-				MTA.HighlightEntity(npc, text, white_color, true)
-			end
+			MTA.ManagedHighlightEntity(npc, text, white_color)
 		end
 
 		surface.SetAlphaMultiplier(old_mult)
