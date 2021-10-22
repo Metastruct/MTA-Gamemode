@@ -81,6 +81,8 @@ if CLIENT then
 	local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
 	local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
 	local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
+	local HardwareIcon = Material("vgui/mta_hud/hardware_icon.png")
+	local HotdogIcon = Material("vgui/mta_hud/hotdog_icon.png")
 	local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
 
 	local IconSize = 30
@@ -201,6 +203,8 @@ if CLIENT then
 		local KnownNpcIcons = {
 			["dealer"] = DealerIcon,
 			["car_dealer"] = CarDealerIcon,
+			["hardware_dealer"] = HardwareIcon,
+			["hotdog_dealer"] = HotdogIcon,
 		}
 
 		-- If you want to blacklist your npc from the map, perhaps "secret" npc
