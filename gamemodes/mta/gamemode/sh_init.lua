@@ -153,6 +153,55 @@ if SERVER then
 			["pos"] = Vector(-6678, 2445, 5449),
 			["class"] = "mta_vault",
 		},
+		{
+			-- In front of restaurant
+			["ang"] = Angle(0, 0, 0),
+			["pos"] = Vector(842, 361, 5416),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- Next to hardware
+			["ang"] = Angle(0, 180, 0),
+			["pos"] = Vector(5388, 20, 5504),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- In front of cafe
+			["ang"] = Angle(0, 90, 0),
+			["pos"] = Vector(588, -3472, 5416),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- Across from gourmet deli, in front of a stop sign
+			["ang"] = Angle(0, 90, 0),
+			["pos"] = Vector(-2705, -964, 5416),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- Near garage, across from bruno's
+			["ang"] = Angle(0, 90, 0),
+			["pos"] = Vector(-2715, 4104, 5416),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- Near across from sex shop
+			["ang"] = Angle(0, -90, 0),
+			["pos"] = Vector(-2945, 6853, 5496),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
+		{
+			-- Next to cash paid
+			["ang"] = Angle(0, -90, 0),
+			["pos"] = Vector(993, 6768, 5496),
+			["class"] = "lua_npc",
+			["role"] = "hotdog_dealer",
+		},
 	}
 
 	local function spawn_ents()
