@@ -1,11 +1,7 @@
 local FindByClass = ents.FindByClass
-local DealerIcon = Material("vgui/mta_hud/dealer_icon.png")
 local VaultIcon = Material("vgui/mta_hud/vault_icon.png")
-local CarDealerIcon = Material("vgui/mta_hud/garage_icon.png")
 local VehicleIcon = Material("vgui/mta_hud/vehicle_icon.png")
-local HardwareIcon = Material("vgui/mta_hud/hardware_icon.png")
-local HotdogIcon = Material("vgui/mta_hud/hotdog_icon.png")
-local UnknownRoleIcon = Material("vgui/mta_hud/business_icon.png")
+
 --local DoshIcon = Material("vgui/mta_hud/points_icon.png") -- Unused right now
 local PointsIcon = Material("vgui/mta_hud/cp_icon.png")
 
@@ -15,19 +11,6 @@ local IconOffset = IconSize * 0.5
 -- Scale it up a bit since it looks smaller then the other icons
 local VehicleIconSize = IconSize * 1.5
 local VehicleIconOffset = IconOffset * 1.5
-
--- This is icons based of the npc role
-local KnownNpcIcons = {
-    ["dealer"] = DealerIcon,
-    ["car_dealer"] = CarDealerIcon,
-    ["hardware_dealer"] = HardwareIcon,
-    ["hotdog_dealer"] = HotdogIcon,
-}
-
--- If you want to blacklist your npc from the map, perhaps "secret" npc
-local NpcBlacklist = {
-    ["_bad"] = true, -- Default return for npc without role
-}
 
 local PlayerVerticalLimit = 72
 local MapImage = Material("vgui/mta_hud/maps/rp_unioncity")
@@ -123,14 +106,12 @@ local function DrawMapObjects(origin)
 
     for _, npc in ipairs(FindByClass("lua_npc")) do
         if IsValid(npc) then
-            local role = npc:GetNWString("npc_role", "_bad")
-            if not NpcBlacklist[role] then
-                -- Grab the npc role icon or default to "unknown role" to always display an npc with a role
-                local icon = KnownNpcIcons[role] or UnknownRoleIcon
-                local px, py = GetMapDrawPos(origin, npc:GetPos())
-                surface.SetMaterial(icon)
-                surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
-            end
+            local icon = MTA.Icons.GetIconMaterial(npc)
+            if not icon then continue end
+
+            local px, py = GetMapDrawPos(origin, npc:GetPos())
+            surface.SetMaterial(icon)
+            surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
         end
     end
 

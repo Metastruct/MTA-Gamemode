@@ -198,20 +198,6 @@ if CLIENT then
 		end
 
 		local FindByClass = ents.FindByClass
-
-		-- This is icons based of the npc role
-		local KnownNpcIcons = {
-			["dealer"] = DealerIcon,
-			["car_dealer"] = CarDealerIcon,
-			["hardware_dealer"] = HardwareIcon,
-			["hotdog_dealer"] = HotdogIcon,
-		}
-
-		-- If you want to blacklist your npc from the map, perhaps "secret" npc
-		local NpcBlacklist = {
-			["_bad"] = true, -- Default return for npc without role
-		}
-
 		function MAP_TAB:DrawMapObjects(origin)
 			surface.SetMaterial(VaultIcon)
 			for _, vault in ipairs(FindByClass("mta_vault")) do
@@ -223,14 +209,12 @@ if CLIENT then
 
 			for _, npc in ipairs(FindByClass("lua_npc")) do
 				if IsValid(npc) then
-					local role = npc:GetNWString("npc_role", "_bad")
-					if not NpcBlacklist[role] then
-						-- Grab the npc role icon or default to "unknown role" to always display an npc with a role
-						local icon = KnownNpcIcons[role] or UnknownRoleIcon
-						local px, py = self:GetMapDrawPos(origin, npc:GetPos())
-						surface.SetMaterial(icon)
-						surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
-					end
+					local icon = MTA.Icons.GetIconMaterial(npc)
+					if not icon then continue end
+
+					local px, py = self:GetMapDrawPos(origin, npc:GetPos())
+					surface.SetMaterial(icon)
+					surface.DrawTexturedRect(px - IconOffset, py - IconOffset, IconSize, IconSize)
 				end
 			end
 
