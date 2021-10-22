@@ -221,7 +221,7 @@ local function spawn_metro_wander()
 				end
 			end
 
-			next_wanted_check = CurTime() + 3
+			next_wanted_check = CurTime() + 1
 		end
 	end)
 
