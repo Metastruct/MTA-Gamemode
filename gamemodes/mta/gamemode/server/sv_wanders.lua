@@ -159,16 +159,40 @@ local tracks = {
 		[15] = Vector (-3751.1086425781  ,   388.59942626953 ,  5416.03125       ),
 		[16] = Vector (-3657.955078125   ,    45.920764923096,  5411.0327148438  ),
 		[17] = Vector (-3094.7998046875  ,    64.104713439941,  5416.03125       )
+	},
+
+	-- garage city blocks
+	{
+		[ 1] = Vector (-3876.5617675781  ,  4950.6967773438  ,  5413.4946289062  ),
+		[ 2] = Vector (-1664.1551513672  ,  4931.150390625   ,  5411.576171875   ),
+		[ 3] = Vector (- 576.32788085938 ,  4938.1689453125  ,  5411.0322265625  ),
+		[ 4] = Vector (- 557.72119140625 ,  5994.7485351562  ,  5495.318359375   ),
+		[ 5] = Vector (  832.82141113281 ,  6041.0185546875  ,  5496.03125       ),
+		[ 6] = Vector ( 1899.7540283203  ,  6118.8266601562  ,  5496.03125       ),
+		[ 7] = Vector ( 2169.7724609375  ,  6080.1674804688  ,  5496.03125       ),
+		[ 8] = Vector ( 3006.8332519531  ,  6051.1787109375  ,  5491.0478515625  ),
+		[ 9] = Vector ( 2975.9606933594  ,  6894.0600585938  ,  5496.03125       ),
+		[10] = Vector ( 1593.5202636719  ,  6903.9702148438  ,  5496.03125       ),
+		[11] = Vector (  400.21725463867 ,  6900.3642578125  ,  5496.03125       ),
+		[12] = Vector (   76.631118774414,  6762.830078125   ,  5491.0322265625  ),
+		[13] = Vector (- 640.81555175781 ,  6759.041015625   ,  5496.03125       ),
+		[14] = Vector (-1176.0693359375  ,  6669.462890625   ,  5496.03125       ),
+		[15] = Vector (-1394.1096191406  ,  6683.2221679688  ,  5496.03125       ),
+		[16] = Vector (-1776.6119384766  ,  6763.4091796875  ,  5496.03125       ),
+		[17] = Vector (-2806.880859375   ,  6729.0078125     ,  5496.03125       ),
+		[18] = Vector (-4602.869140625   ,  6728.0258789062  ,  5496.03125       ),
+		[19] = Vector (-4612.6206054688  ,  5960.6044921875  ,  5496.03125       ),
+		[20] = Vector (-4619.84765625    ,  4925.6147460938  ,  5411.0322265625  )
 	}
 }
 
+local NET_FAR_COMBINE_SPAWN_EFFECT = "FAR_COMBINE_SPAWN_EFFECT"
 local function spawn_metro_wander()
 	local npc = ents.Create("npc_metropolice")
 	npc:Give(math.random() > 0.5 and "weapon_stunstick" or "weapon_pistol")
 	npc:AddRelationship("player D_NU 99")
 	npc:SetMaterial("models/mta/police_skins/metrocop_sheet_police")
 	npc:SetKeyValue("manhacks", tostring(math.random(0, 2)))
-	npc:Spawn()
 	npc:SetCollisionBounds(Vector(-20, -20, 0), Vector(20, 20, 72))
 
 	local track = tracks[math.random(#tracks)]
@@ -176,7 +200,15 @@ local function spawn_metro_wander()
 	local init_pos = track[cur_index]
 	local mult = math.random() > 0.5 and -1 or 1
 
+	-- do the combine beam effect
+	net.Start(NET_FAR_COMBINE_SPAWN_EFFECT, true)
+	net.WriteVector(init_pos)
+	net.Broadcast()
+
 	npc:SetPos(init_pos)
+	timer.Simple(1, function()
+		npc:Spawn()
+	end)
 
 	local target_pos = nil
 	local function move_to_next_node(no_increment)
@@ -233,8 +265,9 @@ local function spawn_metro_wander()
 	}
 
 	local idle_count = 0
-	local last_pos
+	local last_pos = npc:GetPos()
 	local timer_name = "MTAMetropoliceWander_" .. npc:EntIndex()
+	local stuck_in_a_row = 0
 	timer.Create(timer_name, 1, 0, function()
 		if not IsValid(npc) or npc:GetNWBool("MTACombine") then
 			timer.Remove(timer_name)
@@ -258,10 +291,16 @@ local function spawn_metro_wander()
 
 				move_to_next_node(true)
 				idle_count = 0
+				stuck_in_a_row = stuck_in_a_row + 1
+
+				if stuck_in_a_row > 5 then
+					explode(npc)
+				end
 			end
 		else
 			last_pos = npc:GetPos()
 			idle_count = 0
+			stuck_in_a_row = 0
 		end
 	end)
 
