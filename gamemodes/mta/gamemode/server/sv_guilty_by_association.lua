@@ -5,6 +5,10 @@ local function can_ent_be_guilty(ent)
 	if MTA.IsWanted(ent) then return false end
 	if MTA.Zones.Players[ent] then return false end
 
+	-- meta stuff
+	if ent.IsAFK and ent:IsAFK() then return false end
+	if ent.IsTabbedOut and ent.IsTabbedOut() then return false end
+
 	return true
 end
 
