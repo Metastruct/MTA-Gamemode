@@ -287,6 +287,7 @@ local function spawn_metro_wander()
 
 				if IsValid(tr.Entity) and tr.Entity:IsPlayer() then
 					npc:EmitSound(move_sounds[math.random(#move_sounds)])
+					tr.Entity:SetVelocity(npc:GetForward() * 150 + npc:GetUp() * 250)
 				end
 
 				move_to_next_node(true)
