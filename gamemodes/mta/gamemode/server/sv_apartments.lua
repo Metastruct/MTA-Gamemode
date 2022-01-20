@@ -9,7 +9,6 @@ local MTA_Apartments = MTA.Apartments
 util.AddNetworkString(Tag)
 
 local function SendDataToClient(ply)
-	-- Send entrance ids and whateversefsf<s to client
 	local clientdata = {}
 	for apt_name, apt in pairs(MTA_Apartments.List) do
 		local entrance = ents.GetMapCreatedEntity(apt.Data.entrance_id)
@@ -249,7 +248,7 @@ function MTA_Apartments.SendPlayerTo(ply, apt_lookup)
 	ply:SetEyeAngles((apt.Entrance:WorldSpaceCenter() - ply:WorldSpaceCenter()):Angle())
 
 	timer.Simple(.5, function()
-		if not apt.Renter or apt.Renter == ply or IsInvited(ply) then
+		if not apt.Renter or apt.Renter == ply or IsInvited(ply, apt) then
 			apt.Entrance:Fire("Open")
 			apt.Entrance:EmitSound("vo/NovaProspekt/al_comeonin02.wav")
 		end

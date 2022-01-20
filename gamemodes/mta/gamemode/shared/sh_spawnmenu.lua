@@ -1,9 +1,12 @@
 local NET_LEADERBOARD = "MTA_LEADERBOARD"
 
+local NET_APARTMENTS = "MTA_APARTMENTS_MENU"
+
 if SERVER then
 	local top_20 = {}
 
 	util.AddNetworkString(NET_LEADERBOARD)
+	util.AddNetworkString(NET_APARTMENTS)
 
 	local function send_top_20(ply)
 		net.Start(NET_LEADERBOARD)
@@ -31,6 +34,15 @@ if SERVER then
 
 	timer.Create(NET_LEADERBOARD, 25, 0, refresh_top_20)
 	hook.Add("InitPostEntity", NET_LEADERBOARD, refresh_top_20)
+
+	net.Receive(NET_APARTMENTS, function(_, ply)
+		if MTA.IsWanted(ply) then
+			return
+		end
+
+		local apt = net.ReadString()
+		MTA.Apartments.SendPlayerTo(ply, apt)
+	end)
 end
 
 if CLIENT then
@@ -321,6 +333,27 @@ if CLIENT then
 		vgui.Register("mta_leaderboard", LEADERBOARD_TAB, "DPanel")
 	end
 
+	-- Apartments tab
+	do
+		local APARTMENTS_TAB = {}
+		function APARTMENTS_TAB:Init() end
+
+		function APARTMENTS_TAB:Paint(w, h)
+			surface.SetDrawColor(MTA.BackgroundColor)
+			surface.DrawRect(0, 0, w, h)
+			surface.SetDrawColor(MTA.PrimaryColor)
+			surface.DrawOutlinedRect(0, 0, w, h)
+			surface.DrawOutlinedRect(1, 1, w - 2, h - 2)
+
+			surface.SetDrawColor(MTA.TextColor)
+			surface.SetFont("MTAMenuHeaderFont")
+			surface.SetTextPos(15, 15)
+			surface.DrawText("Apartments")
+		end
+
+		vgui.Register("mta_apartments_tab", APARTMENTS_TAB, "DPanel")
+	end
+
 	local PANEL = {}
 	function PANEL:Init()
 		self.NoCleanup = true -- for vgui_cleanup
@@ -559,6 +592,142 @@ if CLIENT then
 
 		tab = sheet:AddSheet("Leaderboard", vgui.Create("mta_leaderboard"))
 		tab.Tab.Paint = tab_paint
+
+		do
+			local APTS_RENTED = Color(255, 50, 50)
+			local APTS_OWNED = Color(100, 255, 100)
+			local APTS_INVITED = Color(255, 150, 100)
+
+			local function get_apartment_status(apt)
+				local col
+
+				if apt.Renter then
+					col = apt.Renter == LocalPlayer() and APTS_OWNED or APTS_RENTED
+				end
+
+				if #apt.Invitees > 0 then
+					for _, invitee in ipairs(apt.Invitees) do
+						if invitee == LocalPlayer() then
+							col = APTS_INVITED
+						end
+					end
+				end
+
+				return col
+			end
+
+			local apt_panel = vgui.Create("mta_apartments_tab")
+
+			local apt_list = apt_panel:Add("DListView")
+			apt_list:Dock(LEFT)
+			apt_list:DockMargin(20, 75, 20, 20)
+			apt_list:SetWide(200)
+			apt_list:SetDataHeight(30)
+
+			function apt_list:Paint(w, h)
+				surface.SetDrawColor(MTA.PrimaryColor)
+				surface.DrawOutlinedRect(0, 0, w, h)
+			end
+
+			apt_list:SetMultiSelect(false)
+			apt_list:SetSortable(false)
+
+			apt_list:AddColumn("Apartment")
+			local price = apt_list:AddColumn("Price")
+			price:SetFixedWidth(40)
+
+			local apt_list_data = MTA.Apartments.List
+			for name, data in pairs(apt_list_data) do
+				local added = apt_list:AddLine(name, data.Data.price)
+				function added:Paint(w, h)
+					local status = get_apartment_status(data)
+
+					surface.SetDrawColor(status or Color(50, 50, 50))
+					if added:IsHovered() then
+						surface.DrawRect(0, 0, w, h)
+					else
+						surface.DrawOutlinedRect(0, 0, w, h, 1)
+					end
+				end
+			end
+
+			apt_list:SortByColumn(2, true)
+
+			local apt_showcase = apt_panel:Add("DPanel")
+			apt_showcase:Dock(RIGHT)
+			apt_showcase:DockMargin(20, 20, 20, 20)
+			apt_showcase:SetWide(450)
+
+			function apt_showcase:Paint(w, h)
+				surface.SetDrawColor(MTA.PrimaryColor)
+				surface.DrawOutlinedRect(0, 0, w, h)
+			end
+
+			local apt_showcase_label = apt_showcase:Add("DLabel")
+			apt_showcase_label:Dock(TOP)
+			apt_showcase_label:DockMargin(20, 20, 20, 0)
+
+			apt_showcase_label:SetFont("MTAMenuPlayerFont")
+			apt_showcase_label:SetTextColor(MTA.TextColor)
+
+			function apt_showcase_label:Think()
+				local apts = MTA.Apartments.List
+
+				local _, selected = apt_list:GetSelectedLine()
+
+				local apt
+				local desc
+				local status
+				if selected then
+					apt = apts[selected:GetColumnText(1)]
+					desc = apt.Data.desc or "No description found!"
+					status = get_apartment_status(apt)
+				end
+
+				local txt = selected and selected:GetColumnText(1) .. "\n" or "Pick an apartment!\n"
+				txt = txt .. (selected and "Price: " .. selected:GetColumnText(2) .. "\n\n" or "")
+				txt = txt .. (selected and "Description: " .. desc .. "\n\n" or "")
+				txt = txt .. ((selected and status) and (
+					status == APTS_RENTED and "This apartment is already rented!" or
+					status == APTS_OWNED and "You own this apartment!" or
+					status == APTS_INVITED and "You are invited to this apartment!"
+				) or "")
+				self:SetText(txt)
+
+				self:SizeToContents()
+			end
+
+			local apt_showcase_travel = apt_showcase:Add("DButton")
+			apt_showcase_travel:Dock(BOTTOM)
+
+			apt_showcase_travel:SetText("Fast Travel")
+			apt_showcase_travel:SetTall(50)
+
+			function apt_showcase_travel:Paint(w, h)
+				surface.SetDrawColor(
+					(self:IsEnabled() and self:IsHovered()) and MTA.TextColor or MTA.PrimaryColor
+				)
+				surface.DrawOutlinedRect(0, 0, w, h)
+			end
+
+			function apt_showcase_travel:Think()
+				local _, selected = apt_list:GetSelectedLine()
+				local enabled = (not MTA.IsWanted(LocalPlayer()) and tobool(selected))
+
+				self:SetEnabled(enabled)
+			end
+
+			function apt_showcase_travel:DoClick()
+				local _, selected = apt_list:GetSelectedLine()
+
+				net.Start(NET_APARTMENTS)
+					net.WriteString(selected:GetColumnText(1))
+				net.SendToServer()
+			end
+
+			local sheet_data = sheet:AddSheet("Apartments", apt_panel)
+			sheet_data.Tab.Paint = tab_paint
+		end
 	end
 
 	function PANEL:Think()
