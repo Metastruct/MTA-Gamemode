@@ -164,6 +164,8 @@ hook.Add("Think", "rebel_guards", function()
 		if guard_data.pos:DistToSqr(guard_data.npc:GetPos()) < 25 * 25 then
 			guard_data.npc:SetAngles(guard_data.ang)
 			guard_data.npc:SetPos(guard_data.pos)
+			guard_data.npc:ClearSchedule()
+			guard_data.npc:StopMoving()
 		else
 			guard_data.npc:SetLastPosition(guard_data.pos)
 			guard_data.npc:SetSchedule(SCHED_FORCED_GO)
