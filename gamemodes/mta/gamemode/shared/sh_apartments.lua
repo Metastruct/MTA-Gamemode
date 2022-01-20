@@ -9,8 +9,9 @@ local APARTMENT_DATA = {
 			Vector(6032, -2120, 5720),
 		},
 		entrance_id = 2569,
-		price = 10,
-		travel_pos = Vector(6634, -2483, 5736)
+		price = 5,
+		travel_pos = Vector(6634, -2483, 5736),
+		desc = "Your average low cost apartment."
 	},
 	{
 		name = "Apt. Complex Room B",
@@ -19,8 +20,9 @@ local APARTMENT_DATA = {
 			Vector(6014, -2622, 5520),
 		},
 		entrance_id = 2567,
-		price = 10,
-		travel_pos = Vector(6366, -2065, 5536)
+		price = 5,
+		travel_pos = Vector(6366, -2065, 5536),
+		desc = "Your average low cost apartment."
 	},
 	{
 		name = "Apt. Complex Room C",
@@ -29,8 +31,9 @@ local APARTMENT_DATA = {
 			Vector(6050, -1381, 5520),
 		},
 		entrance_id = 2568,
-		price = 10,
-		travel_pos = Vector(6367, -1933, 5548)
+		price = 5,
+		travel_pos = Vector(6367, -1933, 5548),
+		desc = "Your average low cost apartment."
 	},
 	{
 		name = "Apt. Complex Room D",
@@ -39,8 +42,9 @@ local APARTMENT_DATA = {
 			Vector(6032, -1878, 5720),
 		},
 		entrance_id = 2570,
-		price = 10,
-		travel_pos = Vector(6593, -1517, 5733)
+		price = 5,
+		travel_pos = Vector(6593, -1517, 5733),
+		desc = "Your average low cost apartment."
 	},
 
 	-- hotel
@@ -51,8 +55,9 @@ local APARTMENT_DATA = {
 			Vector(6470, 1413, 6072),
 		},
 		entrance_id = 2560,
-		price = 10,
-		travel_pos = Vector(5923, 1779, 6095)
+		price = 5,
+		travel_pos = Vector(5923, 1779, 6095),
+		desc = "Your average low cost hotel room."
 	},
 	{
 		name = "Hotel Room B",
@@ -61,8 +66,9 @@ local APARTMENT_DATA = {
 			Vector(6126, 1973, 6072),
 		},
 		entrance_id = 2562,
-		price = 10,
-		travel_pos = Vector(5848, 1911, 6090)
+		price = 5,
+		travel_pos = Vector(5848, 1911, 6090),
+		desc = "Your average low cost hotel room."
 	},
 	{
 		name = "Hotel Room C",
@@ -71,8 +77,9 @@ local APARTMENT_DATA = {
 			Vector(5404, 2012, 6072),
 		},
 		entrance_id = 2559,
-		price = 10,
-		travel_pos = Vector(5451, 1728, 6091)
+		price = 5,
+		travel_pos = Vector(5451, 1728, 6091),
+		desc = "Your average low cost hotel room."
 	},
 
 	-- restaurant
@@ -83,8 +90,9 @@ local APARTMENT_DATA = {
 			Vector(2334, 774, 5632),
 		},
 		entrance_id = 2636,
-		price = 15,
-		travel_pos = Vector(2389, 700, 5646)
+		price = 10,
+		travel_pos = Vector(2389, 700, 5646),
+		desc = "This apartment comes equipped with a kitchen!"
 	},
 
 	-- big hotel
@@ -95,8 +103,9 @@ local APARTMENT_DATA = {
 			Vector(2510, 2737, 6112),
 		},
 		entrance_id = 2868,
-		price = 10,
-		travel_pos = Vector(2542, 3038, 6119)
+		price = 5,
+		travel_pos = Vector(2542, 3038, 6119),
+		desc = "Your average low cost hotel room."
 	},
 	{
 		name = "Hotel Room E",
@@ -105,8 +114,9 @@ local APARTMENT_DATA = {
 			Vector(2017, 2071, 6112),
 		},
 		entrance_id = 2872,
-		price = 10,
-		travel_pos = Vector(2479, 2385, 6133)
+		price = 5,
+		travel_pos = Vector(2479, 2385, 6133),
+		desc = "Your average low cost hotel room."
 	},
 	{
 		name = "Hotel Room F",
@@ -122,8 +132,9 @@ local APARTMENT_DATA = {
 			}
 		},
 		entrance_id = 2870,
-		price = 10,
-		travel_pos = Vector(2625, 2588, 6123)
+		price = 5,
+		travel_pos = Vector(2625, 2588, 6123),
+		desc = "Your average low cost hotel room."
 	},
 	{
 		name = "Hotel Room G",
@@ -139,8 +150,9 @@ local APARTMENT_DATA = {
 			}
 		},
 		entrance_id = 2874,
-		price = 10,
-		travel_pos = Vector(2611, 3142, 6130)
+		price = 5,
+		travel_pos = Vector(2611, 3142, 6130),
+		desc = "Your average low cost hotel room."
 	},
 
 	-- abandoned house
@@ -151,8 +163,9 @@ local APARTMENT_DATA = {
 			Vector(4211, 2375, 5857),
 		},
 		entrance_id = 2609,
-		price = 30,
-		travel_pos = Vector(3692, 2769, 5454)
+		price = 15,
+		travel_pos = Vector(3692, 2769, 5454),
+		desc = "Abandoned, dusty and moldy.\nHowever, this house has a lot of room to work with\nand it comes with its own perks!"
 	},
 
 	-- store (twelve 7)
@@ -163,8 +176,9 @@ local APARTMENT_DATA = {
 			Vector(3793, 7252, 5752),
 		},
 		entrance_id = 2446,
-		price = 30,
-		travel_pos = Vector(4510, 6608, 5781)
+		price = 15,
+		travel_pos = Vector(4510, 6608, 5781),
+		desc = "For rent right above the infamous Twelve 7.\nA clean apartment that comes with its own perks!"
 	},
 }
 
