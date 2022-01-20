@@ -6,10 +6,16 @@ ENT.Spawnable  = false
 ENT.Zone       = ""
 
 --Basic box trigger
-function ENT:SetupTriggerBox(mins, maxs)
+function ENT:SetupTriggerBox(mins, maxs, use_world_coords)
 	self:SetSolid(SOLID_BBOX)
 	self:SetSolidFlags(12)
-	self:SetCollisionBounds(mins, maxs)
+
+	if use_world_coords then
+		self:SetCollisionBoundsWS(mins, maxs)
+	else
+		self:SetCollisionBounds(mins, maxs)
+	end
+
 	self:SetRenderMode(RENDERMODE_TRANSTEXTURE)
 	self:DrawShadow(false)
 
