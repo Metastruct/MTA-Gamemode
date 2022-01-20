@@ -31,6 +31,17 @@ local zones = {
 			}
 		},
 	},
+	rebelcamp = {
+		mins = Vector (96, -472, -106),
+		maxs = Vector (673, 125, 253),
+		pos  = Vector(700, 5412, 5602),
+		limiters = {
+			{
+				pos = Vector(1010, 5462, 5596),
+				ang = Angle(0, 120, 90),
+			},
+		}
+	},
 	spawnarea = {
 		zones = {
 			{
