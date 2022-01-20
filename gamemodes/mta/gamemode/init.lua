@@ -54,6 +54,7 @@ include("server/sv_combine_vault_skybox.lua")
 include("server/sv_apartments.lua")
 include("server/sv_wanders.lua")
 include("server/sv_guilty_by_association.lua")
+include("server/sv_rebel_camp.lua")
 
 function GM:EntityRemoved(ent)
 	-- Burning sounds are annoying.
