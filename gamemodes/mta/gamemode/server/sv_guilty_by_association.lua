@@ -7,7 +7,7 @@ local function can_ent_be_guilty(ent)
 
 	-- meta stuff
 	if ent.IsAFK and ent:IsAFK() then return false end
-	if ent.IsTabbedOut and ent.IsTabbedOut() then return false end
+	if ent.IsTabbedOut and ent:IsTabbedOut() then return false end
 
 	return true
 end
