@@ -32,9 +32,18 @@ local zones = {
 		},
 	},
 	rebelcamp = {
-		mins = Vector(-480, -400, -500),
-		maxs = Vector(300, 500, 500),
-		pos  = Vector(700, 5412, 5602),
+		zones = {
+			{
+				mins = Vector(-320, -150, -500),
+				maxs = Vector(320, 150, 500),
+				pos = Vector (568, 5802, 5504)
+			},
+			{
+				mins = Vector(-480, -400, -500),
+				maxs = Vector(300, 500, 500),
+				pos  = Vector(700, 5412, 5602),
+			}
+		},
 		limiters = {
 			{
 				pos = Vector(1010, 5462, 5596),
