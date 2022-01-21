@@ -97,6 +97,12 @@ local function spawn_rebel_stand(pos, ang, role)
 	stand_antenna.ms_notouch = true
 	stand_antenna.no_door_explode = true
 
+	phys = stand_antenna:GetPhysicsObject()
+	if IsValid(phys) then
+		phys:EnableMotion(false)
+		phys:EnableCollisions(false)
+	end
+
 	local vendor = ents.Create("lua_npc")
 	vendor:SetPos(stand:GetPos() + -stand:GetForward() * 30 - Vector(0, 0, 20))
 	vendor:Spawn()
