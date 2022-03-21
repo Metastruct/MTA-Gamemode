@@ -187,6 +187,8 @@ local tracks = {
 }
 
 local NET_FAR_COMBINE_SPAWN_EFFECT = "FAR_COMBINE_SPAWN_EFFECT"
+util.AddNetworkString(NET_FAR_COMBINE_SPAWN_EFFECT)
+
 local function spawn_metro_wander()
 	local npc = ents.Create("npc_metropolice")
 	npc:Give(math.random() > 0.5 and "weapon_stunstick" or "weapon_pistol")
