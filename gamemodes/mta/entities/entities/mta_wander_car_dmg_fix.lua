@@ -70,7 +70,7 @@ if SERVER then
 
 	local function is_damageable_ent(ent)
 		if ent:GetClass() == "lua_npc_wander" then return true end
-		if ent:IsNPC() and ent:GetNWBool("MTACombine") then return true end
+		if ent:IsNPC() and ent:GetNWBool("MTANPC") then return true end
 		if ent:IsPlayer() then return true end
 
 		return false

@@ -234,7 +234,7 @@ local function spawn_metro_wander()
 
 	local next_wanted_check = 0
 	hook.Add("Think", npc, function(self)
-		if self:GetNWBool("MTACombine") then
+		if self:GetNWBool("MTAMTANPCCombine") then
 			hook.Remove("Think", npc)
 			return
 		end
@@ -269,7 +269,7 @@ local function spawn_metro_wander()
 	local timer_name = "MTAMetropoliceWander_" .. npc:EntIndex()
 	local stuck_in_a_row = 0
 	timer.Create(timer_name, 1, 0, function()
-		if not IsValid(npc) or npc:GetNWBool("MTACombine") then
+		if not IsValid(npc) or npc:GetNWBool("MTANPC") then
 			timer.Remove(timer_name)
 			return
 		end
