@@ -56,7 +56,7 @@ MTADailyChallenges.BaseChallenges.kill_shotgunners = {
 	Execute = function()
 		hook.Add("OnNPCKilled", tag .. "_kill_shotgunners", function(npc, attacker)
 			if not attacker:IsPlayer() then return end
-			if npc:GetNWBool("MTACombine") then
+			if npc:GetNWBool("MTANPC") then
 				local wep = npc:GetActiveWeapon()
 				if IsValid(wep) and wep:GetClass() == "weapon_shotgun" then
 					MTADailyChallenges.AddProgress(attacker, "kill_shotgunners", 1)
@@ -76,7 +76,7 @@ MTADailyChallenges.BaseChallenges.kill_metropolice = {
 	Execute = function()
 		hook.Add("OnNPCKilled", tag .. "_kill_metropolice", function(npc, attacker)
 			if not attacker:IsPlayer() then return end
-			if npc:GetNWBool("MTACombine") and npc:GetClass() == "npc_metropolice" then
+			if npc:GetNWBool("MTANPC") and npc:GetClass() == "npc_metropolice" then
 				MTADailyChallenges.AddProgress(attacker, "kill_metropolice", 1)
 			end
 		end)
@@ -125,7 +125,7 @@ MTADailyChallenges.BaseChallenges.survive_2500_dmg = {
 		hook.Add("EntityTakeDamage", tag .. "_survive_2500_dmg", function(target, dmg_info)
 			if target:IsPlayer() and MTA.IsWanted(target) then
 				local atck = dmg_info:GetAttacker()
-				if IsValid(atck) and atck:GetNWBool("MTACombine") then
+				if IsValid(atck) and atck:GetNWBool("MTANPC") then
 					MTADailyChallenges.AddProgress(target, "survive_2500_dmg", dmg_info:GetDamage())
 				end
 			end

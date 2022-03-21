@@ -183,7 +183,7 @@ hook.Add("ScaleNPCDamage", "rebel_guards", function(npc, _, dmg_info)
 	local attacker = dmg_info:GetAttacker()
 	if not IsValid(attacker) then return end
 
-	if npc:GetNWBool("MTACombine") and attacker:GetClass() == "Rebel" then
+	if npc:GetNWBool("MTANPC") and attacker:GetClass() == "Rebel" then
 		dmg_info:SetDamage(1000)
 	end
 end)
