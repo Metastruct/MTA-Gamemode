@@ -222,7 +222,7 @@ if SERVER then
 		end)
 
 		-- low pitch the sounds
-		hook.Add("EntityEmitSound", this, function(self, data)
+		hook.Add("EntityEmitSound", npc, function(self, data)
 			if data.Entity == self then data.Pitch = 50 return true end
 		end)
 
