@@ -49,7 +49,7 @@ net.Receive(Tag, function(l, ply)
 
 		if apt.Renter and ply ~= apt.Renter then
 			apt.Entrance:EmitSound("vo/Citadel/br_youfool.wav")
-			ply:ChatPrint("This apartment is already rented!")
+			MTA.ChatPrint(ply, "This apartment is already rented!")
 
 			return
 		end
@@ -63,14 +63,14 @@ net.Receive(Tag, function(l, ply)
 
 		if MTA_Apartments.GetPlayerApartment(ply) then
 			apt.Entrance:EmitSound("vo/Citadel/br_youfool.wav")
-			ply:ChatPrint("You already have an apartment!")
+			MTA.ChatPrint(ply, "You already have an apartment!")
 
 			return
 		end
 
 		local paid = MTA.PayPoints(ply, apt.Data.price)
 		if not paid then
-			ply:ChatPrint("You do not have enough points!")
+			MTA.ChatPrint(ply, "You do not have enough points!")
 			ply:EmitSound("doors/door_locked2.wav")
 
 			return
@@ -113,7 +113,7 @@ hook.Add("PlayerUse", Tag, function(ply, ent)
 		if apt.Renter and apt.Renter ~= ply and not IsInvited(ply, apt) and apt.Entrance == ent then
 			if last_use + 1 < RealTime() then
 				apt.Entrance:EmitSound("vo/Citadel/br_no.wav")
-				ply:ChatPrint("You do not own this apartment!")
+				MTA.ChatPrint(ply, "You do not own this apartment!")
 
 				last_use = RealTime()
 			end
@@ -141,19 +141,19 @@ local function LookupApartment(apt_lookup)
 	return nil
 end
 
-local function KickPlayerFromApt(ent, apt, str)
-	ent:SetPos(apt.Data.travel_pos)
-	ent:SetVelocity(-ent:GetVelocity())
+local function KickPlayerFromApt(ply, apt, str)
+	ply:SetPos(apt.Data.travel_pos)
+	ply:SetVelocity(-ply:GetVelocity())
 
-	if not ent._mta_lastkick then
-		ent._mta_lastkick = RealTime() - .6
+	if not ply._mta_lastkick then
+		ply._mta_lastkick = RealTime() - .6
 	end
 
-	if ent._mta_lastkick + .5 < RealTime() then
+	if ply._mta_lastkick + .5 < RealTime() then
 		apt.Entrance:EmitSound("vo/Citadel/br_youfool.wav")
-		ent:ChatPrint(str)
+		MTA.ChatPrint(ply, str)
 
-		ent._mta_lastkick = RealTime()
+		ply._mta_lastkick = RealTime()
 	end
 end
 
@@ -263,7 +263,7 @@ function MTA_Apartments.InvitePlayerTo(invitee, owner)
 	if IsInvited(invitee, apt) then return end
 
 	if MTA.IsWanted(invitee) then
-		owner:ChatPrint("The person you're trying to invite is currently wanted!")
+		MTA.ChatPrint(owner, "The person you're trying to invite is currently wanted!")
 
 		return
 	end
@@ -275,7 +275,7 @@ function MTA_Apartments.InvitePlayerTo(invitee, owner)
 	table.insert(apt.Invitees, invitee)
 
 	invitee:EmitSound("vo/Streetwar/Alyx_gate/al_hey.wav")
-	invitee:ChatPrint("You have been invited to " .. UndecorateNick(owner:Nick()) .. "'s apartment!"
+	MTA.ChatPrint(invitee, "You have been invited to " .. UndecorateNick(owner:Nick()) .. "'s apartment!"
 	.. "\nApartment name: " .. apt.Data.name)
 
 	net.Start(Tag)
@@ -297,7 +297,7 @@ function MTA_Apartments.KickPlayerFrom(invitee, owner)
 	table.RemoveByValue(apt.Invitees, invitee)
 
 	invitee:EmitSound("ambient/creatures/teddy.wav") -- :D
-	invitee:ChatPrint(UndecorateNick(owner:Nick()) .. " kicked you out of their apartment!")
+	MTA.ChatPrint(invitee, UndecorateNick(owner:Nick()) .. " kicked you out of their apartment!")
 
 	net.Start(Tag)
 		net.WriteInt(APT_INVITE, 32)
