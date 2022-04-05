@@ -129,11 +129,6 @@ if SERVER then
 			["class"] = "mta_jukebox",
 		},
 		{
-			["ang"] = Angle(89, -6, 94),
-			["pos"] = Vector(966, 7508, 5550),
-			["class"] = "mta_riot_shield_table",
-		},
-		{
 			["ang"] = Angle(0, -90, 0),
 			["pos"] = Vector(-6702, 2956, 5449),
 			["class"] = "mta_vault",
