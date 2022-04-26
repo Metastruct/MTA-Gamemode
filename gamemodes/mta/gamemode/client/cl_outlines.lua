@@ -51,7 +51,10 @@ function RenderedEntity()
 	return RenderEnt
 end
 
+local OUTLINE_CVAR = CreateClientConVar("mta_outlines", "1", true, false, "Enable outlines")
 local function Render()
+	if not OUTLINE_CVAR:GetBool() then return end
+
 	local ply = LocalPlayer()
 	local IsLineOfSightClear = ply.IsLineOfSightClear
 
