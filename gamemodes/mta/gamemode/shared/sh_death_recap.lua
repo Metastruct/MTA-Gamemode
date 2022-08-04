@@ -148,7 +148,7 @@ if SERVER then
 
 		if isentity(atck) then
 			if atck:IsPlayer() then
-				atck = UndecorateNick(atck:Nick())
+				atck = atck:Nick()
 			else
 				atck = atck:GetClass()
 			end

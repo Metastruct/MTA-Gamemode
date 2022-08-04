@@ -54,7 +54,7 @@ if CLIENT then
 		local steamid_64 = util.SteamID64FromAccountID(tonumber(account_id))
 		local ply = player.GetBySteamID64(steamid_64)
 		if IsValid(ply) then
-			local name = UndecorateNick and UndecorateNick(ply:Nick()) or ply:Nick()
+			local name = ply:Nick()
 			callback(name)
 			return
 		end

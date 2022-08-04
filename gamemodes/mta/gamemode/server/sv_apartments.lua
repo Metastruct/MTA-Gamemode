@@ -275,7 +275,7 @@ function MTA_Apartments.InvitePlayerTo(invitee, owner)
 	table.insert(apt.Invitees, invitee)
 
 	invitee:EmitSound("vo/Streetwar/Alyx_gate/al_hey.wav")
-	MTA.ChatPrint(invitee, "You have been invited to " .. UndecorateNick(owner:Nick()) .. "'s apartment!"
+	MTA.ChatPrint(invitee, "You have been invited to " .. owner:Nick() .. "'s apartment!"
 	.. "\nApartment name: " .. apt.Data.name)
 
 	net.Start(Tag)
@@ -297,7 +297,7 @@ function MTA_Apartments.KickPlayerFrom(invitee, owner)
 	table.RemoveByValue(apt.Invitees, invitee)
 
 	invitee:EmitSound("ambient/creatures/teddy.wav") -- :D
-	MTA.ChatPrint(invitee, UndecorateNick(owner:Nick()) .. " kicked you out of their apartment!")
+	MTA.ChatPrint(invitee, owner:Nick() .. " kicked you out of their apartment!")
 
 	net.Start(Tag)
 		net.WriteInt(APT_INVITE, 32)

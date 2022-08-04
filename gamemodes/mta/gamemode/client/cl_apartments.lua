@@ -21,7 +21,7 @@ local function RefreshEntranceHighlight(apt)
 
 	local str = ""
 	str = apt.Renter and
-	"Rented by " .. UndecorateNick(apt.Renter:Nick()) .. (IsInvited(LocalPlayer(), apt) and " (Invited!)" or "") or
+	"Rented by " .. apt.Renter:Nick() .. (IsInvited(LocalPlayer(), apt) and " (Invited!)" or "") or
 	"(R) Available for rent!"
 
 	local color = apt.Renter and
@@ -150,7 +150,7 @@ local function CreateEntranceGui(apt)
 		end
 		for _, ply in ipairs(player.GetAll()) do
 			if ply ~= LocalPlayer() then
-				local nick = UndecorateNick(ply:Nick())
+				local nick = ply:Nick()
 				INVITE_GUI_LIST:AddChoice(nick, ply)
 			end
 		end
