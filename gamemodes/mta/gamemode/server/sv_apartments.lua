@@ -12,6 +12,7 @@ local function SendDataToClient(ply)
 	local clientdata = {}
 	for apt_name, apt in pairs(MTA_Apartments.List) do
 		local entrance = ents.GetMapCreatedEntity(apt.Data.entrance_id)
+		if not IsValid(entrance) then continue end
 
 		local apt_table = {
 			entrance_index = entrance:EntIndex(),
